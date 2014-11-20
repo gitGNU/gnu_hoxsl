@@ -1,0 +1,3 @@
+[submodule "tools/xspec"]
+	path = tools/xspec
+	url = https://github.com/lovullo/xspec

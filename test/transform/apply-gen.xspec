@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Tests dynamic function application boilerplate generation
+
+  Copyright (C) 2014 LoVullo Associates, Inc.
+
+    This file is part of hoxsl.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<description xmlns="http://www.jenitennison.com/xslt/xspec"
+             xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+             xmlns:foo="http://www.lovullo.com/_junk"
+             stylesheet="../../src/transform/apply-gen.xsl">
+
+  <!-- basic case -->
+  <scenario label="given a unary function">
+    <context>
+      <xsl:stylesheet>
+        <xsl:function name="foo:bar">
+          <xsl:param name="foo" />
+        </xsl:function>
+      </xsl:stylesheet>
+    </context>
+
+    <expect label="generates a function of the same name"
+            test="xsl:stylesheet/xsl:function/@name = 'foo:bar'" />
+
+    <expect label="generates function of type `element()'"
+            test="xsl:stylesheet/xsl:function/@as = 'element()'" />
+
+    <!-- this function is used to generate an element for later
+         application -->
+    <expect label="generated function is nullary"
+            test="count( xsl:stylesheet/xsl:function/xsl:param ) = 0" />
+
+    <!-- the generated node is simply the same name and namespace as
+         the function -->
+    <expect label="generated function produces function node"
+            context="xsl:stylesheet/xsl:function/*">
+      <foo:bar />
+    </expect>
+  </scenario>
+
+
+  <scenario label="given a stylesheet">
+    <scenario label="with no function elements">
+      <context>
+        <xsl:stylesheet>
+          <xsl:template name="foo" />
+          <xsl:template name="bar" />
+        </xsl:stylesheet>
+      </context>
+
+      <expect label="produces an empty stylesheet"
+              context="xsl:stylesheet">
+        <xsl:stylesheet />
+      </expect>
+    </scenario>
+  </scenario>
+
+  
+  <!-- xsl:transform is an alternative to xsl:stylesheet -->
+  <scenario label="given a xsl:template root note">
+    <context>
+      <xsl:transform />
+    </context>
+
+    <expect label="properly outputs stylesheet"
+            context="xsl:stylesheet">
+      <xsl:stylesheet />
+    </expect>
+  </scenario>
+</description>

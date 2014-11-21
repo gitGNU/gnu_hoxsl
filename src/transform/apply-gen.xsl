@@ -145,6 +145,12 @@
 </template>
 
 
+<!--
+  Generate nullary function for delayed application
+
+  This will output a node that can be later applied to a template with
+  mode `f:apply' to invoke the associated application template.
+-->
 <function name="fgen:create-func">
   <param name="name-resolv" as="xs:QName" />
   <param name="local-name"  as="xs:string" />
@@ -158,7 +164,12 @@
 
 
 <!--
-  TODO: param count overloading
+  Generate function application template
+
+  This will match on the node associated with the nullary delayed
+  application function and apply the original function.
+
+  FIXME: Support for functions overloaded by arity.
 -->
 <function name="fgen:create-tpl">
   <param name="name-resolv" as="xs:QName" />

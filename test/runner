@@ -19,7 +19,7 @@
 cd "$( dirname "$0" )"
 
 outdir=xspec
-index="$outdir/index.html"
+index="index.html"
 
 htmlindex()
 {
@@ -45,7 +45,9 @@ while read spec; do
   ../tools/xspec/bin/xspec.sh "$spec" \
     || status=1
 
-  result="$( basename "$spec" .xspec )-result.html"
+  spec_path="$( dirname "$spec" )/xspec"
+  result="$spec_path/$( basename "$spec" .xspec )-result.html"
+
   printf '      <li><a href="%s">%s</a></li>' "$result" "$spec" \
     | htmlindex
 done < <( find . -name '*.xspec' )

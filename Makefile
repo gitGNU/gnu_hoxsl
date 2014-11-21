@@ -1,4 +1,4 @@
-## xslink Makefile
+## hoxsl Makefile
 #
 #  Copyright (C) 2014  LoVullo Associates, Inc.
 #
@@ -16,10 +16,21 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
+path_src  := src
 path_test := test
+
+test_in_apply_gen := $(path_test)/transform/apply-gen-test-in.xsl.out
 
 .PHONY: check test
 
 test: check
-check:
+check: $(test_in_apply_gen)
 	$(path_test)/runner
+
+%.xsl.out: %.xsl
+	java -jar "$(SAXON_CP)" \
+	    -xsl:"$(path_src)/transform/apply-gen.xsl" \
+	    "$<" > "$@"
+
+clean:
+	$(RM) "$(test_in_apply_gen)"

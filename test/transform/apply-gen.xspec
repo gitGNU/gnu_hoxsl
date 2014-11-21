@@ -23,7 +23,7 @@
 <description xmlns="http://www.jenitennison.com/xslt/xspec"
              xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
              xmlns:foo="http://www.lovullo.com/_junk"
-             stylesheet="../../src/transform/apply-gen.xsl">
+             stylesheet="apply-gen-test.xsl">
 
   <!-- basic case -->
   <scenario label="given a unary function">
@@ -52,6 +52,49 @@
             context="xsl:stylesheet/xsl:function/*">
       <foo:bar />
     </expect>
+
+
+    <!-- more detailed tests below -->
+    <expect label="generates application template"
+            test="xsl:stylesheet/xsl:template/@match = 'foo:bar'" />
+
+    <expect label="generated template has mode f:apply"
+            test="xsl:stylesheet/xsl:template/@mode = 'f:apply'" />
+  </scenario>
+
+
+  <!-- we'll test the application directly; we won't parse the output,
+       since that is error-prone, fragile, and misses the poin  -->
+  <scenario label="application templates">
+    <scenario label="of N-ary functions">
+      <context>
+        <xsl:stylesheet>
+          <xsl:function name="foo:bar">
+            <xsl:param name="a" />
+            <xsl:param name="b" as="xs:decimal" />
+            <xsl:param name="c" />"
+          </xsl:function>
+        </xsl:stylesheet>
+      </context>
+
+      <expect label="yields N template parameters"
+              test="count( xsl:stylesheet/xsl:template/xsl:param )
+                    = 3" />
+
+      <!-- important for application! -->
+      <expect label="template parameter names are sequential"
+              test="xsl:stylesheet/xsl:template/xsl:param
+                      /@name = concat( 'arg', position() )" />
+
+      <expect label="mirrors params without @as"
+              test="not( xsl:stylesheet/xsl:template
+                      /xsl:param[ 1 ]/@as )" />
+
+      <expect label="mirrors params with @as"
+              test="xsl:stylesheet/xsl:template
+                      /xsl:param[ 2 ]/@as = 'xs:decimal'" />
+    </scenario>
+  </scenario>
 
 
   <!-- if a function is nullary, then it is either a thunk or used for
@@ -99,5 +142,28 @@
             context="xsl:stylesheet">
       <xsl:stylesheet version="2.0" />
     </expect>
+  </scenario>
+
+
+  <!-- This actually tests the generated stylesheet to ensure proper
+       execution.  We test by invoking the application template with
+       the result of the generated nullary.  We expect that the
+       application template will apply the arguments to the proper
+       function and return the result of the expected type.
+
+       You can't see it here (check the imported stylesheet), but
+       `foo:apply-add-two' defines a return type, so we also ensure
+       that such type data are retained.
+
+       Exciting! -->
+  <scenario label="given a generated document">
+    <!-- calling the generated nullary -->
+    <call function="foo:apply-add-two">
+      <param name="x" select="2" />
+      <param name="y" select="3" />
+    </call>
+
+    <expect label="applying template to nullary yields proper result"
+            test="$x:result = 5" />
   </scenario>
 </description>

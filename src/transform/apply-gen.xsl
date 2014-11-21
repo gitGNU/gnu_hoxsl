@@ -127,6 +127,8 @@
 
   <sequence select="fgen:create-func(
                       $name-resolv, $local-name, $ns )" />
+  <sequence select="fgen:create-tpl(
+                      $name-resolv, . )" />
 </template>
 
 
@@ -152,6 +154,42 @@
     <element name="{$local-name}"
              namespace="{$ns}" />
   </out:function>
+</function>
+
+
+<!--
+  TODO: param count overloading
+-->
+<function name="fgen:create-tpl">
+  <param name="name-resolv" as="xs:QName" />
+  <param name="defn"        as="element(xsl:function)" />
+
+  <variable name="params"
+            select="$defn/xsl:param" />
+
+  <out:template mode="f:apply"
+                match="{$name-resolv}">
+    <for-each select="$params">
+      <xsl:variable name="i"
+                    select="position()" />
+
+      <out:param name="arg{$i}">
+        <copy-of select="@as" />
+      </out:param>
+    </for-each>
+
+    <variable name="argstr">
+      <for-each select="$params">
+        <if test="position() gt 1">
+          <text>, </text>
+        </if>
+        <text>$arg</text>
+        <value-of select="position()" />
+      </for-each>
+    </variable>
+
+    <out:sequence select="{$name-resolv}({$argstr})" />
+  </out:template>
 </function>
 
 </stylesheet>

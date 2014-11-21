@@ -180,7 +180,8 @@
             select="$defn/xsl:param" />
 
   <out:template mode="f:apply"
-                match="{$name-resolv}">
+                match="{$name-resolv}"
+                priority="5">
     <namespace name="{$ns-prefix}"
                select="$ns" />
 

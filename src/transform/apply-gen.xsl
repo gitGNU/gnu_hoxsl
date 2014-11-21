@@ -120,6 +120,11 @@
             select="namespace-uri-for-prefix(
                       $ns-prefix, . )" />
 
+  <!-- this ensures that the prefix used is actually defined within
+       our result document and resolves to the proper namespace -->
+  <namespace name="{$ns-prefix}"
+             select="$ns" />
+
   <sequence select="fgen:create-func(
                       $name-resolv, $local-name, $ns )" />
 </template>

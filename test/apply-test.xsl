@@ -22,7 +22,7 @@
 
 <stylesheet version="2.0"
             xmlns="http://www.w3.org/1999/XSL/Transform"
-            xmlns:f="http://www.lovullo.com/xslink/apply"
+            xmlns:f="http://www.lovullo.com/hoxsl/apply"
             xmlns:foo="http://www.lovullo.com/_junk">
 
   <import href="../src/apply.xsl" />

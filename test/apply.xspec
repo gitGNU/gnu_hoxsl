@@ -22,7 +22,7 @@
 
 <description xmlns="http://www.jenitennison.com/xslt/xspec"
              xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-             xmlns:f="http://www.lovullo.com/xslink/apply"
+             xmlns:f="http://www.lovullo.com/hoxsl/apply"
              xmlns:foo="http://www.lovullo.com/_junk"
              stylesheet="apply-test.xsl">
 

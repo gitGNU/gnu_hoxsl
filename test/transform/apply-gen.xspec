@@ -66,12 +66,12 @@
 
       <expect label="produces an empty stylesheet"
               context="xsl:stylesheet">
-        <xsl:stylesheet />
+        <xsl:stylesheet version="2.0" />
       </expect>
     </scenario>
   </scenario>
 
-  
+
   <!-- xsl:transform is an alternative to xsl:stylesheet -->
   <scenario label="given a xsl:template root note">
     <context>
@@ -80,7 +80,7 @@
 
     <expect label="properly outputs stylesheet"
             context="xsl:stylesheet">
-      <xsl:stylesheet />
+      <xsl:stylesheet version="2.0" />
     </expect>
   </scenario>
 </description>

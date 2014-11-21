@@ -45,7 +45,7 @@
 <template match="/xsl:stylesheet|/xsl:transform"
           priority="5">
   <document>
-    <out:stylesheet>
+    <out:stylesheet version="2.0">
       <xsl:apply-templates mode="fgen:create" />
     </out:stylesheet>
   </document>

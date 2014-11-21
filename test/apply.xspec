@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Tests dynamic function application
+
+  Copyright (C) 2014 LoVullo Associates, Inc.
+
+    This file is part of hoxsl.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<description xmlns="http://www.jenitennison.com/xslt/xspec"
+             xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+             xmlns:f="http://www.lovullo.com/xslink/apply"
+             xmlns:foo="http://www.lovullo.com/_junk"
+             stylesheet="apply-test.xsl">
+
+  <scenario label="f:apply">
+    <scenario label="applied to a function reference element">
+      <variable name="arg"
+                select="'foo'" />
+
+      <call function="f:apply">
+        <param name="fnref">
+          <foo:fn1 />
+        </param>
+        <param name="arg1" select="$arg" />
+      </call>
+
+      <!-- our test appliaction template simply echoes back its only
+           argument -->
+      <expect label="applies application template with mode f:apply"
+              test="$x:result = ($arg)" />
+    </scenario>
+
+
+    <scenario label="applying">
+      <scenario label="nullary function">
+        <call function="f:apply">
+          <param name="fnref"><foo:fn0 /></param>
+        </call>
+
+        <expect label="passes each argument"
+                test="$x:result = 0" />
+      </scenario>
+
+
+      <scenario label="unary function">
+        <call function="f:apply">
+          <param name="fnref"><foo:fn1 /></param>
+          <param name="arg1" select="1" />
+        </call>
+
+        <expect label="passes each argument"
+                test="$x:result = '1'" />
+      </scenario>
+
+
+      <scenario label="binary function">
+        <call function="f:apply">
+          <param name="fnref"><foo:fn2 /></param>
+          <param name="arg1" select="1" />
+          <param name="arg2" select="2" />
+        </call>
+
+        <expect label="passes each argument"
+                test="$x:result = '12'" />
+      </scenario>
+
+
+      <scenario label="ternary function">
+        <call function="f:apply">
+          <param name="fnref"><foo:fn3 /></param>
+          <param name="arg1" select="1" />
+          <param name="arg2" select="2" />
+          <param name="arg3" select="3" />
+        </call>
+
+        <expect label="passes each argument"
+                test="$x:result = '123'" />
+      </scenario>
+
+
+      <scenario label="4-ary function">
+        <call function="f:apply">
+          <param name="fnref"><foo:fn4 /></param>
+          <param name="arg1" select="1" />
+          <param name="arg2" select="2" />
+          <param name="arg3" select="3" />
+          <param name="arg4" select="4" />
+        </call>
+
+        <expect label="passes each argument"
+                test="$x:result = '1234'" />
+      </scenario>
+
+
+      <scenario label="5-ary function">
+        <call function="f:apply">
+          <param name="fnref"><foo:fn5 /></param>
+          <param name="arg1" select="1" />
+          <param name="arg2" select="2" />
+          <param name="arg3" select="3" />
+          <param name="arg4" select="4" />
+          <param name="arg5" select="5" />
+        </call>
+
+        <expect label="passes each argument"
+                test="$x:result = '12345'" />
+      </scenario>
+
+
+      <scenario label="6-ary function">
+        <call function="f:apply">
+          <param name="fnref"><foo:fn6 /></param>
+          <param name="arg1" select="1" />
+          <param name="arg2" select="2" />
+          <param name="arg3" select="3" />
+          <param name="arg4" select="4" />
+          <param name="arg5" select="5" />
+          <param name="arg6" select="6" />
+        </call>
+
+        <expect label="passes each argument"
+                test="$x:result = '123456'" />
+      </scenario>
+
+
+      <scenario label="7-ary function">
+        <call function="f:apply">
+          <param name="fnref"><foo:fn7 /></param>
+          <param name="arg1" select="1" />
+          <param name="arg2" select="2" />
+          <param name="arg3" select="3" />
+          <param name="arg4" select="4" />
+          <param name="arg5" select="5" />
+          <param name="arg6" select="6" />
+          <param name="arg7" select="7" />
+        </call>
+
+        <expect label="passes each argument"
+                test="$x:result = '1234567'" />
+      </scenario>
+
+
+      <scenario label="8-ary function">
+        <call function="f:apply">
+          <param name="fnref"><foo:fn8 /></param>
+          <param name="arg1" select="1" />
+          <param name="arg2" select="2" />
+          <param name="arg3" select="3" />
+          <param name="arg4" select="4" />
+          <param name="arg5" select="5" />
+          <param name="arg6" select="6" />
+          <param name="arg7" select="7" />
+          <param name="arg8" select="8" />
+        </call>
+
+        <expect label="passes each argument"
+                test="$x:result = '12345678'" />
+      </scenario>
+    </scenario>
+  </scenario>
+</description>

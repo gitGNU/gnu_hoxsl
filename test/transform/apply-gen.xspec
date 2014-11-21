@@ -52,6 +52,23 @@
             context="xsl:stylesheet/xsl:function/*">
       <foo:bar />
     </expect>
+
+
+  <!-- if a function is nullary, then it is either a thunk or used for
+       its side-effects; we expect the user to take appropriate
+       caution -->
+  <scenario label="given a nullary function">
+    <context>
+      <xsl:stylesheet>
+        <xsl:function name="foo:bar">
+          <foo:thunk />
+        </xsl:function>
+      </xsl:stylesheet>
+    </context>
+
+    <!-- generating one would conflict, of couse -->
+    <expect label="does not generate a function"
+            test="not( xsl:stylesheet/xsl:function )" />
   </scenario>
 
 

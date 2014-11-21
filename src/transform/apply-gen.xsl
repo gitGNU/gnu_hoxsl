@@ -74,11 +74,40 @@
 
 
 <!--
+  Skip nullary functions
+
+  Nullary functions (functions that accept no arguments) are either
+  thunks or are used purely for their side-effects.  We cannot
+  generate a definition for them of the same name, because our
+  definitions are nullary;  instead, we expect the caller to take
+  caution.
+
+  If a thunk, then the function will always return the same value and
+  it does not matter when processing occurs.
+
+  If used for side-effects, then order of processing may matter, but
+  this is a dangerous assumption in itself, since some implementations
+  may not evaluate the function until its return value is actually used.
+
+  Either way, handle it yourself.
+-->
+<template mode="fgen:create"
+          match="xsl:function[ not( xsl:param ) ]"
+          priority="5">
+  <comment>
+    <text>No definition generated for nullary function `</text>
+    <value-of select="@name" />
+    <text>'</text>
+  </comment>
+</template>
+
+
+<!--
   Process function definition
 -->
 <template mode="fgen:create"
-          match="xsl:function"
-          priority="5">
+          match="xsl:function[ xsl:param ]"
+          priority="4">
   <!-- we need to take care with namespacing; let's remove context
        dependencies and simply specify the full namespace URI -->
   <variable name="name-resolv"

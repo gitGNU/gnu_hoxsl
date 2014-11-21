@@ -165,5 +165,17 @@
 
     <expect label="applying template to nullary yields proper result"
             test="$x:result = 5" />
+
+
+    <!-- ensure that multiple functions are processed -->
+    <scenario label="with multiple functions">
+      <call function="foo:apply-sub-two">
+        <param name="x" select="2" />
+        <param name="y" select="3" />
+      </call>
+
+      <expect label="applying template to nullary yields proper result"
+              test="$x:result = -1" />
+    </scenario>
   </scenario>
 </description>

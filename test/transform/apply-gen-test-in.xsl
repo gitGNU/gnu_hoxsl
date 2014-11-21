@@ -32,5 +32,13 @@
 
     <sequence select="$x + $y" />
   </function>
-</stylesheet>
 
+
+  <!-- make sure multiple functions are properly handled -->
+  <function name="foo:sub-two" as="xs:decimal">
+    <param name="x" as="xs:decimal" />
+    <param name="y" as="xs:decimal" />
+
+    <sequence select="$x - $y" />
+  </function>
+</stylesheet>

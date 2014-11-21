@@ -41,8 +41,20 @@
   <function name="foo:apply-add-two">
     <param name="x" as="xs:decimal" />
     <param name="y" as="xs:decimal" />
-    
+
     <apply-templates select="foo:add-two()"
+                     mode="f:apply">
+      <with-param name="arg1" select="$x" />
+      <with-param name="arg2" select="$y" />
+    </apply-templates>
+  </function>
+
+
+  <function name="foo:apply-sub-two">
+    <param name="x" as="xs:decimal" />
+    <param name="y" as="xs:decimal" />
+
+    <apply-templates select="foo:sub-two()"
                      mode="f:apply">
       <with-param name="arg1" select="$x" />
       <with-param name="arg2" select="$y" />

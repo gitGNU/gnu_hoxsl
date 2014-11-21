@@ -120,15 +120,10 @@
             select="namespace-uri-for-prefix(
                       $ns-prefix, . )" />
 
-  <!-- this ensures that the prefix used is actually defined within
-       our result document and resolves to the proper namespace -->
-  <namespace name="{$ns-prefix}"
-             select="$ns" />
-
   <sequence select="fgen:create-func(
-                      $name-resolv, $local-name, $ns )" />
+                      $name-resolv, $local-name, $ns-prefix, $ns )" />
   <sequence select="fgen:create-tpl(
-                      $name-resolv, . )" />
+                      $name-resolv, ., $ns-prefix, $ns )" />
 </template>
 
 
@@ -154,9 +149,13 @@
 <function name="fgen:create-func">
   <param name="name-resolv" as="xs:QName" />
   <param name="local-name"  as="xs:string" />
+  <param name="ns-prefix"   as="xs:string" />
   <param name="ns"          as="xs:anyURI" />
 
   <out:function name="{$name-resolv}" as="element()">
+    <namespace name="{$ns-prefix}"
+               select="$ns" />
+
     <element name="{$local-name}"
              namespace="{$ns}" />
   </out:function>
@@ -174,12 +173,17 @@
 <function name="fgen:create-tpl">
   <param name="name-resolv" as="xs:QName" />
   <param name="defn"        as="element(xsl:function)" />
+  <param name="ns-prefix"   as="xs:string" />
+  <param name="ns"          as="xs:anyURI" />
 
   <variable name="params"
             select="$defn/xsl:param" />
 
   <out:template mode="f:apply"
                 match="{$name-resolv}">
+    <namespace name="{$ns-prefix}"
+               select="$ns" />
+
     <for-each select="$params">
       <xsl:variable name="i"
                     select="position()" />

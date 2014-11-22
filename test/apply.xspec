@@ -172,4 +172,41 @@
       </scenario>
     </scenario>
   </scenario>
+
+
+  <scenario label="f:arity">
+    <scenario label="given a proper function reference">
+      <variable name="test-arity"
+                select="5" />
+
+      <!-- test our format directly; do not rely on the
+           apply-gen code -->
+      <variable name="fnref">
+        <foo:bar arity="{$test-arity}" />
+      </variable>
+
+      <call function="f:arity">
+        <param name="fnref"
+               select="$fnref" />
+      </call>
+
+      <expect label="provides function arity"
+              test="$x:result = $test-arity" />
+    </scenario>
+
+
+    <scenario label="given a function reference with no defined arity">
+      <variable name="fnref">
+        <foo:bar />
+      </variable>
+
+      <call function="f:arity">
+        <param name="fnref"
+               select="$fnref" />
+      </call>
+
+      <expect label="returns -1"
+              test="$x:result = -1" />
+    </scenario>
+  </scenario>
 </description>

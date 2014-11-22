@@ -193,4 +193,20 @@
   </message>
 </template>
 
+
+<!--
+  Attempt to retrieve arity of delayed function
+
+  The input must be a function reference.  If the arity cannot be
+  determined, -1 is returned.
+-->
+<function name="f:arity" as="xs:decimal">
+  <param name="fnref" as="element()" />
+
+  <sequence select="if ( $fnref/@arity ) then
+                      $fnref/@arity
+                    else
+                      -1" />
+</function>
+
 </stylesheet>

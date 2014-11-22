@@ -30,6 +30,8 @@
   <!-- SUT -->
   <import href="../../src/transform/apply-gen.xsl" />
 
+  <import href="../../src/apply.xsl" />
+
   <!-- input stylesheet -->
   <import href="apply-gen-test-in.xsl" />
 

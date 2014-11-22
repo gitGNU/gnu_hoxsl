@@ -112,8 +112,6 @@
        dependencies and simply specify the full namespace URI -->
   <variable name="name-resolv"
             select="resolve-QName( @name, . )" />
-  <variable name="local-name"
-            select="substring-after( @name, ':' )" />
   <variable name="ns-prefix"
             select="substring-before( @name, ':' )" />
   <variable name="ns"
@@ -121,7 +119,7 @@
                       $ns-prefix, . )" />
 
   <sequence select="fgen:create-func(
-                      $name-resolv, $local-name, $ns-prefix, $ns )" />
+                      ., $name-resolv, $ns-prefix, $ns )" />
   <sequence select="fgen:create-tpl(
                       $name-resolv, ., $ns-prefix, $ns )" />
 </template>
@@ -147,17 +145,23 @@
   mode `f:apply' to invoke the associated application template.
 -->
 <function name="fgen:create-func">
+  <param name="fnref"       as="element(xsl:function)" />
   <param name="name-resolv" as="xs:QName" />
-  <param name="local-name"  as="xs:string" />
   <param name="ns-prefix"   as="xs:string" />
   <param name="ns"          as="xs:anyURI" />
+
+  <variable name="local-name"
+            select="substring-after( $fnref/@name, ':' )" />
 
   <out:function name="{$name-resolv}" as="element()">
     <namespace name="{$ns-prefix}"
                select="$ns" />
 
     <element name="{$local-name}"
-             namespace="{$ns}" />
+             namespace="{$ns}">
+      <attribute name="arity"
+                 select="count( $fnref/xsl:param )" />
+    </element>
   </out:function>
 </function>
 

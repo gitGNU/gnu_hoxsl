@@ -22,6 +22,7 @@
 
 <description xmlns="http://www.jenitennison.com/xslt/xspec"
              xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+             xmlns:f="http://www.lovullo.com/hoxsl/apply"
              xmlns:foo="http://www.lovullo.com/_junk"
              stylesheet="apply-gen-test.xsl">
 
@@ -49,9 +50,7 @@
     <!-- the generated node is simply the same name and namespace as
          the function -->
     <expect label="generated function produces function node"
-            context="xsl:stylesheet/xsl:function/*">
-      <foo:bar />
-    </expect>
+            test="exists( xsl:stylesheet/xsl:function/foo:bar )" />
 
 
     <!-- more detailed tests below -->
@@ -157,14 +156,16 @@
 
        Exciting! -->
   <scenario label="given a generated document">
-    <!-- calling the generated nullary -->
-    <call function="foo:apply-add-two">
-      <param name="x" select="2" />
-      <param name="y" select="3" />
-    </call>
+    <scenario label="with a processed function">
+      <!-- calling the generated nullary -->
+      <call function="foo:apply-add-two">
+        <param name="x" select="2" />
+        <param name="y" select="3" />
+      </call>
 
-    <expect label="applying template to nullary yields proper result"
-            test="$x:result = 5" />
+      <expect label="applying template to nullary yields proper result"
+              test="$x:result = 5" />
+    </scenario>
 
 
     <!-- ensure that multiple functions are processed -->
@@ -176,6 +177,18 @@
 
       <expect label="applying template to nullary yields proper result"
               test="$x:result = -1" />
+    </scenario>
+
+
+    <!-- note that this _does not_ test f:arity itself: it is intended
+         to test that the arity datum is properly generated -->
+    <scenario label="f:arity">
+      <call function="f:arity">
+        <param name="fnref" select="foo:sub-two()" />
+      </call>"
+
+      <expect label="is able to determine arity"
+              test="$x:result = 2" />
     </scenario>
   </scenario>
 </description>

@@ -49,13 +49,15 @@
 
     <!-- the generated node is simply the same name and namespace as
          the function -->
-    <expect label="generated function produces function node"
-            test="exists( xsl:stylesheet/xsl:function/foo:bar )" />
+    <expect label="generated function produces function reference
+                   node"
+            test="exists( xsl:stylesheet/xsl:function/f:ref/foo:bar )" />
 
 
     <!-- more detailed tests below -->
     <expect label="generates application template"
-            test="xsl:stylesheet/xsl:template/@match = 'foo:bar'" />
+            test="xsl:stylesheet/xsl:template/@match
+                    = 'f:ref[ foo:bar ]'" />
 
     <expect label="generated template has mode f:apply"
             test="xsl:stylesheet/xsl:template/@mode = 'f:apply'" />

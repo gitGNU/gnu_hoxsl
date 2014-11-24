@@ -157,11 +157,15 @@
     <namespace name="{$ns-prefix}"
                select="$ns" />
 
-    <element name="{$local-name}"
-             namespace="{$ns}">
+    <f:ref>
       <attribute name="arity"
                  select="count( $fnref/xsl:param )" />
-    </element>
+
+      <!-- represents the function being referenced -->
+      <element name="{$local-name}"
+               namespace="{$ns}">
+      </element>
+    </f:ref>
   </out:function>
 </function>
 
@@ -184,7 +188,7 @@
             select="$defn/xsl:param" />
 
   <out:template mode="f:apply"
-                match="{$name-resolv}"
+                match="f:ref[ {$name-resolv} ]"
                 priority="5">
     <namespace name="{$ns-prefix}"
                select="$ns" />

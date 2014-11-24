@@ -28,20 +28,20 @@
   <import href="../src/apply.xsl" />
 
 
-  <template mode="f:apply" match="foo:fn0">
+  <template mode="f:apply" match="f:ref[ foo:fn0 ]">
     <!-- return something to show that we were called properly -->
     <sequence select="0" />
   </template>
 
 
-  <template mode="f:apply" match="foo:fn1">
+  <template mode="f:apply" match="f:ref[ foo:fn1 ]">
     <param name="arg1" />
 
     <sequence select="string($arg1)" />
   </template>
 
 
-  <template mode="f:apply" match="foo:fn2">
+  <template mode="f:apply" match="f:ref[ foo:fn2 ]">
     <param name="arg1" />
     <param name="arg2" />
 
@@ -49,7 +49,7 @@
   </template>
 
 
-  <template mode="f:apply" match="foo:fn3">
+  <template mode="f:apply" match="f:ref[ foo:fn3 ]">
     <param name="arg1" />
     <param name="arg2" />
     <param name="arg3" />
@@ -58,7 +58,7 @@
   </template>
 
 
-  <template mode="f:apply" match="foo:fn4">
+  <template mode="f:apply" match="f:ref[ foo:fn4 ]">
     <param name="arg1" />
     <param name="arg2" />
     <param name="arg3" />
@@ -68,7 +68,7 @@
   </template>
 
 
-  <template mode="f:apply" match="foo:fn5">
+  <template mode="f:apply" match="f:ref[ foo:fn5 ]">
     <param name="arg1" />
     <param name="arg2" />
     <param name="arg3" />
@@ -80,7 +80,7 @@
   </template>
 
 
-  <template mode="f:apply" match="foo:fn6">
+  <template mode="f:apply" match="f:ref[ foo:fn6 ]">
     <param name="arg1" />
     <param name="arg2" />
     <param name="arg3" />
@@ -93,7 +93,7 @@
   </template>
 
 
-  <template mode="f:apply" match="foo:fn7">
+  <template mode="f:apply" match="f:ref[ foo:fn7 ]">
     <param name="arg1" />
     <param name="arg2" />
     <param name="arg3" />
@@ -107,7 +107,7 @@
   </template>
 
 
-  <template mode="f:apply" match="foo:fn8">
+  <template mode="f:apply" match="f:ref[ foo:fn8 ]">
     <param name="arg1" />
     <param name="arg2" />
     <param name="arg3" />

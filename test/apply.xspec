@@ -33,7 +33,9 @@
 
       <call function="f:apply">
         <param name="fnref">
-          <foo:fn1 />
+          <f:ref>
+            <foo:fn1 />
+          </f:ref>
         </param>
         <param name="arg1" select="$arg" />
       </call>
@@ -48,7 +50,9 @@
     <scenario label="applying">
       <scenario label="nullary function">
         <call function="f:apply">
-          <param name="fnref"><foo:fn0 /></param>
+          <param name="fnref">
+            <f:ref><foo:fn0 /></f:ref>
+          </param>
         </call>
 
         <expect label="passes each argument"
@@ -58,7 +62,9 @@
 
       <scenario label="unary function">
         <call function="f:apply">
-          <param name="fnref"><foo:fn1 /></param>
+          <param name="fnref">
+            <f:ref><foo:fn1 /></f:ref>
+          </param>
           <param name="arg1" select="1" />
         </call>
 
@@ -69,7 +75,9 @@
 
       <scenario label="binary function">
         <call function="f:apply">
-          <param name="fnref"><foo:fn2 /></param>
+          <param name="fnref">
+            <f:ref><foo:fn2 /></f:ref>
+          </param>
           <param name="arg1" select="1" />
           <param name="arg2" select="2" />
         </call>
@@ -81,7 +89,9 @@
 
       <scenario label="ternary function">
         <call function="f:apply">
-          <param name="fnref"><foo:fn3 /></param>
+          <param name="fnref">
+            <f:ref><foo:fn3 /></f:ref>
+          </param>
           <param name="arg1" select="1" />
           <param name="arg2" select="2" />
           <param name="arg3" select="3" />
@@ -94,7 +104,9 @@
 
       <scenario label="4-ary function">
         <call function="f:apply">
-          <param name="fnref"><foo:fn4 /></param>
+          <param name="fnref">
+            <f:ref><foo:fn4 /></f:ref>
+          </param>
           <param name="arg1" select="1" />
           <param name="arg2" select="2" />
           <param name="arg3" select="3" />
@@ -108,7 +120,9 @@
 
       <scenario label="5-ary function">
         <call function="f:apply">
-          <param name="fnref"><foo:fn5 /></param>
+          <param name="fnref">
+            <f:ref><foo:fn5 /></f:ref>
+          </param>
           <param name="arg1" select="1" />
           <param name="arg2" select="2" />
           <param name="arg3" select="3" />
@@ -123,7 +137,9 @@
 
       <scenario label="6-ary function">
         <call function="f:apply">
-          <param name="fnref"><foo:fn6 /></param>
+          <param name="fnref">
+            <f:ref><foo:fn6 /></f:ref>
+          </param>
           <param name="arg1" select="1" />
           <param name="arg2" select="2" />
           <param name="arg3" select="3" />
@@ -139,7 +155,9 @@
 
       <scenario label="7-ary function">
         <call function="f:apply">
-          <param name="fnref"><foo:fn7 /></param>
+          <param name="fnref">
+            <f:ref><foo:fn7 /></f:ref>
+          </param>
           <param name="arg1" select="1" />
           <param name="arg2" select="2" />
           <param name="arg3" select="3" />
@@ -156,7 +174,9 @@
 
       <scenario label="8-ary function">
         <call function="f:apply">
-          <param name="fnref"><foo:fn8 /></param>
+          <param name="fnref">
+            <f:ref><foo:fn8 /></f:ref>
+          </param>
           <param name="arg1" select="1" />
           <param name="arg2" select="2" />
           <param name="arg3" select="3" />
@@ -182,7 +202,9 @@
       <!-- test our format directly; do not rely on the
            apply-gen code -->
       <variable name="fnref">
-        <foo:bar arity="{$test-arity}" />
+        <f:ref arity="{$test-arity}">
+          <foo:bar />
+        </f:ref>
       </variable>
 
       <call function="f:arity">
@@ -197,7 +219,7 @@
 
     <scenario label="given a function reference with no defined arity">
       <variable name="fnref">
-        <foo:bar />
+        <f:ref><foo:bar /></f:ref>
       </variable>
 
       <call function="f:arity">

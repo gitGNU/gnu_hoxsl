@@ -32,14 +32,14 @@
 
 
 <function name="f:apply">
-  <param name="fnref" as="element()" />
+  <param name="fnref" as="element(f:ref)" />
 
   <apply-templates select="$fnref" mode="f:apply" />
 </function>
 
 
 <function name="f:apply">
-  <param name="fnref" as="element()" />
+  <param name="fnref" as="element(f:ref)" />
   <param name="arg1" />
 
   <apply-templates select="$fnref" mode="f:apply">
@@ -49,7 +49,7 @@
 
 
 <function name="f:apply">
-  <param name="fnref" as="element()" />
+  <param name="fnref" as="element(f:ref)" />
   <param name="arg1" />
   <param name="arg2" />
 
@@ -61,7 +61,7 @@
 
 
 <function name="f:apply">
-  <param name="fnref" as="element()" />
+  <param name="fnref" as="element(f:ref)" />
   <param name="arg1" />
   <param name="arg2" />
   <param name="arg3" />
@@ -75,7 +75,7 @@
 
 
 <function name="f:apply">
-  <param name="fnref" as="element()" />
+  <param name="fnref" as="element(f:ref)" />
   <param name="arg1" />
   <param name="arg2" />
   <param name="arg3" />
@@ -91,7 +91,7 @@
 
 
 <function name="f:apply">
-  <param name="fnref" as="element()" />
+  <param name="fnref" as="element(f:ref)" />
   <param name="arg1" />
   <param name="arg2" />
   <param name="arg3" />
@@ -109,7 +109,7 @@
 
 
 <function name="f:apply">
-  <param name="fnref" as="element()" />
+  <param name="fnref" as="element(f:ref)" />
   <param name="arg1" />
   <param name="arg2" />
   <param name="arg3" />
@@ -129,7 +129,7 @@
 
 
 <function name="f:apply">
-  <param name="fnref" as="element()" />
+  <param name="fnref" as="element(f:ref)" />
   <param name="arg1" />
   <param name="arg2" />
   <param name="arg3" />
@@ -151,7 +151,7 @@
 
 
 <function name="f:apply">
-  <param name="fnref" as="element()" />
+  <param name="fnref" as="element(f:ref)" />
   <param name="arg1" />
   <param name="arg2" />
   <param name="arg3" />
@@ -201,7 +201,7 @@
   determined, -1 is returned.
 -->
 <function name="f:arity" as="xs:decimal">
-  <param name="fnref" as="element()" />
+  <param name="fnref" as="element(f:ref)" />
 
   <sequence select="if ( $fnref/@arity ) then
                       $fnref/@arity

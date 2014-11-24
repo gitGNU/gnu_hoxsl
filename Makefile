@@ -19,7 +19,7 @@
 path_src  := src
 path_test := test
 
-test_in_apply_gen := $(path_test)/transform/apply-gen-test-in.xsl.out
+test_in_apply_gen := $(path_test)/transform/apply-gen-test-in.xsl.apply
 
 .PHONY: check test
 
@@ -27,7 +27,7 @@ test: check
 check: $(test_in_apply_gen)
 	$(path_test)/runner
 
-%.xsl.out: %.xsl
+%.apply: %
 	java -jar "$(SAXON_CP)" \
 	    -xsl:"$(path_src)/transform/apply-gen.xsl" \
 	    "$<" > "$@"

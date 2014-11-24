@@ -37,7 +37,7 @@
 
   <!-- N.B. it is expected tha a build process has already built this
        document before running this test -->
-  <import href="apply-gen-test-in.xsl.out" />
+  <import href="apply-gen-test-in.xsl.apply" />
 
 
   <function name="foo:apply-add-two">

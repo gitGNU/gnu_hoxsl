@@ -39,20 +39,32 @@
   the dynamic function calls will handle currying/partial application
   for you, which has a much more inviting syntax.
 
-  TODO: Accept partial application as FNREF.
+  Partially applied functions may continue to be partially applied
+  until their parameters are exhausted.  This can be used to implement
+  currying.
 -->
 <function name="f:partial">
-  <param name="fnref" as="element(f:ref)" />
+  <param name="fnref" as="item()+" />
   <param name="args"  as="item()*" />
 
+  <!-- perform type check here, not above, since we can be passed a
+       sequence (e.g.a  partially applied function) -->
+  <variable name="ref"
+            as="element(f:ref)"
+            select="$fnref[ 1 ]" />
+
   <f:ref>
-    <sequence select="$fnref/@*" />
+    <sequence select="$ref/@*" />
 
     <attribute name="partial"
                select="count( $args )" />
 
-    <sequence select="$fnref/*" />
+    <sequence select="$ref/*" />
   </f:ref>
+
+  <!-- include any previously applied arguments (if we're partially
+       applying a partial application) -->
+  <sequence select="remove( $fnref, 1 )" />
 
   <!-- nested sequences are implicitly flattened, so we're not
        returning a sub-sequence here -->

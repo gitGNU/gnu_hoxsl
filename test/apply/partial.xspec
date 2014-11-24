@@ -94,6 +94,27 @@
       <expect label="returns all arguments"
               test="count( $x:result ) = 4" />
     </scenario>
+
+
+    <!-- partial applications should behave as their own functions -->
+    <scenario label="partially applying partial application">
+      <call function="f:partial">
+        <param name="fnref" select="f:partial( $fnref, (1, 2) )" />
+        <param name="args"  select="3" />
+      </call>
+
+      <expect label="returns FNREF as first item in sequence"
+              test="$x:result[ 1 ] = $fnref" />
+
+      <expect label="returns arguments from both partial applications"
+              test="count( $x:result ) = 4" />
+
+      <expect label="arguments are ordered with previous applications
+                     first in sequence"
+              test="$x:result[ 2 ] = 1
+                    and $x:result[ 3 ] = 2
+                    and $x:result[ 4 ] = 3" />
+    </scenario>
   </scenario>
 
 

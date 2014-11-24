@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Tests partial function application
+
+  Copyright (C) 2014 LoVullo Associates, Inc.
+
+    This file is part of hoxsl.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<description xmlns="http://www.jenitennison.com/xslt/xspec"
+             xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+             xmlns:x="http://www.jenitennison.com/xslt/xspec"
+             xmlns:f="http://www.lovullo.com/hoxsl/apply"
+             xmlns:foo="http://www.lovullo.com/_junk"
+             stylesheet="partial-test.xsl">
+
+  <scenario label="f:partial">
+    <variable name="fnref"
+              select="foo:ternary()" />
+
+    <variable name="args">
+      <foo:parent>
+        <foo:a />
+        <foo:b />
+        <foo:c />
+      </foo:parent>
+    </variable>
+
+
+    <scenario label="given an empty argument list">
+      <call function="f:partial">
+        <param name="fnref" select="$fnref" />
+        <param name="args"  select="()" />
+      </call>
+
+      <expect label="returns FNREF"
+              test="$x:result[ 1 ] = $fnref" />
+
+      <expect label="indicates that 0 arguments were partially applied"
+              test="$x:result/@partial = 0" />
+
+      <expect label="returns nothing else"
+              test="count( $x:result ) = 1" />
+    </scenario>
+
+
+    <scenario label="given arguments fewer than function param count">
+      <call function="f:partial">
+        <param name="fnref" select="$fnref" />
+        <param name="args"  select="$args/foo:a, $args/foo:b" />
+      </call>
+
+      <expect label="returns FNREF as first item in sequence"
+              test="$x:result[ 1 ] = $fnref" />
+
+      <expect label="indicates that N arguments were partially applied"
+              test="$x:result/@partial = 2" />
+
+      <expect label="returns each argument, ordered"
+              test="$x:result[ 2 ] = $args/foo:a
+                    and exists(
+                      $x:result[ 2 ]/parent::foo:parent )
+                    and $x:result[ 3 ] = $args/foo:b
+                    and exists(
+                      $x:result[ 3 ]/parent::foo:parent )" />
+    </scenario>
+
+
+    <scenario label="given arguments for all function params">
+      <call function="f:partial">
+        <param name="fnref" select="$fnref" />
+        <param name="args"  select="1, 2, 3" />
+      </call>
+
+      <expect label="returns FNREF as first item in sequence"
+              test="$x:result[ 1 ] = $fnref" />
+
+      <!-- we checked previously for argument values; we assume here
+           that it is working in this case...hopefully that is not
+           wrong! -->
+      <expect label="returns all arguments"
+              test="count( $x:result ) = 4" />
+    </scenario>
+  </scenario>
+
+
+  <scenario label="f:is-partial">
+    <scenario label="given a non-none">
+      <call function="f:is-partial">
+        <param name="fnref"
+               select="5" />
+      </call>
+
+      <expect label="returns false()"
+              test="$x:result = false()" />
+    </scenario>
+
+
+    <scenario label="given a non-fref node">
+      <call function="f:is-partial">
+        <param name="fnref">
+          <foo:moo />
+        </param>
+      </call>
+
+      <expect label="returns false()"
+              test="$x:result = false()" />
+    </scenario>
+
+
+    <!-- this leaks implementation details :x -->
+    <scenario label="given a non-fref node with spoofed attribute">
+      <call function="f:is-partial">
+        <param name="fnref">
+          <foo:moo partial="5" f:partial="5" />
+        </param>
+      </call>
+
+      <expect label="returns false()"
+              test="$x:result = false()" />
+    </scenario>
+
+
+    <scenario label="given a valid fref, not partially applied">
+      <call function="f:is-partial">
+        <param name="fnref"
+               select="foo:ternary()" />
+      </call>
+
+      <expect label="returns false()"
+              test="$x:result = false()" />
+    </scenario>
+
+
+    <!-- if partially applied with no arguments, then it may as well
+         not be; let's not alter the logic of callers just because it
+         was called with no effect -->
+    <scenario label="given a valid fref, partially applied with zero
+                     arguments">
+      <call function="f:is-partial">
+        <param name="fnref"
+               select="f:partial( foo:ternary(), () )" />
+      </call>
+
+      <expect label="returns false()"
+              test="$x:result = false()" />
+    </scenario>
+
+
+    <scenario label="given a valid fref, partially applied with N>0
+                     arguments, including argument sequence">
+      <call function="f:is-partial">
+        <param name="fnref"
+               select="f:partial( foo:ternary(), (1, 2) )" />
+      </call>
+
+      <expect label="returns true()"
+              test="$x:result = true()" />
+    </scenario>
+
+
+    <!-- caller may extract the function ref from the sequence and
+         assert on that -->
+    <scenario label="given a valid fref, partially applied with N>0
+                     arguments, without argument sequence">
+      <call function="f:is-partial">
+        <param name="fnref"
+               select="f:partial( foo:ternary(), (1, 2) )[ 1 ]" />
+      </call>
+
+      <expect label="returns true()"
+              test="$x:result = true()" />
+    </scenario>
+
+
+    <!-- we still want to consider all arguments to be a partial
+         application (consider it as producing a nullary
+         function)—otherwise, the abstraction is broken -->
+    <scenario label="given arguments for each parameter">
+      <call function="f:is-partial">
+        <param name="fnref"
+               select="f:partial( foo:ternary(), (1, 2, 3) )" />
+      </call>
+
+      <expect label="returns true()"
+              test="$x:result = true()" />
+    </scenario>
+  </scenario>
+</description>

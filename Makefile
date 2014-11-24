@@ -19,12 +19,13 @@
 path_src  := src
 path_test := test
 
-test_in_apply_gen := $(path_test)/transform/apply-gen-test-in.xsl.apply
+test_apply := $(path_test)/apply/partial-test.xsl.apply \
+              $(path_test)/transform/apply-gen-test-in.xsl.apply
 
 .PHONY: check test
 
 test: check
-check: $(test_in_apply_gen)
+check:  $(test_apply)
 	$(path_test)/runner
 
 %.apply: %

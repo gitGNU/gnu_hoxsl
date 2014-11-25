@@ -27,19 +27,20 @@
              xmlns:foo="http://www.lovullo.com/_junk"
              stylesheet="partial-test.xsl">
 
-  <scenario label="f:partial">
-    <variable name="fnref"
-              select="foo:ternary()" />
+  <variable name="fnref"
+            select="foo:ternary()" />
 
-    <variable name="args">
-      <foo:parent>
-        <foo:a />
-        <foo:b />
-        <foo:c />
-      </foo:parent>
-    </variable>
+  <variable name="args">
+    <foo:parent>
+      <foo:a />
+      <foo:b />
+      <foo:c />
+      <foo:d />
+    </foo:parent>
+  </variable>
 
 
+  <scenario label="f:partial constructor">
     <scenario label="given an empty argument list">
       <call function="f:partial">
         <param name="fnref" select="$fnref" />
@@ -70,12 +71,8 @@
               test="$x:result/@partial = 2" />
 
       <expect label="returns each argument, ordered"
-              test="$x:result[ 2 ] = $args/foo:a
-                    and exists(
-                      $x:result[ 2 ]/parent::foo:parent )
-                    and $x:result[ 3 ] = $args/foo:b
-                    and exists(
-                      $x:result[ 3 ]/parent::foo:parent )" />
+              test="$x:result[ 2 ] is $args/foo:a
+                    and $x:result[ 3 ] is $args/foo:b" />
     </scenario>
 
 
@@ -118,7 +115,7 @@
   </scenario>
 
 
-  <scenario label="f:is-partial">
+  <scenario label="f:is-partial predicate">
     <scenario label="given a non-none">
       <call function="f:is-partial">
         <param name="fnref"
@@ -218,6 +215,56 @@
 
       <expect label="returns true()"
               test="$x:result = true()" />
+    </scenario>
+  </scenario>
+
+
+  <scenario label="f:partial-arity-error-hook mode">
+    <scenario label="given more arguments than target function
+                     parameters">
+      <!-- see partial-test.xsl for the result sequence order -->
+      <call function="f:partial">
+        <param name="fnref" select="$fnref" />
+        <param name="args"  select="$args/foo:a,
+                                    $args/foo:b,
+                                    $args/foo:c,
+                                    $args/foo:d" />
+      </call>
+
+      <expect label="produces an error"
+              test="$x:result[ 1 ] instance of
+                      element( foo:partial-error )" />
+
+      <expect label="provides source dynamic function reference"
+              test="$x:result[ 2 ] is $fnref" />
+
+      <expect label="provides arity of target (root of all partial
+                     applications) function"
+              test="$x:result[ 1 ]/@arity = 3" />
+
+      <expect label="provides each argument of partial application
+                     attempt, including excess"
+              test="$x:result[ 3 ] is $args/foo:a
+                    and $x:result[ 4 ] is $args/foo:b
+                    and $x:result[ 5 ] is $args/foo:c
+                    and $x:result[ 6 ] is $args/foo:d" />
+    </scenario>
+
+
+    <scenario label="triggered when sum of partial applications yields
+                     more arguments than target parameters">
+      <call function="f:partial">
+        <param name="fnref"
+               select="f:partial( $fnref, ($args/foo:a,
+                                           $args/foo:b) )" />
+        <param name="args"  select="$args/foo:c,
+                                    $args/foo:d" />
+      </call>
+
+      <expect label="produces error with all arguments"
+              test="exists( foo:partial-error )
+                    and $x:result[ 3 ] is $args/foo:a
+                    and $x:result[ 6 ] is $args/foo:d" />
     </scenario>
   </scenario>
 </description>

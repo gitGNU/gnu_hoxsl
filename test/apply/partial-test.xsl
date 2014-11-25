@@ -33,6 +33,21 @@
   <import href="partial-test.xsl.apply" />
 
 
+  <!-- the default implementation is to raise an error, which can't be
+       tested without XSLT 3.0 support -->
+  <template mode="f:partial-arity-error-hook"
+            match="f:ref"
+            priority="5">
+    <param name="args" as="item()*" />
+    <param name="arity" as="xs:decimal" />
+
+    <foo:partial-error arity="{$arity}" />
+
+    <sequence select="." />
+    <sequence select="$args" />
+  </template>
+
+
   <function name="foo:ternary">
     <param name="x" />
     <param name="y" />

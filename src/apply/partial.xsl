@@ -28,6 +28,8 @@
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:f="http://www.lovullo.com/hoxsl/apply">
 
+<import href="arity.xsl" />
+
 
 <!--
   Partially apply dynamic function reference FNREF
@@ -43,7 +45,7 @@
   until their parameters are exhausted.  This can be used to implement
   currying.
 -->
-<function name="f:partial">
+<function name="f:partial" as="item()+">
   <param name="fnref" as="item()+" />
   <param name="args"  as="item()*" />
 
@@ -53,22 +55,45 @@
             as="element(f:ref)"
             select="$fnref[ 1 ]" />
 
-  <f:ref>
-    <sequence select="$ref/@*" />
+  <variable name="argout" as="item()*">
+    <!-- include any previously applied arguments (if we're partially
+         applying a partial application) -->
+    <sequence select="remove( $fnref, 1 )" />
 
-    <attribute name="partial"
-               select="count( $args )" />
+    <!-- nested sequences are implicitly flattened, so we're not
+         returning a sub-sequence here -->
+    <sequence select="$args" />
+  </variable>
 
-    <sequence select="$ref/*" />
-  </f:ref>
+  <variable name="argn" as="xs:decimal"
+            select="count( $argout )" />
 
-  <!-- include any previously applied arguments (if we're partially
-       applying a partial application) -->
-  <sequence select="remove( $fnref, 1 )" />
+  <variable name="arity" as="xs:decimal"
+            select="f:arity( $ref )" />
 
-  <!-- nested sequences are implicitly flattened, so we're not
-       returning a sub-sequence here -->
-  <sequence select="$args" />
+  <choose>
+    <when test="$argn gt $arity">
+      <apply-templates mode="f:partial-arity-error-hook"
+                       select="$ref">
+        <with-param name="args"  select="$argout" />
+        <with-param name="arity" select="$arity" />
+        <with-param name="argn"  select="$argn" />
+      </apply-templates>
+    </when>
+
+    <otherwise>
+      <f:ref>
+        <sequence select="$ref/@*" />
+
+        <attribute name="partial"
+                   select="count( $args )" />
+
+        <sequence select="$ref/*" />
+      </f:ref>
+
+      <sequence select="$argout" />
+    </otherwise>
+  </choose>
 </function>
 
 
@@ -93,5 +118,43 @@
                     and exists( $fn/@partial )
                     and number( $fn/@partial ) gt 0" />
 </function>
+
+
+<!--
+  Hook invoked when the number of arguments of a partial application
+  exceeds the parameter count of the target function
+
+  The `target' function is the root of the partial application—given
+  @t{Fx @arrow{} F'y @arrow{} F''z}, @t{F} is the target.
+
+  Implementations may override this hook to display their own errors,
+  or even handle the error and continue by returning a proper partial
+  application.  For such implementation details, see
+  @file{apply/partial.xsl}.
+-->
+<template mode="f:partial-arity-error-hook"
+          match="f:ref"
+          priority="1">
+  <param name="args"  as="item()*" />
+  <param name="arity" as="xs:decimal" />
+
+  <variable name="ref" as="element(f:ref)"
+            select="." />
+  <variable name="argn" as="xs:decimal"
+            select="count( $args )" />
+  <variable name="fn"
+            select="$ref/*[1]" />
+  <variable name="fname"
+            select="concat( '{', namespace-uri( $fn ), '}',
+                    $fn/local-name() )" />
+
+  <sequence
+      select="error(
+                QName( namespace-uri-for-prefix( 'f', $ref ),
+                       'err:PARTIAL_PARAM_OVERFLOW' ),
+                concat( 'Attempted partial application of ',
+                        $fname, '#', $arity, ' with ',
+                        $argn, ' arguments' ) )" />
+</template>
 
 </stylesheet>

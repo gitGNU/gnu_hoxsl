@@ -30,6 +30,8 @@
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:f="http://www.lovullo.com/hoxsl/apply">
 
+<import href="apply/arity.xsl" />
+
 
 <function name="f:apply">
   <param name="fnref" as="element(f:ref)" />
@@ -192,21 +194,5 @@
     <copy-of select="." />
   </message>
 </template>
-
-
-<!--
-  Attempt to retrieve arity of delayed function
-
-  The input must be a function reference.  If the arity cannot be
-  determined, -1 is returned.
--->
-<function name="f:arity" as="xs:decimal">
-  <param name="fnref" as="element(f:ref)" />
-
-  <sequence select="if ( $fnref/@arity ) then
-                      $fnref/@arity
-                    else
-                      -1" />
-</function>
 
 </stylesheet>

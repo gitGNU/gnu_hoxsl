@@ -28,13 +28,25 @@
   <import href="../src/apply.xsl" />
 
 
-  <template mode="f:apply" match="f:ref[ foo:fn0 ]">
+  <!-- catch errors (otherwise, we'd terminate) -->
+  <template mode="f:apply"
+            match="*"
+            priority="2">
+    <foo:unknown-dyn-fun />
+  </template>
+
+
+  <template mode="f:apply"
+            match="f:ref[ foo:fn0 ]"
+            priority="5">
     <!-- return something to show that we were called properly -->
     <foo:applied n="0" />
   </template>
 
 
-  <template mode="f:apply" match="f:ref[ foo:fn1 ]">
+  <template mode="f:apply"
+            match="f:ref[ foo:fn1 ]"
+            priority="5">
     <param name="arg1" />
 
     <foo:applied n="1" />
@@ -42,7 +54,9 @@
   </template>
 
 
-  <template mode="f:apply" match="f:ref[ foo:fn2 ]">
+  <template mode="f:apply"
+            match="f:ref[ foo:fn2 ]"
+            priority="5">
     <param name="arg1" />
     <param name="arg2" />
 
@@ -51,7 +65,9 @@
   </template>
 
 
-  <template mode="f:apply" match="f:ref[ foo:fn3 ]">
+  <template mode="f:apply"
+            match="f:ref[ foo:fn3 ]"
+            priority="5">
     <param name="arg1" />
     <param name="arg2" />
     <param name="arg3" />
@@ -61,7 +77,9 @@
   </template>
 
 
-  <template mode="f:apply" match="f:ref[ foo:fn4 ]">
+  <template mode="f:apply"
+            match="f:ref[ foo:fn4 ]"
+            priority="5">
     <param name="arg1" />
     <param name="arg2" />
     <param name="arg3" />
@@ -72,7 +90,9 @@
   </template>
 
 
-  <template mode="f:apply" match="f:ref[ foo:fn5 ]">
+  <template mode="f:apply"
+            match="f:ref[ foo:fn5 ]"
+            priority="5">
     <param name="arg1" />
     <param name="arg2" />
     <param name="arg3" />
@@ -85,7 +105,9 @@
   </template>
 
 
-  <template mode="f:apply" match="f:ref[ foo:fn6 ]">
+  <template mode="f:apply"
+            match="f:ref[ foo:fn6 ]"
+            priority="5">
     <param name="arg1" />
     <param name="arg2" />
     <param name="arg3" />
@@ -99,7 +121,9 @@
   </template>
 
 
-  <template mode="f:apply" match="f:ref[ foo:fn7 ]">
+  <template mode="f:apply"
+            match="f:ref[ foo:fn7 ]"
+            priority="5">
     <param name="arg1" />
     <param name="arg2" />
     <param name="arg3" />
@@ -114,7 +138,9 @@
   </template>
 
 
-  <template mode="f:apply" match="f:ref[ foo:fn8 ]">
+  <template mode="f:apply"
+            match="f:ref[ foo:fn8 ]"
+            priority="5">
     <param name="arg1" />
     <param name="arg2" />
     <param name="arg3" />

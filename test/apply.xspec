@@ -26,6 +26,9 @@
              xmlns:foo="http://www.lovullo.com/_junk"
              stylesheet="apply-test.xsl">
 
+  <variable name="foo-uri"
+            select="namespace-uri-for-prefix( 'foo', $args )" />
+
   <variable name="args">
     <foo:args>
       <foo:arg1 />
@@ -220,6 +223,164 @@
                       and $x:result[ 8 ] is $args/foo:arg7
                       and $x:result[ 9 ] is $args/foo:arg8" />
       </scenario>
+    </scenario>
+  </scenario>
+
+
+  <scenario label="f:make-ref constructor">
+    <scenario label="when called with a function QName and arity">
+      <variable name="qname"
+                select="QName( $foo-uri, 'reftest' )" />
+      <variable name="arity"
+                select="2" />
+
+      <call function="f:make-ref">
+        <param name="name"  select="$qname" />
+        <param name="arity" select="$arity" />
+      </call>
+
+      <expect label="produces a dynamic function reference"
+              test="f:is-ref( $x:result )" />
+
+      <expect label="produces provided reference arity"
+              test="f:arity( $x:result ) = $arity" />
+
+      <expect label="produces reference to expected QName"
+              test="f:QName( $x:result ) = $qname" />
+    </scenario>
+
+
+    <scenario label="produces a valid dynamic function reference">
+      <call function="f:apply">
+        <param name="fnref"
+               select="f:make-ref( QName( $foo-uri, 'fn1' ),
+                                   1 )" />
+        <param name="arg1"
+               select="$args/foo:arg1" />
+      </call>
+
+      <expect label="that can be applied using f:apply"
+              test="$x:result[ 1 ] = foo:applied[ @n = 1 ]
+                    and $x:result[ 2 ] is $args/foo:arg1" />
+    </scenario>
+  </scenario>
+
+
+  <scenario label="f:is-ref predicate">
+    <scenario label="given a valid dynamic function reference">
+      <call function="f:is-ref">
+        <param name="fnref"
+               select="f:make-ref( QName( $foo-uri, 'foo' ), 0 )" />
+      </call>
+
+      <expect label="returns true()"
+              select="true()" />
+    </scenario>
+
+
+    <scenario label="given an invalid dynamic function reference">
+      <call function="f:is-ref">
+        <param name="fnref">
+          <foo:bar />
+        </param>
+      </call>
+
+      <expect label="returns false()"
+              select="false()" />
+    </scenario>
+
+
+    <scenario label="given a dynamic function reference without arity">
+      <call function="f:is-ref">
+        <param name="fnref">
+          <f:ref>
+            <foo:bar />
+          </f:ref>
+        </param>
+      </call>
+
+      <expect label="returns false()"
+              select="false()" />
+    </scenario>
+
+
+    <scenario label="given a dynamic function reference without
+                     integral arity">
+      <call function="f:is-ref">
+        <param name="fnref">
+          <f:ref arity="moo">
+            <foo:bar />
+          </f:ref>
+        </param>
+      </call>
+
+      <expect label="returns false()"
+              select="false()" />
+    </scenario>
+
+
+    <scenario label="given a dynamic function reference without target
+                     node">
+      <call function="f:is-ref">
+        <param name="fnref">
+          <f:ref arity="0" />
+        </param>
+      </call>
+
+      <expect label="returns false()"
+              select="false()" />
+    </scenario>
+
+
+    <scenario label="given an empty sequence">
+      <call function="f:is-ref">
+        <param name="fnref" select="()" />
+      </call>
+
+      <expect label="returns false()"
+              select="false()" />
+    </scenario>
+
+
+    <scenario label="given a non-element">
+      <call function="f:is-ref">
+        <param name="fnref" select="5" />
+      </call>
+
+      <expect label="returns false()"
+              select="false()" />
+    </scenario>
+  </scenario>
+
+
+  <scenario label="f:QName accessor">
+    <scenario label="given a valid dynamic function reference">
+      <variable name="foo-qname"
+                select="QName( $foo-uri, 'foo' )" />
+
+      <call function="f:QName">
+        <param name="fnref"
+               select="f:make-ref( $foo-qname, 0 )" />
+      </call>
+
+      <expect label="returns QName"
+              test="$x:result instance of xs:QName" />
+
+      <expect label="returns QName of target dynamic function"
+              select="$foo-qname" />
+    </scenario>
+
+
+    <scenario label="given a dynamic function reference with no target
+                     node">
+      <call function="f:QName">
+        <param name="fnref">
+          <f:ref arity="5" />
+        </param>
+      </call>
+
+      <expect label="returns empty sequence"
+              select="()" />
     </scenario>
   </scenario>
 </description>

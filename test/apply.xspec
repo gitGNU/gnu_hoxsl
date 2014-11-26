@@ -46,9 +46,8 @@
     <scenario label="applied to complete argument list of">
       <scenario label="nullary function">
         <call function="f:apply">
-          <param name="fnref">
-            <f:ref><foo:fn0 /></f:ref>
-          </param>
+          <param name="fnref"
+                 select="f:make-ref( QName( $foo-uri, 'fn0' ), 0 )" />
         </call>
 
         <!-- technically it applies a template -->
@@ -59,9 +58,8 @@
 
       <scenario label="unary function">
         <call function="f:apply">
-          <param name="fnref">
-            <f:ref><foo:fn1 /></f:ref>
-          </param>
+          <param name="fnref"
+                 select="f:make-ref( QName( $foo-uri, 'fn1' ), 1 )" />
           <param name="arg1" select="$args/foo:arg1" />
         </call>
 
@@ -73,9 +71,8 @@
 
       <scenario label="binary function">
         <call function="f:apply">
-          <param name="fnref">
-            <f:ref><foo:fn2 /></f:ref>
-          </param>
+          <param name="fnref"
+                 select="f:make-ref( QName( $foo-uri, 'fn2' ), 2 )" />
           <param name="arg1" select="$args/foo:arg1" />
           <param name="arg2" select="$args/foo:arg2" />
         </call>
@@ -89,9 +86,8 @@
 
       <scenario label="ternary function">
         <call function="f:apply">
-          <param name="fnref">
-            <f:ref><foo:fn3 /></f:ref>
-          </param>
+          <param name="fnref"
+                 select="f:make-ref( QName( $foo-uri, 'fn3' ), 3 )" />
           <param name="arg1" select="$args/foo:arg1" />
           <param name="arg2" select="$args/foo:arg2" />
           <param name="arg3" select="$args/foo:arg3" />
@@ -107,9 +103,8 @@
 
       <scenario label="4-ary function">
         <call function="f:apply">
-          <param name="fnref">
-            <f:ref><foo:fn4 /></f:ref>
-          </param>
+          <param name="fnref"
+                 select="f:make-ref( QName( $foo-uri, 'fn4' ), 4 )" />
           <param name="arg1" select="$args/foo:arg1" />
           <param name="arg2" select="$args/foo:arg2" />
           <param name="arg3" select="$args/foo:arg3" />
@@ -127,9 +122,8 @@
 
       <scenario label="5-ary function">
         <call function="f:apply">
-          <param name="fnref">
-            <f:ref><foo:fn5 /></f:ref>
-          </param>
+          <param name="fnref"
+                 select="f:make-ref( QName( $foo-uri, 'fn5' ), 5 )" />
           <param name="arg1" select="$args/foo:arg1" />
           <param name="arg2" select="$args/foo:arg2" />
           <param name="arg3" select="$args/foo:arg3" />
@@ -149,9 +143,8 @@
 
       <scenario label="6-ary function">
         <call function="f:apply">
-          <param name="fnref">
-            <f:ref><foo:fn6 /></f:ref>
-          </param>
+          <param name="fnref"
+                 select="f:make-ref( QName( $foo-uri, 'fn6' ), 6 )" />
           <param name="arg1" select="$args/foo:arg1" />
           <param name="arg2" select="$args/foo:arg2" />
           <param name="arg3" select="$args/foo:arg3" />
@@ -173,9 +166,8 @@
 
       <scenario label="7-ary function">
         <call function="f:apply">
-          <param name="fnref">
-            <f:ref><foo:fn7 /></f:ref>
-          </param>
+          <param name="fnref"
+                 select="f:make-ref( QName( $foo-uri, 'fn7' ), 7 )" />
           <param name="arg1" select="$args/foo:arg1" />
           <param name="arg2" select="$args/foo:arg2" />
           <param name="arg3" select="$args/foo:arg3" />
@@ -199,9 +191,8 @@
 
       <scenario label="8-ary function">
         <call function="f:apply">
-          <param name="fnref">
-            <f:ref><foo:fn8 /></f:ref>
-          </param>
+          <param name="fnref"
+                 select="f:make-ref( QName( $foo-uri, 'fn8' ), 8 )" />
           <param name="arg1" select="$args/foo:arg1" />
           <param name="arg2" select="$args/foo:arg2" />
           <param name="arg3" select="$args/foo:arg3" />

@@ -30,14 +30,15 @@
 
   <template mode="f:apply" match="f:ref[ foo:fn0 ]">
     <!-- return something to show that we were called properly -->
-    <sequence select="0" />
+    <foo:applied n="0" />
   </template>
 
 
   <template mode="f:apply" match="f:ref[ foo:fn1 ]">
     <param name="arg1" />
 
-    <sequence select="string($arg1)" />
+    <foo:applied n="1" />
+    <sequence select="$arg1" />
   </template>
 
 
@@ -45,7 +46,8 @@
     <param name="arg1" />
     <param name="arg2" />
 
-    <sequence select="concat($arg1, $arg2)" />
+    <foo:applied n="2" />
+    <sequence select="$arg1, $arg2" />
   </template>
 
 
@@ -54,7 +56,8 @@
     <param name="arg2" />
     <param name="arg3" />
 
-    <sequence select="concat($arg1, $arg2, $arg3)" />
+    <foo:applied n="3" />
+    <sequence select="$arg1, $arg2, $arg3" />
   </template>
 
 
@@ -64,7 +67,8 @@
     <param name="arg3" />
     <param name="arg4" />
 
-    <sequence select="concat($arg1, $arg2, $arg3, $arg4)" />
+    <foo:applied n="4" />
+    <sequence select="$arg1, $arg2, $arg3, $arg4" />
   </template>
 
 
@@ -75,8 +79,9 @@
     <param name="arg4" />
     <param name="arg5" />
 
-    <sequence select="concat($arg1, $arg2, $arg3, $arg4,
-                        $arg5)" />
+    <foo:applied n="5" />
+    <sequence select="$arg1, $arg2, $arg3, $arg4,
+                        $arg5" />
   </template>
 
 
@@ -88,8 +93,9 @@
     <param name="arg5" />
     <param name="arg6" />
 
-    <sequence select="concat($arg1, $arg2, $arg3, $arg4,
-                        $arg5, $arg6)" />
+    <foo:applied n="6" />
+    <sequence select="$arg1, $arg2, $arg3, $arg4,
+                        $arg5, $arg6" />
   </template>
 
 
@@ -102,8 +108,9 @@
     <param name="arg6" />
     <param name="arg7" />
 
-    <sequence select="concat($arg1, $arg2, $arg3, $arg4,
-                        $arg5, $arg6, $arg7)" />
+    <foo:applied n="7" />
+    <sequence select="$arg1, $arg2, $arg3, $arg4,
+                        $arg5, $arg6, $arg7" />
   </template>
 
 
@@ -117,7 +124,8 @@
     <param name="arg7" />
     <param name="arg8" />
 
-    <sequence select="concat($arg1, $arg2, $arg3, $arg4,
-                        $arg5, $arg6, $arg7, $arg8)" />
+    <foo:applied n="8" />
+    <sequence select="$arg1, $arg2, $arg3, $arg4,
+                        $arg5, $arg6, $arg7, $arg8" />
   </template>
 </stylesheet>

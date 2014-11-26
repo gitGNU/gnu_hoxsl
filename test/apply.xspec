@@ -26,28 +26,21 @@
              xmlns:foo="http://www.lovullo.com/_junk"
              stylesheet="apply-test.xsl">
 
+  <variable name="args">
+    <foo:args>
+      <foo:arg1 />
+      <foo:arg2 />
+      <foo:arg3 />
+      <foo:arg4 />
+      <foo:arg5 />
+      <foo:arg6 />
+      <foo:arg7 />
+      <foo:arg8 />
+    </foo:args>
+  </variable>
+
   <scenario label="f:apply">
-    <scenario label="applied to a function reference element">
-      <variable name="arg"
-                select="'foo'" />
-
-      <call function="f:apply">
-        <param name="fnref">
-          <f:ref>
-            <foo:fn1 />
-          </f:ref>
-        </param>
-        <param name="arg1" select="$arg" />
-      </call>
-
-      <!-- our test appliaction template simply echoes back its only
-           argument -->
-      <expect label="applies application template with mode f:apply"
-              test="$x:result = ($arg)" />
-    </scenario>
-
-
-    <scenario label="applying">
+    <scenario label="applied to complete argument list of">
       <scenario label="nullary function">
         <call function="f:apply">
           <param name="fnref">
@@ -55,8 +48,9 @@
           </param>
         </call>
 
-        <expect label="passes each argument"
-                test="$x:result = 0" />
+        <!-- technically it applies a template -->
+        <expect label="applies target function"
+                test="$x:result[ 1 ] = foo:applied[ @n = 0 ]" />"
       </scenario>
 
 
@@ -65,11 +59,12 @@
           <param name="fnref">
             <f:ref><foo:fn1 /></f:ref>
           </param>
-          <param name="arg1" select="1" />
+          <param name="arg1" select="$args/foo:arg1" />
         </call>
 
         <expect label="passes each argument"
-                test="$x:result = '1'" />
+                test="$x:result[ 1 ] = foo:applied[ @n = 1 ]
+                      and $x:result[ 2 ] is $args/foo:arg1" />
       </scenario>
 
 
@@ -78,12 +73,14 @@
           <param name="fnref">
             <f:ref><foo:fn2 /></f:ref>
           </param>
-          <param name="arg1" select="1" />
-          <param name="arg2" select="2" />
+          <param name="arg1" select="$args/foo:arg1" />
+          <param name="arg2" select="$args/foo:arg2" />
         </call>
 
         <expect label="passes each argument"
-                test="$x:result = '12'" />
+                test="$x:result[ 1 ] = foo:applied[ @n = 2 ]
+                      and $x:result[ 2 ] is $args/foo:arg1
+                      and $x:result[ 3 ] is $args/foo:arg2" />
       </scenario>
 
 
@@ -92,13 +89,16 @@
           <param name="fnref">
             <f:ref><foo:fn3 /></f:ref>
           </param>
-          <param name="arg1" select="1" />
-          <param name="arg2" select="2" />
-          <param name="arg3" select="3" />
+          <param name="arg1" select="$args/foo:arg1" />
+          <param name="arg2" select="$args/foo:arg2" />
+          <param name="arg3" select="$args/foo:arg3" />
         </call>
 
         <expect label="passes each argument"
-                test="$x:result = '123'" />
+                test="$x:result[ 1 ] = foo:applied[ @n = 3 ]
+                      and $x:result[ 2 ] is $args/foo:arg1
+                      and $x:result[ 3 ] is $args/foo:arg2
+                      and $x:result[ 4 ] is $args/foo:arg3" />
       </scenario>
 
 
@@ -107,14 +107,18 @@
           <param name="fnref">
             <f:ref><foo:fn4 /></f:ref>
           </param>
-          <param name="arg1" select="1" />
-          <param name="arg2" select="2" />
-          <param name="arg3" select="3" />
-          <param name="arg4" select="4" />
+          <param name="arg1" select="$args/foo:arg1" />
+          <param name="arg2" select="$args/foo:arg2" />
+          <param name="arg3" select="$args/foo:arg3" />
+          <param name="arg4" select="$args/foo:arg4" />
         </call>
 
         <expect label="passes each argument"
-                test="$x:result = '1234'" />
+                test="$x:result[ 1 ] = foo:applied[ @n = 4 ]
+                      and $x:result[ 2 ] is $args/foo:arg1
+                      and $x:result[ 3 ] is $args/foo:arg2
+                      and $x:result[ 4 ] is $args/foo:arg3
+                      and $x:result[ 5 ] is $args/foo:arg4" />
       </scenario>
 
 
@@ -123,15 +127,20 @@
           <param name="fnref">
             <f:ref><foo:fn5 /></f:ref>
           </param>
-          <param name="arg1" select="1" />
-          <param name="arg2" select="2" />
-          <param name="arg3" select="3" />
-          <param name="arg4" select="4" />
-          <param name="arg5" select="5" />
+          <param name="arg1" select="$args/foo:arg1" />
+          <param name="arg2" select="$args/foo:arg2" />
+          <param name="arg3" select="$args/foo:arg3" />
+          <param name="arg4" select="$args/foo:arg4" />
+          <param name="arg5" select="$args/foo:arg5" />
         </call>
 
         <expect label="passes each argument"
-                test="$x:result = '12345'" />
+                test="$x:result[ 1 ] = foo:applied[ @n = 5 ]
+                      and $x:result[ 2 ] is $args/foo:arg1
+                      and $x:result[ 3 ] is $args/foo:arg2
+                      and $x:result[ 4 ] is $args/foo:arg3
+                      and $x:result[ 5 ] is $args/foo:arg4
+                      and $x:result[ 6 ] is $args/foo:arg5" />
       </scenario>
 
 
@@ -140,16 +149,22 @@
           <param name="fnref">
             <f:ref><foo:fn6 /></f:ref>
           </param>
-          <param name="arg1" select="1" />
-          <param name="arg2" select="2" />
-          <param name="arg3" select="3" />
-          <param name="arg4" select="4" />
-          <param name="arg5" select="5" />
-          <param name="arg6" select="6" />
+          <param name="arg1" select="$args/foo:arg1" />
+          <param name="arg2" select="$args/foo:arg2" />
+          <param name="arg3" select="$args/foo:arg3" />
+          <param name="arg4" select="$args/foo:arg4" />
+          <param name="arg5" select="$args/foo:arg5" />
+          <param name="arg6" select="$args/foo:arg6" />
         </call>
 
         <expect label="passes each argument"
-                test="$x:result = '123456'" />
+                test="$x:result[ 1 ] = foo:applied[ @n = 6 ]
+                      and $x:result[ 2 ] is $args/foo:arg1
+                      and $x:result[ 3 ] is $args/foo:arg2
+                      and $x:result[ 4 ] is $args/foo:arg3
+                      and $x:result[ 5 ] is $args/foo:arg4
+                      and $x:result[ 6 ] is $args/foo:arg5
+                      and $x:result[ 7 ] is $args/foo:arg6" />
       </scenario>
 
 
@@ -158,17 +173,24 @@
           <param name="fnref">
             <f:ref><foo:fn7 /></f:ref>
           </param>
-          <param name="arg1" select="1" />
-          <param name="arg2" select="2" />
-          <param name="arg3" select="3" />
-          <param name="arg4" select="4" />
-          <param name="arg5" select="5" />
-          <param name="arg6" select="6" />
-          <param name="arg7" select="7" />
+          <param name="arg1" select="$args/foo:arg1" />
+          <param name="arg2" select="$args/foo:arg2" />
+          <param name="arg3" select="$args/foo:arg3" />
+          <param name="arg4" select="$args/foo:arg4" />
+          <param name="arg5" select="$args/foo:arg5" />
+          <param name="arg6" select="$args/foo:arg6" />
+          <param name="arg7" select="$args/foo:arg7" />
         </call>
 
         <expect label="passes each argument"
-                test="$x:result = '1234567'" />
+                test="$x:result[ 1 ] = foo:applied[ @n = 7 ]
+                      and $x:result[ 2 ] is $args/foo:arg1
+                      and $x:result[ 3 ] is $args/foo:arg2
+                      and $x:result[ 4 ] is $args/foo:arg3
+                      and $x:result[ 5 ] is $args/foo:arg4
+                      and $x:result[ 6 ] is $args/foo:arg5
+                      and $x:result[ 7 ] is $args/foo:arg6
+                      and $x:result[ 8 ] is $args/foo:arg7" />
       </scenario>
 
 
@@ -177,18 +199,26 @@
           <param name="fnref">
             <f:ref><foo:fn8 /></f:ref>
           </param>
-          <param name="arg1" select="1" />
-          <param name="arg2" select="2" />
-          <param name="arg3" select="3" />
-          <param name="arg4" select="4" />
-          <param name="arg5" select="5" />
-          <param name="arg6" select="6" />
-          <param name="arg7" select="7" />
-          <param name="arg8" select="8" />
+          <param name="arg1" select="$args/foo:arg1" />
+          <param name="arg2" select="$args/foo:arg2" />
+          <param name="arg3" select="$args/foo:arg3" />
+          <param name="arg4" select="$args/foo:arg4" />
+          <param name="arg5" select="$args/foo:arg5" />
+          <param name="arg6" select="$args/foo:arg6" />
+          <param name="arg7" select="$args/foo:arg7" />
+          <param name="arg8" select="$args/foo:arg8" />
         </call>
 
         <expect label="passes each argument"
-                test="$x:result = '12345678'" />
+                test="$x:result[ 1 ] = foo:applied[ @n = 8 ]
+                      and $x:result[ 2 ] is $args/foo:arg1
+                      and $x:result[ 3 ] is $args/foo:arg2
+                      and $x:result[ 4 ] is $args/foo:arg3
+                      and $x:result[ 5 ] is $args/foo:arg4
+                      and $x:result[ 6 ] is $args/foo:arg5
+                      and $x:result[ 7 ] is $args/foo:arg6
+                      and $x:result[ 8 ] is $args/foo:arg7
+                      and $x:result[ 9 ] is $args/foo:arg8" />
       </scenario>
     </scenario>
   </scenario>

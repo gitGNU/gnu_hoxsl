@@ -34,14 +34,11 @@
 
 
 <function name="f:apply">
-  <param name="fnref" as="element(f:ref)" />
+  <param name="fnref" as="item()+" />
 
-  <apply-templates select="$fnref" mode="f:apply" />
+  <sequence select="f:partial( $fnref, () )" />
 </function>
 
-
-<!-- WARNING: inconsistent state: only `f:apply#{1,2}' support partial
-     application at the moment -->
 
 <function name="f:apply">
   <param name="fnref" as="item()+" />
@@ -56,63 +53,50 @@
   <param name="arg1" />
   <param name="arg2" />
 
-  <apply-templates select="$fnref" mode="f:apply">
-    <with-param name="arg1" select="$arg1" />
-    <with-param name="arg2" select="$arg2" />
-  </apply-templates>
+  <sequence select="f:partial( $fnref,
+                               ($arg1, $arg2) )" />
 </function>
 
 
 <function name="f:apply">
-  <param name="fnref" as="element(f:ref)" />
+  <param name="fnref" as="item()+" />
   <param name="arg1" />
   <param name="arg2" />
   <param name="arg3" />
 
-  <apply-templates select="$fnref" mode="f:apply">
-    <with-param name="arg1" select="$arg1" />
-    <with-param name="arg2" select="$arg2" />
-    <with-param name="arg3" select="$arg3" />
-  </apply-templates>
+  <sequence select="f:partial( $fnref,
+                               ($arg1, $arg2, $arg3) )" />
 </function>
 
 
 <function name="f:apply">
-  <param name="fnref" as="element(f:ref)" />
+  <param name="fnref" as="item()+" />
   <param name="arg1" />
   <param name="arg2" />
   <param name="arg3" />
   <param name="arg4" />
 
-  <apply-templates select="$fnref" mode="f:apply">
-    <with-param name="arg1" select="$arg1" />
-    <with-param name="arg2" select="$arg2" />
-    <with-param name="arg3" select="$arg3" />
-    <with-param name="arg4" select="$arg4" />
-  </apply-templates>
+  <sequence select="f:partial( $fnref,
+                               ($arg1, $arg2, $arg3, $arg4) )" />
 </function>
 
 
 <function name="f:apply">
-  <param name="fnref" as="element(f:ref)" />
+  <param name="fnref" as="item()+" />
   <param name="arg1" />
   <param name="arg2" />
   <param name="arg3" />
   <param name="arg4" />
   <param name="arg5" />
 
-  <apply-templates select="$fnref" mode="f:apply">
-    <with-param name="arg1" select="$arg1" />
-    <with-param name="arg2" select="$arg2" />
-    <with-param name="arg3" select="$arg3" />
-    <with-param name="arg4" select="$arg4" />
-    <with-param name="arg5" select="$arg5" />
-  </apply-templates>
+  <sequence select="f:partial( $fnref,
+                               ($arg1, $arg2, $arg3, $arg4,
+                                $arg5) )" />
 </function>
 
 
 <function name="f:apply">
-  <param name="fnref" as="element(f:ref)" />
+  <param name="fnref" as="item()+" />
   <param name="arg1" />
   <param name="arg2" />
   <param name="arg3" />
@@ -120,19 +104,14 @@
   <param name="arg5" />
   <param name="arg6" />
 
-  <apply-templates select="$fnref" mode="f:apply">
-    <with-param name="arg1" select="$arg1" />
-    <with-param name="arg2" select="$arg2" />
-    <with-param name="arg3" select="$arg3" />
-    <with-param name="arg4" select="$arg4" />
-    <with-param name="arg5" select="$arg5" />
-    <with-param name="arg6" select="$arg6" />
-  </apply-templates>
+  <sequence select="f:partial( $fnref,
+                               ($arg1, $arg2, $arg3, $arg4,
+                                $arg5, $arg6) )" />
 </function>
 
 
 <function name="f:apply">
-  <param name="fnref" as="element(f:ref)" />
+  <param name="fnref" as="item()+" />
   <param name="arg1" />
   <param name="arg2" />
   <param name="arg3" />
@@ -141,20 +120,14 @@
   <param name="arg6" />
   <param name="arg7" />
 
-  <apply-templates select="$fnref" mode="f:apply">
-    <with-param name="arg1" select="$arg1" />
-    <with-param name="arg2" select="$arg2" />
-    <with-param name="arg3" select="$arg3" />
-    <with-param name="arg4" select="$arg4" />
-    <with-param name="arg5" select="$arg5" />
-    <with-param name="arg6" select="$arg6" />
-    <with-param name="arg7" select="$arg7" />
-  </apply-templates>
+  <sequence select="f:partial( $fnref,
+                               ($arg1, $arg2, $arg3, $arg4,
+                                $arg5, $arg6, $arg7) )" />
 </function>
 
 
 <function name="f:apply">
-  <param name="fnref" as="element(f:ref)" />
+  <param name="fnref" as="item()+" />
   <param name="arg1" />
   <param name="arg2" />
   <param name="arg3" />
@@ -164,16 +137,9 @@
   <param name="arg7" />
   <param name="arg8" />
 
-  <apply-templates select="$fnref" mode="f:apply">
-    <with-param name="arg1" select="$arg1" />
-    <with-param name="arg2" select="$arg2" />
-    <with-param name="arg3" select="$arg3" />
-    <with-param name="arg4" select="$arg4" />
-    <with-param name="arg5" select="$arg5" />
-    <with-param name="arg6" select="$arg6" />
-    <with-param name="arg7" select="$arg7" />
-    <with-param name="arg8" select="$arg8" />
-  </apply-templates>
+  <sequence select="f:partial( $fnref,
+                               ($arg1, $arg2, $arg3, $arg4,
+                                $arg5, $arg6, $arg7, $arg8) )" />
 </function>
 
 

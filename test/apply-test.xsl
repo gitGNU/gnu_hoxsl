@@ -154,4 +154,20 @@
     <sequence select="$arg1, $arg2, $arg3, $arg4,
                         $arg5, $arg6, $arg7, $arg8" />
   </template>
+
+
+  <function name="foo:arg8-check">
+    <param name="args"   as="item()+" />
+    <param name="result" as="item()+" />
+
+    <sequence select="$result[ 1 ] instance of element( foo:applied )
+                      and $result[ 2 ] is $args[1]
+                      and $result[ 3 ] is $args[2]
+                      and $result[ 4 ] is $args[3]
+                      and $result[ 5 ] is $args[4]
+                      and $result[ 6 ] is $args[5]
+                      and $result[ 7 ] is $args[6]
+                      and $result[ 8 ] is $args[7]
+                      and $result[ 9 ] is $args[8]" />
+  </function>
 </stylesheet>

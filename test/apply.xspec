@@ -218,12 +218,13 @@
 
 
     <scenario label="applied to partial argument list">
+      <variable name="fn8"
+                select="f:make-ref( QName( $foo-uri, 'fn8' ),
+                                    8 )" />
+
       <!-- while this looks comprehensive, this really only tests
            f:apply#2 -->
       <scenario label="supports currying">
-        <variable name="fn8"
-                  select="f:make-ref( QName( $foo-uri, 'fn8' ),
-                                      8 )" />
 
         <call function="f:apply">
           <!-- @, @ makin' you dizzy? -->
@@ -252,15 +253,168 @@
 
         <expect label="applies target function and binds each
                        argument in proper order"
-                test="$x:result[ 1 ] = foo:applied[ @n = 8 ]
-                      and $x:result[ 2 ] is $args/foo:arg1
-                      and $x:result[ 3 ] is $args/foo:arg2
-                      and $x:result[ 4 ] is $args/foo:arg3
-                      and $x:result[ 5 ] is $args/foo:arg4
-                      and $x:result[ 6 ] is $args/foo:arg5
-                      and $x:result[ 7 ] is $args/foo:arg6
-                      and $x:result[ 8 ] is $args/foo:arg7
-                      and $x:result[ 9 ] is $args/foo:arg8" />
+                test="foo:arg8-check( $args/*, $x:result )" />
+      </scenario>
+
+
+      <scenario label="with 1 argument">
+        <call function="f:apply">
+          <param name="fnref" select="$fn8" />
+          <param name="arg1"  select="$args/foo:arg1" />
+        </call>
+
+        <expect label="produces a partial application"
+                test="f:is-partial( $x:result )" />
+
+        <expect label="can complete application with arguments in
+                       proper order"
+                test="foo:arg8-check(
+                        $args/*,
+                        f:apply( $x:result, $args/foo:arg2,
+                                            $args/foo:arg3,
+                                            $args/foo:arg4,
+                                            $args/foo:arg5,
+                                            $args/foo:arg6,
+                                            $args/foo:arg7,
+                                            $args/foo:arg8 ) )" />
+      </scenario>
+
+
+      <scenario label="with 2 arguments">
+        <call function="f:apply">
+          <param name="fnref" select="$fn8" />
+          <param name="arg1"  select="$args/foo:arg1" />
+          <param name="arg2"  select="$args/foo:arg2" />
+        </call>
+
+        <expect label="produces a partial application"
+                test="f:is-partial( $x:result )" />
+
+        <expect label="can complete application with arguments in
+                       proper order"
+                test="foo:arg8-check(
+                        $args/*,
+                        f:apply( $x:result, $args/foo:arg3,
+                                            $args/foo:arg4,
+                                            $args/foo:arg5,
+                                            $args/foo:arg6,
+                                            $args/foo:arg7,
+                                            $args/foo:arg8 ) )" />
+      </scenario>
+
+
+      <scenario label="with 3 arguments">
+        <call function="f:apply">
+          <param name="fnref" select="$fn8" />
+          <param name="arg1"  select="$args/foo:arg1" />
+          <param name="arg2"  select="$args/foo:arg2" />
+          <param name="arg3"  select="$args/foo:arg3" />
+        </call>
+
+        <expect label="produces a partial application"
+                test="f:is-partial( $x:result )" />
+
+        <expect label="can complete application with arguments in
+                       proper order"
+                test="foo:arg8-check(
+                        $args/*,
+                        f:apply( $x:result, $args/foo:arg4,
+                                            $args/foo:arg5,
+                                            $args/foo:arg6,
+                                            $args/foo:arg7,
+                                            $args/foo:arg8 ) )" />
+      </scenario>
+
+
+      <scenario label="with 4 arguments">
+        <call function="f:apply">
+          <param name="fnref" select="$fn8" />
+          <param name="arg1"  select="$args/foo:arg1" />
+          <param name="arg2"  select="$args/foo:arg2" />
+          <param name="arg3"  select="$args/foo:arg3" />
+          <param name="arg4"  select="$args/foo:arg4" />
+        </call>
+
+        <expect label="produces a partial application"
+                test="f:is-partial( $x:result )" />
+
+        <expect label="can complete application with arguments in
+                       proper order"
+                test="foo:arg8-check(
+                        $args/*,
+                        f:apply( $x:result, $args/foo:arg5,
+                                            $args/foo:arg6,
+                                            $args/foo:arg7,
+                                            $args/foo:arg8 ) )" />
+      </scenario>
+
+
+      <scenario label="with 5 arguments">
+        <call function="f:apply">
+          <param name="fnref" select="$fn8" />
+          <param name="arg1"  select="$args/foo:arg1" />
+          <param name="arg2"  select="$args/foo:arg2" />
+          <param name="arg3"  select="$args/foo:arg3" />
+          <param name="arg4"  select="$args/foo:arg4" />
+          <param name="arg5"  select="$args/foo:arg5" />
+        </call>
+
+        <expect label="produces a partial application"
+                test="f:is-partial( $x:result )" />
+
+        <expect label="can complete application with arguments in
+                       proper order"
+                test="foo:arg8-check(
+                        $args/*,
+                        f:apply( $x:result, $args/foo:arg6,
+                                            $args/foo:arg7,
+                                            $args/foo:arg8 ) )" />
+      </scenario>
+
+
+      <scenario label="with 6 arguments">
+        <call function="f:apply">
+          <param name="fnref" select="$fn8" />
+          <param name="arg1"  select="$args/foo:arg1" />
+          <param name="arg2"  select="$args/foo:arg2" />
+          <param name="arg3"  select="$args/foo:arg3" />
+          <param name="arg4"  select="$args/foo:arg4" />
+          <param name="arg5"  select="$args/foo:arg5" />
+          <param name="arg6"  select="$args/foo:arg6" />
+        </call>
+
+        <expect label="produces a partial application"
+                test="f:is-partial( $x:result )" />
+
+        <expect label="can complete application with arguments in
+                       proper order"
+                test="foo:arg8-check(
+                        $args/*,
+                        f:apply( $x:result, $args/foo:arg7,
+                                            $args/foo:arg8 ) )" />
+      </scenario>
+
+
+      <scenario label="with 7 arguments">
+        <call function="f:apply">
+          <param name="fnref" select="$fn8" />
+          <param name="arg1"  select="$args/foo:arg1" />
+          <param name="arg2"  select="$args/foo:arg2" />
+          <param name="arg3"  select="$args/foo:arg3" />
+          <param name="arg4"  select="$args/foo:arg4" />
+          <param name="arg5"  select="$args/foo:arg5" />
+          <param name="arg6"  select="$args/foo:arg6" />
+          <param name="arg7"  select="$args/foo:arg7" />
+        </call>
+
+        <expect label="produces a partial application"
+                test="f:is-partial( $x:result )" />
+
+        <expect label="can complete application with arguments in
+                       proper order"
+                test="foo:arg8-check(
+                        $args/*,
+                        f:apply( $x:result, $args/foo:arg8 ) )" />
       </scenario>
     </scenario>
   </scenario>

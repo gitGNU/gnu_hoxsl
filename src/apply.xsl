@@ -30,7 +30,7 @@
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:f="http://www.lovullo.com/hoxsl/apply">
 
-<import href="apply/arity.xsl" />
+<import href="apply/partial.xsl" />
 
 
 <function name="f:apply">
@@ -40,18 +40,19 @@
 </function>
 
 
+<!-- WARNING: inconsistent state: only `f:apply#{1,2}' support partial
+     application at the moment -->
+
 <function name="f:apply">
-  <param name="fnref" as="element(f:ref)" />
+  <param name="fnref" as="item()+" />
   <param name="arg1" />
 
-  <apply-templates select="$fnref" mode="f:apply">
-    <with-param name="arg1" select="$arg1" />
-  </apply-templates>
+  <sequence select="f:partial( $fnref, $arg1 )" />
 </function>
 
 
 <function name="f:apply">
-  <param name="fnref" as="element(f:ref)" />
+  <param name="fnref" as="item()+" />
   <param name="arg1" />
   <param name="arg2" />
 

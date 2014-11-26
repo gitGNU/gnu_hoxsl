@@ -215,6 +215,54 @@
                       and $x:result[ 9 ] is $args/foo:arg8" />
       </scenario>
     </scenario>
+
+
+    <scenario label="applied to partial argument list">
+      <!-- while this looks comprehensive, this really only tests
+           f:apply#2 -->
+      <scenario label="supports currying">
+        <variable name="fn8"
+                  select="f:make-ref( QName( $foo-uri, 'fn8' ),
+                                      8 )" />
+
+        <call function="f:apply">
+          <!-- @, @ makin' you dizzy? -->
+          <param name="fnref"
+                 select="f:apply(
+                           f:apply(
+                             f:apply(
+                               f:apply(
+                                 f:apply(
+                                   f:apply(
+                                     f:apply(
+                                       $fn8,
+                                       $args/foo:arg1 ),
+                                     $args/foo:arg2 ),
+                                   $args/foo:arg3 ),
+                                 $args/foo:arg4 ),
+                               $args/foo:arg5 ),
+                             $args/foo:arg6 ),
+                           $args/foo:arg7 )" />
+
+          <!-- the final argument that will apply the unary
+               partially applied function to the target 8-ary -->
+          <param name="arg1"
+                 select="$args/foo:arg8" />
+        </call>
+
+        <expect label="applies target function and binds each
+                       argument in proper order"
+                test="$x:result[ 1 ] = foo:applied[ @n = 8 ]
+                      and $x:result[ 2 ] is $args/foo:arg1
+                      and $x:result[ 3 ] is $args/foo:arg2
+                      and $x:result[ 4 ] is $args/foo:arg3
+                      and $x:result[ 5 ] is $args/foo:arg4
+                      and $x:result[ 6 ] is $args/foo:arg5
+                      and $x:result[ 7 ] is $args/foo:arg6
+                      and $x:result[ 8 ] is $args/foo:arg7
+                      and $x:result[ 9 ] is $args/foo:arg8" />
+      </scenario>
+    </scenario>
   </scenario>
 
 

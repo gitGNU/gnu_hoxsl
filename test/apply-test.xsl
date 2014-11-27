@@ -28,59 +28,86 @@
   <import href="../src/apply.xsl" />
 
 
-  <template mode="f:apply" match="f:ref[ foo:fn0 ]">
-    <!-- return something to show that we were called properly -->
-    <sequence select="0" />
+  <!-- catch errors (otherwise, we'd terminate) -->
+  <template mode="f:apply"
+            match="*"
+            priority="2">
+    <foo:unknown-dyn-fun />
   </template>
 
 
-  <template mode="f:apply" match="f:ref[ foo:fn1 ]">
+  <template mode="f:apply"
+            match="f:ref[ foo:fn0 ]"
+            priority="5">
+    <!-- return something to show that we were called properly -->
+    <foo:applied n="0" />
+  </template>
+
+
+  <template mode="f:apply"
+            match="f:ref[ foo:fn1 ]"
+            priority="5">
     <param name="arg1" />
 
-    <sequence select="string($arg1)" />
+    <foo:applied n="1" />
+    <sequence select="$arg1" />
   </template>
 
 
-  <template mode="f:apply" match="f:ref[ foo:fn2 ]">
+  <template mode="f:apply"
+            match="f:ref[ foo:fn2 ]"
+            priority="5">
     <param name="arg1" />
     <param name="arg2" />
 
-    <sequence select="concat($arg1, $arg2)" />
+    <foo:applied n="2" />
+    <sequence select="$arg1, $arg2" />
   </template>
 
 
-  <template mode="f:apply" match="f:ref[ foo:fn3 ]">
+  <template mode="f:apply"
+            match="f:ref[ foo:fn3 ]"
+            priority="5">
     <param name="arg1" />
     <param name="arg2" />
     <param name="arg3" />
 
-    <sequence select="concat($arg1, $arg2, $arg3)" />
+    <foo:applied n="3" />
+    <sequence select="$arg1, $arg2, $arg3" />
   </template>
 
 
-  <template mode="f:apply" match="f:ref[ foo:fn4 ]">
+  <template mode="f:apply"
+            match="f:ref[ foo:fn4 ]"
+            priority="5">
     <param name="arg1" />
     <param name="arg2" />
     <param name="arg3" />
     <param name="arg4" />
 
-    <sequence select="concat($arg1, $arg2, $arg3, $arg4)" />
+    <foo:applied n="4" />
+    <sequence select="$arg1, $arg2, $arg3, $arg4" />
   </template>
 
 
-  <template mode="f:apply" match="f:ref[ foo:fn5 ]">
+  <template mode="f:apply"
+            match="f:ref[ foo:fn5 ]"
+            priority="5">
     <param name="arg1" />
     <param name="arg2" />
     <param name="arg3" />
     <param name="arg4" />
     <param name="arg5" />
 
-    <sequence select="concat($arg1, $arg2, $arg3, $arg4,
-                        $arg5)" />
+    <foo:applied n="5" />
+    <sequence select="$arg1, $arg2, $arg3, $arg4,
+                        $arg5" />
   </template>
 
 
-  <template mode="f:apply" match="f:ref[ foo:fn6 ]">
+  <template mode="f:apply"
+            match="f:ref[ foo:fn6 ]"
+            priority="5">
     <param name="arg1" />
     <param name="arg2" />
     <param name="arg3" />
@@ -88,12 +115,15 @@
     <param name="arg5" />
     <param name="arg6" />
 
-    <sequence select="concat($arg1, $arg2, $arg3, $arg4,
-                        $arg5, $arg6)" />
+    <foo:applied n="6" />
+    <sequence select="$arg1, $arg2, $arg3, $arg4,
+                        $arg5, $arg6" />
   </template>
 
 
-  <template mode="f:apply" match="f:ref[ foo:fn7 ]">
+  <template mode="f:apply"
+            match="f:ref[ foo:fn7 ]"
+            priority="5">
     <param name="arg1" />
     <param name="arg2" />
     <param name="arg3" />
@@ -102,12 +132,15 @@
     <param name="arg6" />
     <param name="arg7" />
 
-    <sequence select="concat($arg1, $arg2, $arg3, $arg4,
-                        $arg5, $arg6, $arg7)" />
+    <foo:applied n="7" />
+    <sequence select="$arg1, $arg2, $arg3, $arg4,
+                        $arg5, $arg6, $arg7" />
   </template>
 
 
-  <template mode="f:apply" match="f:ref[ foo:fn8 ]">
+  <template mode="f:apply"
+            match="f:ref[ foo:fn8 ]"
+            priority="5">
     <param name="arg1" />
     <param name="arg2" />
     <param name="arg3" />
@@ -117,7 +150,24 @@
     <param name="arg7" />
     <param name="arg8" />
 
-    <sequence select="concat($arg1, $arg2, $arg3, $arg4,
-                        $arg5, $arg6, $arg7, $arg8)" />
+    <foo:applied n="8" />
+    <sequence select="$arg1, $arg2, $arg3, $arg4,
+                        $arg5, $arg6, $arg7, $arg8" />
   </template>
+
+
+  <function name="foo:arg8-check">
+    <param name="args"   as="item()+" />
+    <param name="result" as="item()+" />
+
+    <sequence select="$result[ 1 ] instance of element( foo:applied )
+                      and $result[ 2 ] is $args[1]
+                      and $result[ 3 ] is $args[2]
+                      and $result[ 4 ] is $args[3]
+                      and $result[ 5 ] is $args[4]
+                      and $result[ 6 ] is $args[5]
+                      and $result[ 7 ] is $args[6]
+                      and $result[ 8 ] is $args[7]
+                      and $result[ 9 ] is $args[8]" />
+  </function>
 </stylesheet>

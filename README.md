@@ -15,7 +15,8 @@ functions and XSLT templates that take XSLT as input and produce XSLT
 as output.
 
 The system is fully tested---see the test cases for additional
-documentation as this project gets under way.
+documentation as this project gets under way.  This README will serve
+as an informal manual until official documentation is produced.
 
 
 ## Higher-Order Functions
@@ -25,8 +26,8 @@ proprietary versions of their software.  Others still may wish to
 continue using XSLT 2.0.
 
 There are various approaches/kluges for this problem in earlier
-versions of XSLT; this implementation is motivated by Dimitre
-Novatchev's work on [higher-order functions in FXSL][nova-ho].
+versions of XSLT; the basis of this implementation is motivated by
+Dimitre Novatchev's work on [higher-order functions in FXSL][nova-ho].
 
 For example, consider an implementation of a filter function that
 accepts a node set and a predicate:
@@ -64,6 +65,33 @@ XSL stylesheet containing the above function definitions would produce
 output that can be directly imported (as a stylesheet); no additional
 work is needed.  This can be included as part of a build process, and
 the output included within a distribution.
+
+
+### Partial Applications
+Dynamic function applications using `f:apply` are partially applied if
+the number of arguments provided is less than the arity of the target
+function.
+
+```xml
+  <!-- produces a new dynamic function of arity 5 - 3 = 2 -->
+  <variable name="partial"
+            select="f:apply( my:arity5(), 1, 2, 3 )" />
+
+  <!-- consequently, currying is supported -->
+  <variable name="result"
+            select="f:apply( f:apply( $partial, 4 ), 5 )" />
+
+  <!-- equiv = true() -->
+  <variable name="equiv"
+            select="$result
+                    = f:apply( my:arity5(), 1, 2, 3, 4, 5 )
+                    = my:arity5( 1, 2, 3, 4, 5 )" />
+```
+
+The implementation of partial function applications avoids the
+complexity and inaccuracies of [Novatchev's approach][nova-ho] by
+using only sequences, allowing arguments to retain their type and
+context.
 
 
 ## License

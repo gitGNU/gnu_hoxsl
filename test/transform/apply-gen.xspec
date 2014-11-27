@@ -73,7 +73,7 @@
           <xsl:function name="foo:bar">
             <xsl:param name="a" />
             <xsl:param name="b" as="xs:decimal" />
-            <xsl:param name="c" />"
+            <xsl:param name="c" />
           </xsl:function>
         </xsl:stylesheet>
       </context>
@@ -187,7 +187,7 @@
     <scenario label="f:arity">
       <call function="f:arity">
         <param name="fnref" select="foo:sub-two()" />
-      </call>"
+      </call>
 
       <expect label="is able to determine arity"
               test="$x:result = 2" />

@@ -18,6 +18,13 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+  TODOs:
+     - Properly handle arity overloading.
+     - Generate functions for partial applications, so long as the target
+       function does not have its arity overloaded (since that would
+       cause currying and partial application of N>1 arguments to
+       potentially yield different results).
 -->
 
 <stylesheet version="2.0"

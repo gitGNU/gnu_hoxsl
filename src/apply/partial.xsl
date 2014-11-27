@@ -26,16 +26,18 @@
 <stylesheet version="2.0"
   xmlns="http://www.w3.org/1999/XSL/Transform"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:f="http://www.lovullo.com/hoxsl/apply">
+  xmlns:f="http://www.lovullo.com/hoxsl/apply"
+  xmlns:_f="http://www.lovullo.com/hoxsl/apply/_priv">
 
 <import href="arity.xsl" />
 
 
 <!--
-  Partially apply dynamic function reference FNREF
+  Partially apply dynamic function reference @var{fnref}
 
-  When provided to `f:apply', FNREF will be applied with ARGS as its
-  beginning argments, followed by any arguments to `f:apply'.
+  When provided to @code{f:apply}, @var{fnref} will be applied with
+  @var{args} as its beginning argments, followed by any arguments to
+  `f:apply'.
 
   Note that you usually do not have to invoke this function directly:
   the dynamic function calls will handle currying/partial application
@@ -44,6 +46,10 @@
   Partially applied functions may continue to be partially applied
   until their parameters are exhausted.  This can be used to implement
   currying.
+
+  When destructuring the result of this function, note that the
+  returned function reference may not match @var{fnref} by reference,
+  as it may have been modified.
 -->
 <function name="f:partial" as="item()+">
   <param name="fnref" as="item()+" />
@@ -72,6 +78,10 @@
             select="f:arity( $ref )" />
 
   <choose>
+    <when test="$argn eq $arity">
+      <sequence select="_f:apply-partial( $ref, $argout )" />
+    </when>
+
     <when test="$argn gt $arity">
       <apply-templates mode="f:partial-arity-error-hook"
                        select="$ref">
@@ -156,5 +166,37 @@
                         $fname, '#', $arity, ' with ',
                         $argn, ' arguments' ) )" />
 </template>
+
+
+<!--
+  Apply a partial dynamic function application
+
+  This function is called automatically by @code{f:partial} when
+  partial application would otherwise result in the returning of a
+  nullary function.  @emph{It performs no validations} to ensure the
+  integrity of the data.}
+
+  Just as @code{f:apply}, please note that @emph{up to eight arguments
+  are supported}.  This should be enough.
+-->
+<function name="_f:apply-partial">
+  <param name="fnref" as="element(f:ref)" />
+  <param name="args"  as="item()*" />
+
+  <variable name="fn" as="element()"
+            select="$fnref[ 1 ]" />
+
+  <!-- just as `f:apply', we support up to 8 arguments -->
+  <apply-templates select="$fn" mode="f:apply">
+    <with-param name="arg1" select="$args[ 1 ]" />
+    <with-param name="arg2" select="$args[ 2 ]" />
+    <with-param name="arg3" select="$args[ 3 ]" />
+    <with-param name="arg4" select="$args[ 4 ]" />
+    <with-param name="arg5" select="$args[ 5 ]" />
+    <with-param name="arg6" select="$args[ 6 ]" />
+    <with-param name="arg7" select="$args[ 7 ]" />
+    <with-param name="arg8" select="$args[ 8 ]" />
+  </apply-templates>
+</function>
 
 </stylesheet>

@@ -50,7 +50,7 @@
 
         <!-- technically it applies a template -->
         <expect label="applies target function"
-                test="$x:result[ 1 ] = foo:applied[ @n = 0 ]" />"
+                test="$x:result[ 1 ] = foo:applied[ @n = 0 ]" />
       </scenario>
 
 

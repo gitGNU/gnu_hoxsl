@@ -36,6 +36,10 @@
       <foo:b />
       <foo:c />
       <foo:d />
+      <foo:e />
+      <foo:f />
+      <foo:g />
+      <foo:h />
     </foo:parent>
   </variable>
 
@@ -76,41 +80,252 @@
     </scenario>
 
 
+    <!-- our implementation can be thought of like currying -->
     <scenario label="given arguments for all function params">
       <call function="f:partial">
         <param name="fnref" select="$fnref" />
-        <param name="args"  select="1, 2, 3" />
+        <param name="args"  select="$args/foo:a,
+                                    $args/foo:b,
+                                    $args/foo:c" />
       </call>
 
-      <expect label="returns FNREF as first item in sequence"
-              test="$x:result[ 1 ] = $fnref" />
+      <expect label="applies target function"
+              test="$x:result[ 1 ]
+                    and $x:result[ 1 ] = foo:ternary-applied" />
 
-      <!-- we checked previously for argument values; we assume here
-           that it is working in this case...hopefully that is not
-           wrong! -->
-      <expect label="returns all arguments"
-              test="count( $x:result ) = 4" />
+      <expect label="applies target function with arguments, by reference"
+              test="$x:result[ 2 ] is $args/foo:a
+                    and $x:result[ 3 ] is $args/foo:b
+                    and $x:result[ 4 ] is $args/foo:c" />
     </scenario>
 
 
     <!-- partial applications should behave as their own functions -->
-    <scenario label="partially applying partial application">
+    <scenario label="partially applying partial application, with
+                     fewer arguments than target function arity">
       <call function="f:partial">
-        <param name="fnref" select="f:partial( $fnref, (1, 2) )" />
-        <param name="args"  select="3" />
+        <param name="fnref" select="f:partial( $fnref, $args/foo:a )" />
+        <param name="args"  select="$args/foo:b" />
       </call>
 
       <expect label="returns FNREF as first item in sequence"
               test="$x:result[ 1 ] = $fnref" />
 
       <expect label="returns arguments from both partial applications"
-              test="count( $x:result ) = 4" />
+              test="count( $x:result ) = 3" />
 
       <expect label="arguments are ordered with previous applications
                      first in sequence"
-              test="$x:result[ 2 ] = 1
-                    and $x:result[ 3 ] = 2
-                    and $x:result[ 4 ] = 3" />
+              test="$x:result[ 2 ] is $args/foo:a
+                    and $x:result[ 3 ] is $args/foo:b" />
+    </scenario>
+
+
+    <scenario label="partially applying partial application, with all
+                     arguments">
+      <call function="f:partial">
+        <param name="fnref" select="f:partial( $fnref, ($args/foo:a,
+                                                        $args/foo:b) )" />
+        <param name="args"  select="$args/foo:c" />
+      </call>
+
+      <expect label="applies target function"
+              test="$x:result[ 1 ]
+                    and $x:result[ 1 ] = foo:ternary-applied" />
+
+      <expect label="applies target function with arguments, by reference"
+              test="$x:result[ 2 ] is $args/foo:a
+                    and $x:result[ 3 ] is $args/foo:b
+                    and $x:result[ 4 ] is $args/foo:c" />
+    </scenario>
+
+
+    <!-- let the repitition begin (don't we wish we had macros?
+         ...foreshadowing?) -->
+    <scenario label="completing partial application passes all
+                     arguments to a target">
+      <scenario label="unary">
+        <call function="f:partial">
+          <param name="fnref">
+            <f:ref arity="1"><foo:fn1 /></f:ref>
+          </param>
+          <param name="args" select="$args/foo:a" />
+        </call>
+
+        <expect label="applies target function"
+                test="$x:result[ 1 ] = foo:applied[ @n = 1 ]" />
+
+        <expect label="applies target function with arguments, by reference"
+                test="$x:result[ 2 ] is $args/foo:a" />
+      </scenario>
+
+
+      <scenario label="binary">
+        <call function="f:partial">
+          <param name="fnref">
+            <f:ref arity="2"><foo:fn2 /></f:ref>
+          </param>
+          <param name="args" select="$args/foo:a,
+                                     $args/foo:b" />
+        </call>
+
+        <expect label="applies target function"
+                test="$x:result[ 1 ] = foo:applied[ @n = 2 ]" />
+
+        <expect label="applies target function with arguments, by reference"
+                test="$x:result[ 2 ] is $args/foo:a
+                      and $x:result[ 3 ] is $args/foo:b" />
+      </scenario>
+
+
+      <scenario label="ternary">
+        <call function="f:partial">
+          <param name="fnref">
+            <f:ref arity="3"><foo:fn3 /></f:ref>
+          </param>
+          <param name="args" select="$args/foo:a,
+                                     $args/foo:b,
+                                     $args/foo:c" />
+        </call>
+
+        <expect label="applies target function"
+                test="$x:result[ 1 ] = foo:applied[ @n = 3 ]" />
+
+        <expect label="applies target function with arguments, by reference"
+                test="$x:result[ 2 ] is $args/foo:a
+                      and $x:result[ 3 ] is $args/foo:b
+                      and $x:result[ 4 ] is $args/foo:c" />
+      </scenario>
+
+
+      <scenario label="4-ary">
+        <call function="f:partial">
+          <param name="fnref">
+            <f:ref arity="4"><foo:fn4 /></f:ref>
+          </param>
+          <param name="args" select="$args/foo:a,
+                                     $args/foo:b,
+                                     $args/foo:c,
+                                     $args/foo:d" />
+        </call>
+
+        <expect label="applies target function"
+                test="$x:result[ 1 ] = foo:applied[ @n = 4 ]" />
+
+        <expect label="applies target function with arguments, by reference"
+                test="$x:result[ 2 ] = $args/foo:a
+                      and $x:result[ 3 ] = $args/foo:b
+                      and $x:result[ 4 ] = $args/foo:c
+                      and $x:result[ 5 ] = $args/foo:d" />
+      </scenario>
+
+
+      <scenario label="5-ary">
+        <call function="f:partial">
+          <param name="fnref">
+            <f:ref arity="5"><foo:fn5 /></f:ref>
+          </param>
+          <param name="args" select="$args/foo:a,
+                                     $args/foo:b,
+                                     $args/foo:c,
+                                     $args/foo:d,
+                                     $args/foo:e" />
+        </call>
+
+        <expect label="applies target function"
+                test="$x:result[ 1 ] = foo:applied[ @n = 5 ]" />
+
+        <expect label="applies target function with arguments, by reference"
+                test="$x:result[ 2 ] = $args/foo:a
+                      and $x:result[ 3 ] = $args/foo:b
+                      and $x:result[ 4 ] = $args/foo:c
+                      and $x:result[ 5 ] = $args/foo:d
+                      and $x:result[ 6 ] = $args/foo:e" />
+      </scenario>
+
+
+      <scenario label="6-ary">
+        <call function="f:partial">
+          <param name="fnref">
+            <f:ref arity="6"><foo:fn6 /></f:ref>
+          </param>
+          <param name="args" select="$args/foo:a,
+                                     $args/foo:b,
+                                     $args/foo:c,
+                                     $args/foo:d,
+                                     $args/foo:e,
+                                     $args/foo:f" />
+        </call>
+
+        <expect label="applies target function"
+                test="$x:result[ 1 ] = foo:applied[ @n = 6 ]" />
+
+        <expect label="applies target function with arguments, by reference"
+                test="$x:result[ 2 ] = $args/foo:a
+                      and $x:result[ 3 ] = $args/foo:b
+                      and $x:result[ 4 ] = $args/foo:c
+                      and $x:result[ 5 ] = $args/foo:d
+                      and $x:result[ 6 ] = $args/foo:e
+                      and $x:result[ 7 ] = $args/foo:f" />
+      </scenario>
+
+
+      <scenario label="7-ary">
+        <call function="f:partial">
+          <param name="fnref">
+            <f:ref arity="7"><foo:fn7 /></f:ref>
+          </param>
+          <param name="args" select="$args/foo:a,
+                                     $args/foo:b,
+                                     $args/foo:c,
+                                     $args/foo:d,
+                                     $args/foo:e,
+                                     $args/foo:f,
+                                     $args/foo:g" />
+        </call>
+
+        <expect label="applies target function"
+                test="$x:result[ 1 ] = foo:applied[ @n = 7 ]" />
+
+        <expect label="applies target function with arguments, by reference"
+                test="$x:result[ 2 ] = $args/foo:a
+                      and $x:result[ 3 ] = $args/foo:b
+                      and $x:result[ 4 ] = $args/foo:c
+                      and $x:result[ 5 ] = $args/foo:d
+                      and $x:result[ 6 ] = $args/foo:e
+                      and $x:result[ 7 ] = $args/foo:f
+                      and $x:result[ 8 ] = $args/foo:g" />
+      </scenario>
+
+
+      <scenario label="8-ary">
+        <call function="f:partial">
+          <param name="fnref">
+            <f:ref arity="8"><foo:fn8 /></f:ref>
+          </param>
+          <param name="args" select="$args/foo:a,
+                                     $args/foo:b,
+                                     $args/foo:c,
+                                     $args/foo:d,
+                                     $args/foo:e,
+                                     $args/foo:f,
+                                     $args/foo:g,
+                                     $args/foo:h" />
+        </call>
+
+        <expect label="applies target function"
+                test="$x:result[ 1 ] = foo:applied[ @n = 8 ]" />
+
+        <expect label="applies target function with arguments, by reference"
+                test="$x:result[ 2 ] = $args/foo:a
+                      and $x:result[ 3 ] = $args/foo:b
+                      and $x:result[ 4 ] = $args/foo:c
+                      and $x:result[ 5 ] = $args/foo:d
+                      and $x:result[ 6 ] = $args/foo:e
+                      and $x:result[ 7 ] = $args/foo:f
+                      and $x:result[ 8 ] = $args/foo:g
+                      and $x:result[ 9 ] = $args/foo:h" />
+      </scenario>
     </scenario>
   </scenario>
 
@@ -197,20 +412,6 @@
       <call function="f:is-partial">
         <param name="fnref"
                select="f:partial( foo:ternary(), (1, 2) )[ 1 ]" />
-      </call>
-
-      <expect label="returns true()"
-              test="$x:result = true()" />
-    </scenario>
-
-
-    <!-- we still want to consider all arguments to be a partial
-         application (consider it as producing a nullary
-         function)—otherwise, the abstraction is broken -->
-    <scenario label="given arguments for each parameter">
-      <call function="f:is-partial">
-        <param name="fnref"
-               select="f:partial( foo:ternary(), (1, 2, 3) )" />
       </call>
 
       <expect label="returns true()"

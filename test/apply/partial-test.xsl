@@ -29,6 +29,9 @@
   <!-- SUT -->
   <import href="../../src/apply/partial.xsl" />
 
+  <!-- numerous templates for arity tests -->
+  <import href="../apply-test.xsl" />
+
   <!-- generated -->
   <import href="partial-test.xsl.apply" />
 
@@ -53,6 +56,7 @@
     <param name="y" />
     <param name="z" />
 
+    <foo:ternary-applied />
     <sequence select="$x, $y, $z" />
   </function>
 </stylesheet>

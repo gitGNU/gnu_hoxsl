@@ -25,7 +25,11 @@
              xmlns:x="http://www.jenitennison.com/xslt/xspec"
              xmlns:f="http://www.lovullo.com/hoxsl/apply"
              xmlns:foo="http://www.lovullo.com/_junk"
-             stylesheet="../../src/apply/arity.xsl">
+             stylesheet="arity-test.xsl">
+
+  <variable name="foo-uri"
+            select="namespace-uri-for-prefix(
+                      'foo', root(.)/element() )" />
 
 
   <scenario label="f:arity">
@@ -35,11 +39,9 @@
 
       <!-- test our format directly; do not rely on the
            apply-gen code -->
-      <variable name="fnref">
-        <f:ref arity="{$test-arity}">
-          <foo:bar />
-        </f:ref>
-      </variable>
+      <variable name="fnref"
+                select="f:make-ref( QName( $foo-uri, 'foo:bar' ),
+                                    $test-arity )" />
 
       <call function="f:arity">
         <param name="fnref"

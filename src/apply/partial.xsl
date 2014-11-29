@@ -71,11 +71,14 @@
     <sequence select="$args" />
   </variable>
 
-  <variable name="argn" as="xs:decimal"
-            select="count( $argout )" />
-
-  <variable name="arity" as="xs:decimal"
+  <!-- note that, if FNREF is partially applied, then this arity
+       represents the arity of the partially applied function, _not_
+       the target function -->
+  <variable name="arity" as="xs:integer"
             select="f:arity( $ref )" />
+
+  <variable name="argn" as="xs:integer"
+            select="count( $args )" />
 
   <choose>
     <when test="$argn eq $arity">
@@ -87,7 +90,7 @@
                        select="$ref">
         <with-param name="args"  select="$argout" />
         <with-param name="arity" select="$arity" />
-        <with-param name="argn"  select="$argn" />
+        <with-param name="argn"  select="count( $argout )" />
       </apply-templates>
     </when>
 
@@ -96,7 +99,7 @@
         <sequence select="$ref/@*" />
 
         <attribute name="partial"
-                   select="count( $args )" />
+                   select="count( $argout )" />
 
         <sequence select="$ref/*" />
       </f:ref>

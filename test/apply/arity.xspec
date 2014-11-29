@@ -31,6 +31,13 @@
             select="namespace-uri-for-prefix(
                       'foo', root(.)/element() )" />
 
+  <variable name="test-arity"
+            select="5" />
+
+  <variable name="test-fn"
+            select="f:make-ref( QName( $foo-uri, 'foo:bar' ),
+                                $test-arity )" />
+
 
   <scenario label="f:arity">
     <scenario label="given a proper function reference">
@@ -39,32 +46,38 @@
 
       <!-- test our format directly; do not rely on the
            apply-gen code -->
-      <variable name="fnref"
-                select="f:make-ref( QName( $foo-uri, 'foo:bar' ),
-                                    $test-arity )" />
-
       <call function="f:arity">
-        <param name="fnref"
-               select="$fnref" />
+        <param name="fnref" select="$test-fn" />
       </call>
 
       <expect label="provides function arity"
-              test="$x:result = $test-arity" />
+              select="$test-arity" />
     </scenario>
 
 
-    <scenario label="given a function reference with no defined arity">
-      <variable name="fnref">
-        <f:ref><foo:bar /></f:ref>
-      </variable>
-
+    <scenario label="given a partially applied function reference">
       <call function="f:arity">
         <param name="fnref"
-               select="$fnref" />
+               select="f:apply( $test-fn, 1, 2 )" />
       </call>
 
-      <expect label="returns -1"
-              test="$x:result = -1" />
+      <expect label="provides arity of the target function minus the
+                     number of bound parameters"
+              select="$test-arity - 2" />
+    </scenario>
+
+
+    <scenario label="given a multiply-partially-applied function reference">
+      <call function="f:arity">
+        <param name="fnref"
+               select="f:apply(
+                         f:apply( $test-fn, 1, 2 ),
+                         3 )" />
+      </call>
+
+      <expect label="provides arity of the target function minus the
+                     number of bound parameters"
+              select="$test-arity - 3" />
     </scenario>
   </scenario>
 </description>

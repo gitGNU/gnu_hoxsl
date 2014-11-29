@@ -28,21 +28,28 @@
 
 
 <!--
-  Attempt to retrieve arity of dynamic function
+  Attempt to retrieve arity of dynamic function @var{fnref}
 
-  The input must be a function reference.  Partially applied function
-  references will have an arity equivalent to the remaining parameters
-  in the original function.
-
-  If the arity cannot be determined, -1 is returned.
+  @var{fnref} must be a dynamic function reference satisfying
+  @code{f:is-ref}.  Partially applied function references will have an
+  arity equivalent to the free parameters in the target function.
 -->
-<function name="f:arity" as="xs:decimal">
-  <param name="fnref" as="element(f:ref)" />
+<function name="f:arity" as="xs:integer">
+  <param name="fnref" as="item()+" />
 
-  <sequence select="if ( $fnref/@arity ) then
-                      $fnref/@arity
+  <variable name="ref" as="element( f:ref )"
+            select="$fnref[ 1 ]" />
+
+  <variable name="arity" as="xs:integer"
+            select="$ref/@arity" />
+
+  <variable name="partial" as="xs:integer"
+            select="if ( $ref/@partial ) then
+                      $ref/@partial
                     else
-                      -1" />
+                      0" />
+
+  <sequence select="$arity - $partial" />
 </function>
 
 </stylesheet>

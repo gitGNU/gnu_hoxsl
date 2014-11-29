@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Tests arity calculations
+  Tests dynamic function reference
 
   Copyright (C) 2014 LoVullo Associates, Inc.
 
@@ -29,4 +29,7 @@
   <!-- this imports the SUT, as well as additional functions we need
        for testing -->
   <import href="../../src/apply.xsl" />
+
+  <!-- numerous templates for arity tests -->
+  <import href="../apply-test.xsl" />
 </stylesheet>

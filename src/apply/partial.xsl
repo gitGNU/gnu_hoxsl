@@ -29,7 +29,7 @@
   xmlns:f="http://www.lovullo.com/hoxsl/apply"
   xmlns:_f="http://www.lovullo.com/hoxsl/apply/_priv">
 
-<import href="arity.xsl" />
+<import href="ref.xsl" />
 
 
 <!--

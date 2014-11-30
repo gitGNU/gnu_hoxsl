@@ -104,8 +104,10 @@
 <!--
   Retrieve the QName of the target dynamic function
 
-  Usually, this would match precisely the QName of the target
+  Usually, this will match precisely the QName of the target
   function.
+
+  @var{fnreF} must be a valid dynamic function reference.
 
   @i{Implementation details:} This actually represents the QName of
   the @emph{application template}, which could differ from the target
@@ -113,10 +115,13 @@
   function alias.
 -->
 <function name="f:QName" as="xs:QName?">
-  <param name="fnref" as="element( f:ref )" />
+  <param name="fnref" as="item()+" />
+
+  <variable name="desc" as="element( f:ref )"
+            select="$fnref[ 1 ]" />
 
   <variable name="target" as="element()?"
-            select="$fnref/element()[ 1 ]" />
+            select="$desc/element()[ 1 ]" />
 
   <sequence select="node-name( $target )" />
 </function>
@@ -141,6 +146,60 @@
             select="$ref/@arity" />
 
   <sequence select="$arity" />
+</function>
+
+
+<!--
+  Retrieve a sequence of the partially applied arguments of
+  @var{fnref}
+
+  The resulting sequence may be empty.  @var{fnref} is assumed to be a
+  valid dynamic function reference; you should verify that assumption
+  beforehand.
+-->
+<function name="f:args" as="item()*">
+  <param name="fnref" as="item()+" />
+
+  <sequence select="remove( $fnref, 1 )" />
+</function>
+
+
+<!--
+  Set partially applied arguments of @var{fnref} to @var{args},
+  replacing any existing arguments
+
+  The arity of @var{fnref} will be adjusted relative to the number of
+  items in @var{args} such that the resulting dynamic function
+  reference has the illusion of being its own, new function:
+  increasing the argument count of @var{fnref} will @emph{decrease}
+  the arity of the resulting reference and vice versa.
+
+  @var{fnref} must be a valid dynamic function reference.
+-->
+<function name="f:set-args" as="item()+">
+  <param name="fnref" as="item()+" />
+  <param name="args"  as="item()*" />
+
+  <variable name="desc" as="element( f:ref )"
+            select="$fnref[ 1 ]" />
+
+  <!-- this reference may be partially applied; see below arity
+       adjustment -->
+  <variable name="target-arity" as="xs:double"
+            select="$desc/@arity + count( f:args( $fnref ) )" />
+
+  <f:ref>
+    <sequence select="$desc/@*" />
+
+    <!-- treat partial applications as their own functions (with their
+         own arities) -->
+    <attribute name="arity"
+               select="$target-arity - count( $args )" />
+
+    <sequence select="$desc/*" />
+  </f:ref>
+
+  <sequence select="$args" />
 </function>
 
 </stylesheet>

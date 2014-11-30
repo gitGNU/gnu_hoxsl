@@ -36,6 +36,8 @@
   xmlns:out="http://www.lovullo.com/hoxsl/apply/gen/_out"
   exclude-result-prefixes="#default fgen">
 
+<import href="../apply/ref.xsl" />
+
 <output indent="yes"
         encoding="utf-8" />
 
@@ -119,11 +121,10 @@
        dependencies and simply specify the full namespace URI -->
   <variable name="name-resolv"
             select="resolve-QName( @name, . )" />
-  <variable name="ns-prefix"
-            select="substring-before( @name, ':' )" />
   <variable name="ns"
-            select="namespace-uri-for-prefix(
-                      $ns-prefix, . )" />
+            select="namespace-uri-from-QName( $name-resolv )" />
+  <variable name="ns-prefix"
+            select="prefix-from-QName( $name-resolv )" />
 
   <sequence select="fgen:create-func(
                       ., $name-resolv, $ns-prefix, $ns )" />
@@ -164,15 +165,10 @@
     <namespace name="{$ns-prefix}"
                select="$ns" />
 
-    <f:ref>
-      <attribute name="arity"
-                 select="count( $fnref/xsl:param )" />
+    <variable name="arity"
+              select="count( $fnref/xsl:param )" />
 
-      <!-- represents the function being referenced -->
-      <element name="{$local-name}"
-               namespace="{$ns}">
-      </element>
-    </f:ref>
+    <sequence select="f:make-ref( $name-resolv, $arity )" />
   </out:function>
 </function>
 

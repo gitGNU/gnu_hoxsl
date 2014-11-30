@@ -184,13 +184,39 @@
 
     <!-- note that this _does not_ test f:arity itself: it is intended
          to test that the arity datum is properly generated -->
-    <scenario label="f:arity">
-      <call function="f:arity">
-        <param name="fnref" select="foo:sub-two()" />
-      </call>
+    <scenario label="constructed dynamic function reference">
+      <variable name="two-result"
+                select="foo:sub-two()" />
 
-      <expect label="is able to determine arity"
-              test="$x:result = 2" />
+      <scenario label="is recognized as">
+        <call function="f:is-ref">
+          <param name="fnref" select="$two-result" />
+        </call>
+
+        <expect label="a dynamic function reference"
+                select="true()" />
+      </scenario>
+
+
+      <scenario label="target QName">
+        <call function="f:QName">
+          <param name="fnref" select="$two-result" />
+        </call>
+
+        <expect label="is the QName of the target function"
+                select="QName( 'http://www.lovullo.com/_junk',
+                               'sub-two' )" />
+      </scenario>
+
+
+      <scenario label="arity">
+        <call function="f:arity">
+          <param name="fnref" select="$two-result" />
+        </call>
+
+        <expect label="is the arity of target function"
+                select="2" />
+      </scenario>
     </scenario>
   </scenario>
 </description>

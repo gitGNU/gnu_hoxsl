@@ -98,8 +98,9 @@
       <f:ref>
         <sequence select="$ref/@*" />
 
-        <attribute name="partial"
-                   select="count( $argout )" />
+        <!-- the arity of the new partial application -->
+        <attribute name="arity"
+                   select="$arity - $argn" />
 
         <sequence select="$ref/*" />
       </f:ref>
@@ -128,8 +129,7 @@
   <!-- we never want to fail, so we perform our type check here rather
        than using param/@as -->
   <sequence select="$fn instance of element(f:ref)
-                    and exists( $fn/@partial )
-                    and number( $fn/@partial ) gt 0" />
+                    and exists( $fnref[ 2 ] )" />
 </function>
 
 

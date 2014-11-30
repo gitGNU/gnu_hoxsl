@@ -135,16 +135,12 @@
   <variable name="ref" as="element( f:ref )"
             select="$fnref[ 1 ]" />
 
+  <!-- this implicitly asserts on the type; it should never fail if
+       the system is being used properly -->
   <variable name="arity" as="xs:integer"
             select="$ref/@arity" />
 
-  <variable name="partial" as="xs:integer"
-            select="if ( $ref/@partial ) then
-                      $ref/@partial
-                    else
-                      0" />
-
-  <sequence select="$arity - $partial" />
+  <sequence select="$arity" />
 </function>
 
 </stylesheet>

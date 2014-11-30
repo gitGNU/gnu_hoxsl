@@ -51,11 +51,9 @@
         <param name="args"  select="()" />
       </call>
 
-      <expect label="returns FNREF"
-              test="$x:result[ 1 ] = $fnref" />
-
-      <expect label="indicates that 0 arguments were partially applied"
-              test="$x:result/@partial = 0" />
+      <expect label="returns reference to original target"
+              test="f:QName( $x:result[ 1 ] )
+                      = f:QName( $fnref )" />
 
       <expect label="returns nothing else"
               test="count( $x:result ) = 1" />
@@ -68,12 +66,13 @@
         <param name="args"  select="$args/foo:a, $args/foo:b" />
       </call>
 
-      <expect label="returns FNREF as first item in sequence"
-              test="$x:result[ 1 ] = $fnref" />
+      <expect label="returns target reference as first item in
+                     sequence"
+              test="f:QName( $fnref )
+                      = f:QName( $x:result[ 1 ] )" />
 
-      <expect label="indicates that N arguments were partially applied"
-              test="$x:result/@partial = 2" />
-
+      <!-- FIXME: this breaks the abstraction; use opaque
+           introspection -->
       <expect label="returns each argument, ordered"
               test="$x:result[ 2 ] is $args/foo:a
                     and $x:result[ 3 ] is $args/foo:b" />
@@ -108,8 +107,10 @@
         <param name="args"  select="$args/foo:b" />
       </call>
 
-      <expect label="returns FNREF as first item in sequence"
-              test="$x:result[ 1 ] = $fnref" />
+      <expect label="returns target reference as first item in
+                     sequence"
+              test="f:QName( $fnref )
+                      = f:QName( $x:result[ 1 ] )" />
 
       <expect label="returns arguments from both partial applications"
               test="count( $x:result ) = 3" />
@@ -406,7 +407,9 @@
 
 
     <!-- caller may extract the function ref from the sequence and
-         assert on that -->
+         assert on that; we are going to explicitly choose to *not*
+         support that behavior, since an fnref acquires meaning as an
+         opaque unit  -->
     <scenario label="given a valid fref, partially applied with N>0
                      arguments, without argument sequence">
       <call function="f:is-partial">
@@ -414,8 +417,8 @@
                select="f:partial( foo:ternary(), (1, 2) )[ 1 ]" />
       </call>
 
-      <expect label="returns true()"
-              test="$x:result = true()" />
+      <expect label="returns false()"
+              select="false()" />
     </scenario>
   </scenario>
 

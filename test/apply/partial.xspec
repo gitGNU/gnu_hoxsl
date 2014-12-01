@@ -52,8 +52,7 @@
       </call>
 
       <expect label="returns reference to original target"
-              test="f:QName( $x:result[ 1 ] )
-                      = f:QName( $fnref )" />
+              test="f:QName( $x:result) = f:QName( $fnref )" />
 
       <expect label="returns nothing else"
               test="count( $x:result ) = 1" />
@@ -68,14 +67,12 @@
 
       <expect label="returns target reference as first item in
                      sequence"
-              test="f:QName( $fnref )
-                      = f:QName( $x:result[ 1 ] )" />
+              test="f:QName( $fnref ) = f:QName( $x:result )" />
 
-      <!-- FIXME: this breaks the abstraction; use opaque
-           introspection -->
+      <variable name="rargs" select="f:args( $x:result )" />
       <expect label="returns each argument, ordered"
-              test="$x:result[ 2 ] is $args/foo:a
-                    and $x:result[ 3 ] is $args/foo:b" />
+              test="$rargs[ 1 ] is $args/foo:a
+                    and $rargs[ 2 ] is $args/foo:b" />
     </scenario>
 
 
@@ -92,10 +89,11 @@
               test="$x:result[ 1 ]
                     and $x:result[ 1 ] = foo:ternary-applied" />
 
+      <variable name="rargs" select="f:args( $x:result )" />
       <expect label="applies target function with arguments, by reference"
-              test="$x:result[ 2 ] is $args/foo:a
-                    and $x:result[ 3 ] is $args/foo:b
-                    and $x:result[ 4 ] is $args/foo:c" />
+              test="$rargs[ 1 ] is $args/foo:a
+                    and $rargs[ 2 ] is $args/foo:b
+                    and $rargs[ 3 ] is $args/foo:c" />
     </scenario>
 
 
@@ -107,18 +105,17 @@
         <param name="args"  select="$args/foo:b" />
       </call>
 
-      <expect label="returns target reference as first item in
-                     sequence"
-              test="f:QName( $fnref )
-                      = f:QName( $x:result[ 1 ] )" />
+      <expect label="retains target reference"
+              test="f:QName( $fnref ) = f:QName( $x:result )" />
 
       <expect label="returns arguments from both partial applications"
-              test="count( $x:result ) = 3" />
+              test="count( f:args( $x:result ) ) = 2" />
 
+      <variable name="rargs" select="f:args( $x:result )" />
       <expect label="arguments are ordered with previous applications
                      first in sequence"
-              test="$x:result[ 2 ] is $args/foo:a
-                    and $x:result[ 3 ] is $args/foo:b" />
+              test="$rargs[ 1 ] is $args/foo:a
+                    and $rargs[ 2 ] is $args/foo:b" />
     </scenario>
 
 
@@ -193,9 +190,9 @@
                 test="$x:result[ 1 ] = foo:applied[ @n = 3 ]" />
 
         <expect label="applies target function with arguments, by reference"
-                test="$x:result[ 2 ] is $args/foo:a
-                      and $x:result[ 3 ] is $args/foo:b
-                      and $x:result[ 4 ] is $args/foo:c" />
+                test="$x:result[ 2 ] = $args/foo:a
+                      and $x:result[ 3 ] = $args/foo:b
+                      and $x:result[ 4 ] = $args/foo:c" />
       </scenario>
 
 
@@ -442,8 +439,7 @@
       <expect label="provides source dynamic function reference"
               test="$x:result[ 2 ] is $fnref" />
 
-      <expect label="provides arity of target (root of all partial
-                     applications) function"
+      <expect label="provides arity of ref"
               test="$x:result[ 1 ]/@arity = 3" />
 
       <expect label="provides each argument of partial application
@@ -465,10 +461,11 @@
                                     $args/foo:d" />
       </call>
 
-      <expect label="produces error with all arguments"
+      <expect label="produces error with arguments of final
+                     application"
               test="exists( foo:partial-error )
-                    and $x:result[ 3 ] is $args/foo:a
-                    and $x:result[ 6 ] is $args/foo:d" />
+                    and $x:result[ 3 ] is $args/foo:c
+                    and $x:result[ 4 ] is $args/foo:d" />
     </scenario>
   </scenario>
 </description>

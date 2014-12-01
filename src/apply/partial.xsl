@@ -29,7 +29,7 @@
   xmlns:f="http://www.lovullo.com/hoxsl/apply"
   xmlns:_f="http://www.lovullo.com/hoxsl/apply/_priv">
 
-<import href="arity.xsl" />
+<import href="ref.xsl" />
 
 
 <!--
@@ -55,53 +55,32 @@
   <param name="fnref" as="item()+" />
   <param name="args"  as="item()*" />
 
-  <!-- perform type check here, not above, since we can be passed a
-       sequence (e.g.a  partially applied function) -->
-  <variable name="ref"
-            as="element(f:ref)"
-            select="$fnref[ 1 ]" />
+  <!-- note that, if FNREF is partially applied, then this arity
+       represents the arity of the partially applied function, _not_
+       the target function -->
+  <variable name="arity" as="xs:integer"
+            select="f:arity( $fnref )" />
 
-  <variable name="argout" as="item()*">
-    <!-- include any previously applied arguments (if we're partially
-         applying a partial application) -->
-    <sequence select="remove( $fnref, 1 )" />
-
-    <!-- nested sequences are implicitly flattened, so we're not
-         returning a sub-sequence here -->
-    <sequence select="$args" />
-  </variable>
-
-  <variable name="argn" as="xs:decimal"
-            select="count( $argout )" />
-
-  <variable name="arity" as="xs:decimal"
-            select="f:arity( $ref )" />
+  <variable name="argn" as="xs:integer"
+            select="count( $args )" />
 
   <choose>
-    <when test="$argn eq $arity">
-      <sequence select="_f:apply-partial( $ref, $argout )" />
-    </when>
-
     <when test="$argn gt $arity">
       <apply-templates mode="f:partial-arity-error-hook"
-                       select="$ref">
-        <with-param name="args"  select="$argout" />
-        <with-param name="arity" select="$arity" />
-        <with-param name="argn"  select="$argn" />
+                       select="$fnref">
+        <with-param name="fnref" select="$fnref" />
+        <with-param name="args"  select="$args" />
       </apply-templates>
     </when>
 
     <otherwise>
-      <f:ref>
-        <sequence select="$ref/@*" />
+      <variable name="new-ref"
+                select="f:push-args( $fnref, $args )" />
 
-        <attribute name="partial"
-                   select="count( $args )" />
-
-        <sequence select="$ref/*" />
-      </f:ref>
-
-      <sequence select="$argout" />
+      <sequence select="if ( $argn eq $arity ) then
+                          _f:apply-partial( $new-ref )
+                        else
+                          $new-ref" />
     </otherwise>
   </choose>
 </function>
@@ -125,8 +104,7 @@
   <!-- we never want to fail, so we perform our type check here rather
        than using param/@as -->
   <sequence select="$fn instance of element(f:ref)
-                    and exists( $fn/@partial )
-                    and number( $fn/@partial ) gt 0" />
+                    and exists( $fnref[ 2 ] )" />
 </function>
 
 
@@ -146,24 +124,18 @@
           match="f:ref"
           priority="1">
   <param name="args"  as="item()*" />
-  <param name="arity" as="xs:decimal" />
 
-  <variable name="ref" as="element(f:ref)"
-            select="." />
+  <variable name="arity" as="xs:integer"
+            select="f:arity(.)" />
   <variable name="argn" as="xs:decimal"
             select="count( $args )" />
-  <variable name="fn"
-            select="$ref/*[1]" />
-  <variable name="fname"
-            select="concat( '{', namespace-uri( $fn ), '}',
-                    $fn/local-name() )" />
 
   <sequence
       select="error(
-                QName( namespace-uri-for-prefix( 'f', $ref ),
+                QName( namespace-uri-for-prefix( 'f', . ),
                        'err:PARTIAL_PARAM_OVERFLOW' ),
                 concat( 'Attempted partial application of ',
-                        $fname, '#', $arity, ' with ',
+                        'function of arity ', $arity, ' with ',
                         $argn, ' arguments' ) )" />
 </template>
 
@@ -180,14 +152,16 @@
   are supported}.  This should be enough.
 -->
 <function name="_f:apply-partial">
-  <param name="fnref" as="element(f:ref)" />
-  <param name="args"  as="item()*" />
+  <param name="fnref" as="item()+" />
 
-  <variable name="fn" as="element()"
+  <variable name="args"
+            select="f:args( $fnref )" />
+
+  <variable name="desc" as="element( f:ref )"
             select="$fnref[ 1 ]" />
 
   <!-- just as `f:apply', we support up to 8 arguments -->
-  <apply-templates select="$fn" mode="f:apply">
+  <apply-templates select="$desc" mode="f:apply">
     <with-param name="arg1" select="$args[ 1 ]" />
     <with-param name="arg2" select="$args[ 2 ]" />
     <with-param name="arg3" select="$args[ 3 ]" />

@@ -41,8 +41,10 @@
   <template mode="f:partial-arity-error-hook"
             match="f:ref"
             priority="5">
-    <param name="args" as="item()*" />
-    <param name="arity" as="xs:decimal" />
+    <param name="args"  as="item()*" />
+
+    <variable name="arity"
+              select="f:arity(.)" />
 
     <foo:partial-error arity="{$arity}" />
 

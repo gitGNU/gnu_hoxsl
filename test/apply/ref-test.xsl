@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Arity calculations on dynamic and partially applied functions
+  Tests dynamic function reference
 
   Copyright (C) 2014 LoVullo Associates, Inc.
 
@@ -21,28 +21,15 @@
 -->
 
 <stylesheet version="2.0"
-  xmlns="http://www.w3.org/1999/XSL/Transform"
-  xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:f="http://www.lovullo.com/hoxsl/apply">
+            xmlns="http://www.w3.org/1999/XSL/Transform"
+            xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            xmlns:f="http://www.lovullo.com/hoxsl/apply"
+            xmlns:foo="http://www.lovullo.com/_junk">
 
+  <!-- this imports the SUT, as well as additional functions we need
+       for testing -->
+  <import href="../../src/apply.xsl" />
 
-
-<!--
-  Attempt to retrieve arity of dynamic function
-
-  The input must be a function reference.  Partially applied function
-  references will have an arity equivalent to the remaining parameters
-  in the original function.
-
-  If the arity cannot be determined, -1 is returned.
--->
-<function name="f:arity" as="xs:decimal">
-  <param name="fnref" as="element(f:ref)" />
-
-  <sequence select="if ( $fnref/@arity ) then
-                      $fnref/@arity
-                    else
-                      -1" />
-</function>
-
+  <!-- numerous templates for arity tests -->
+  <import href="../apply-test.xsl" />
 </stylesheet>

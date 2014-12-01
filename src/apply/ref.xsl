@@ -174,6 +174,10 @@
   increasing the argument count of @var{fnref} will @emph{decrease}
   the arity of the resulting reference and vice versa.
 
+  @emph{No validations are performed on arity}—if there exist more
+  arguments than the number of target function parameters, no error
+  will be raised.
+
   @var{fnref} must be a valid dynamic function reference.
 -->
 <function name="f:set-args" as="item()+">
@@ -200,6 +204,34 @@
   </f:ref>
 
   <sequence select="$args" />
+</function>
+
+
+<!--
+  Pushes @var{args} onto the argument list of @var{fnref}
+
+  This operates just as @code{f:set-args}, but retains existing arguments.
+-->
+<function name="f:push-args" as="item()+">
+  <param name="fnref" as="item()+" />
+  <param name="args"  as="item()*" />
+
+  <sequence select="f:set-args($fnref,
+                               (f:args( $fnref ), $args) )" />
+</function>
+
+
+<!--
+  Unshifts @var{args} onto the argument list of @var{fnref}
+
+  This operates just as @code{f:set-args}, but retains existing arguments.
+-->
+<function name="f:unshift-args" as="item()+">
+  <param name="fnref" as="item()+" />
+  <param name="args"  as="item()*" />
+
+  <sequence select="f:set-args($fnref,
+                               ($args, f:args( $fnref )) )" />
 </function>
 
 </stylesheet>

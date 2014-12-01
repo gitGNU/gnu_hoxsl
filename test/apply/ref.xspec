@@ -43,6 +43,7 @@
       <foo:a />
       <foo:b />
       <foo:c />
+      <foo:d />
     </foo:args>
   </variable>
 
@@ -394,6 +395,156 @@
 
       <expect label="returns no other items"
               test="count( $x:result ) = 2" />
+    </scenario>
+  </scenario>
+
+
+  <scenario label="f:push-args mutator">
+    <scenario label="pushing arguments onto empty reference list">
+      <call function="f:push-args">
+        <param name="fnref"
+               select="$test-fn" />
+        <param name="args"
+               select="$args/foo:a,
+                       $args/foo:b" />
+      </call>
+
+      <expect label="retains target QName"
+              test="f:QName( $x:result ) = f:QName( $test-fn )" />
+
+      <expect label="reduces arity by number of arguments, relative to
+                     target function"
+              test="f:arity( $x:result ) = f:arity( $test-fn ) - 2" />
+
+      <expect label="sets arguments by reference"
+              test="f:args( $x:result )[ 1 ] is $args/foo:a
+                    and f:args( $x:result )[ 2 ] is $args/foo:b" />
+    </scenario>
+
+
+    <scenario label="pushing arguments onto populated reference
+                     list">
+      <call function="f:push-args">
+        <param name="fnref"
+               select="f:set-args( $test-fn,
+                                   ($args/foo:a,
+                                    $args/foo:b) )" />
+        <param name="args"
+               select="$args/foo:c,
+                       $args/foo:d" />
+      </call>
+
+      <expect label="retains target QName"
+              test="f:QName( $x:result ) = f:QName( $test-fn )" />
+
+      <expect label="reduces arity by number of arguments, relative to
+                     previous arity"
+              test="f:arity( $x:result ) = f:arity( $test-fn ) - 4" />
+
+      <expect label="retains previous arguments by reference"
+              test="f:args( $x:result )[ 1 ] is $args/foo:a
+                    and f:args( $x:result )[ 2 ] is $args/foo:b" />
+
+      <expect label="pushes new arguments by reference"
+              test="f:args( $x:result )[ 3 ] is $args/foo:c
+                    and f:args( $x:result )[ 4 ] is $args/foo:d" />
+    </scenario>
+
+
+    <scenario label="pushing empty argument list onto populated
+                     reference list">
+      <call function="f:push-args">
+        <param name="fnref"
+               select="f:set-args( $test-fn,
+                                   ($args/foo:a,
+                                    $args/foo:b) )" />
+        <param name="args" select="()" />
+      </call>
+
+      <expect label="retains target QName"
+              test="f:QName( $x:result ) = f:QName( $test-fn )" />
+
+      <expect label="retains previous reference arity"
+              test="f:arity( $x:result ) = f:arity( $test-fn ) - 2" />
+
+      <expect label="retains previous arguments by reference"
+              test="f:args( $x:result )[ 1 ] is $args/foo:a
+                    and f:args( $x:result )[ 2 ] is $args/foo:b" />
+    </scenario>
+  </scenario>
+
+
+  <scenario label="f:unshift-args mutator">
+    <scenario label="unshifting arguments onto empty reference list">
+      <call function="f:unshift-args">
+        <param name="fnref"
+               select="$test-fn" />
+        <param name="args"
+               select="$args/foo:a,
+                       $args/foo:b" />
+      </call>
+
+      <expect label="retains target QName"
+              test="f:QName( $x:result ) = f:QName( $test-fn )" />
+
+      <expect label="reduces arity by number of arguments, relative to
+                     target function"
+              test="f:arity( $x:result ) = f:arity( $test-fn ) - 2" />
+
+      <expect label="sets arguments by reference"
+              test="f:args( $x:result )[ 1 ] is $args/foo:a
+                    and f:args( $x:result )[ 2 ] is $args/foo:b" />
+    </scenario>
+
+
+    <scenario label="unshifting arguments onto populated reference
+                     list">
+      <call function="f:unshift-args">
+        <param name="fnref"
+               select="f:set-args( $test-fn,
+                                   ($args/foo:a,
+                                    $args/foo:b) )" />
+        <param name="args"
+               select="$args/foo:c,
+                       $args/foo:d" />
+      </call>
+
+      <expect label="retains target QName"
+              test="f:QName( $x:result ) = f:QName( $test-fn )" />
+
+      <expect label="reduces arity by number of arguments, relative to
+                     previous arity"
+              test="f:arity( $x:result ) = f:arity( $test-fn ) - 4" />
+
+      <expect label="retains previous arguments by reference"
+              test="f:args( $x:result )[ 3 ] is $args/foo:a
+                    and f:args( $x:result )[ 4 ] is $args/foo:b" />
+
+      <expect label="unshifts new arguments by reference"
+              test="f:args( $x:result )[ 1 ] is $args/foo:c
+                    and f:args( $x:result )[ 2 ] is $args/foo:d" />
+    </scenario>
+
+
+    <scenario label="unshifting empty argument list onto populated
+                     reference list">
+      <call function="f:unshift-args">
+        <param name="fnref"
+               select="f:set-args( $test-fn,
+                                   ($args/foo:a,
+                                    $args/foo:b) )" />
+        <param name="args" select="()" />
+      </call>
+
+      <expect label="retains target QName"
+              test="f:QName( $x:result ) = f:QName( $test-fn )" />
+
+      <expect label="retains previous reference arity"
+              test="f:arity( $x:result ) = f:arity( $test-fn ) - 2" />
+
+      <expect label="retains previous arguments by reference"
+              test="f:args( $x:result )[ 1 ] is $args/foo:a
+                    and f:args( $x:result )[ 2 ] is $args/foo:b" />
     </scenario>
   </scenario>
 </description>

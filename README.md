@@ -70,11 +70,17 @@ the output included within a distribution.
 ### Partial Applications
 Dynamic function applications using `f:apply` are partially applied if
 the number of arguments provided is less than the arity of the target
-function.
+function.  For convenience, the `apply-gen` stylesheet will also
+generate functions to perform partial application without the use of
+`f:apply` for the first call, as in the first example below:
 
 ```xml
   <!-- produces a new dynamic function of arity 5 - 3 = 2 -->
   <variable name="partial"
+            select="my:arity5( 1, 2, 3 )" />
+
+  <!-- does the same, the long way -->
+  <variable name="partial-long"
             select="f:apply( my:arity5(), 1, 2, 3 )" />
 
   <!-- consequently, currying is supported -->
@@ -84,6 +90,7 @@ function.
   <!-- equiv = true() -->
   <variable name="equiv"
             select="$result
+                    = f:apply( my:arity5( 1, 2, 3 ), 4, 5 )
                     = f:apply( my:arity5(), 1, 2, 3, 4, 5 )
                     = my:arity5( 1, 2, 3, 4, 5 )" />
 ```

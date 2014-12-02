@@ -26,6 +26,20 @@
              xmlns:foo="http://www.lovullo.com/_junk"
              stylesheet="apply-gen-test.xsl">
 
+  <variable name="args">
+    <foo:args>
+      <foo:arg1 />
+      <foo:arg2 />
+      <foo:arg3 />
+      <foo:arg4 />
+      <foo:arg5 />
+      <foo:arg6 />
+      <foo:arg7 />
+      <foo:arg8 />
+    </foo:args>
+  </variable>
+
+
   <!-- basic case -->
   <scenario label="given a unary function">
     <context>
@@ -216,6 +230,204 @@
 
         <expect label="is the arity of target function"
                 select="2" />
+      </scenario>
+    </scenario>
+
+
+    <!-- more duplication...we support up to eight arguments, so we'll
+         have to test the generation of 1..7 (nullary is already
+         tested and 8 results in a full application) -->
+    <scenario label="with partial functions of 8-ary target, given">
+      <variable name="qname"
+                select="QName( 'http://www.lovullo.com/_junk',
+                               'foo:eight' )" />
+
+      <scenario label="one argument">
+        <call function="foo:eight">
+          <param name="arg1" select="$args/foo:arg1" />
+        </call>
+
+        <expect label="returns partially applied function"
+                test="f:is-partial( $x:result )" />
+
+        <expect label="references the target function"
+                test="f:QName( $x:result ) = $qname" />
+
+        <expect label="partially applies one argument"
+                test="f:arity( $x:result ) = 7" />
+
+        <variable name="result-args" as="item()+"
+                  select="f:args( $x:result )" />
+        <expect label="argument is partially applied by reference"
+                test="$result-args[ 1 ] is $args/foo:arg1" />
+      </scenario>
+
+
+      <scenario label="two arguments">
+        <call function="foo:eight">
+          <param name="arg1" select="$args/foo:arg1" />
+          <param name="arg2" select="$args/foo:arg2" />
+        </call>
+
+        <expect label="returns partially applied function"
+                test="f:is-partial( $x:result )" />
+
+        <expect label="references the target function"
+                test="f:QName( $x:result ) = $qname" />
+
+        <expect label="partially applies one argument"
+                test="f:arity( $x:result ) = 6" />
+
+        <variable name="result-args" as="item()+"
+                  select="f:args( $x:result )" />
+        <expect label="argument is partially applied by reference"
+                test="$result-args[ 1 ] is $args/foo:arg1
+                      and $result-args[ 2 ] is $args/foo:arg2" />
+      </scenario>
+
+
+      <scenario label="three arguments">
+        <call function="foo:eight">
+          <param name="arg1" select="$args/foo:arg1" />
+          <param name="arg2" select="$args/foo:arg2" />
+          <param name="arg3" select="$args/foo:arg3" />
+        </call>
+
+        <expect label="returns partially applied function"
+                test="f:is-partial( $x:result )" />
+
+        <expect label="references the target function"
+                test="f:QName( $x:result ) = $qname" />
+
+        <expect label="partially applies one argument"
+                test="f:arity( $x:result ) = 5" />
+
+        <variable name="result-args" as="item()+"
+                  select="f:args( $x:result )" />
+        <expect label="argument is partially applied by reference"
+                test="$result-args[ 1 ] is $args/foo:arg1
+                      and $result-args[ 2 ] is $args/foo:arg2
+                      and $result-args[ 3 ] is $args/foo:arg3" />
+      </scenario>
+
+
+      <scenario label="four arguments">
+        <call function="foo:eight">
+          <param name="arg1" select="$args/foo:arg1" />
+          <param name="arg2" select="$args/foo:arg2" />
+          <param name="arg3" select="$args/foo:arg3" />
+          <param name="arg4" select="$args/foo:arg4" />
+        </call>
+
+        <expect label="returns partially applied function"
+                test="f:is-partial( $x:result )" />
+
+        <expect label="references the target function"
+                test="f:QName( $x:result ) = $qname" />
+
+        <expect label="partially applies one argument"
+                test="f:arity( $x:result ) = 4" />
+
+        <variable name="result-args" as="item()+"
+                  select="f:args( $x:result )" />
+        <expect label="argument is partially applied by reference"
+                test="$result-args[ 1 ] is $args/foo:arg1
+                      and $result-args[ 2 ] is $args/foo:arg2
+                      and $result-args[ 3 ] is $args/foo:arg3
+                      and $result-args[ 4 ] is $args/foo:arg4" />
+      </scenario>
+
+
+      <scenario label="five arguments">
+        <call function="foo:eight">
+          <param name="arg1" select="$args/foo:arg1" />
+          <param name="arg2" select="$args/foo:arg2" />
+          <param name="arg3" select="$args/foo:arg3" />
+          <param name="arg4" select="$args/foo:arg4" />
+          <param name="arg5" select="$args/foo:arg5" />
+        </call>
+
+        <expect label="returns partially applied function"
+                test="f:is-partial( $x:result )" />
+
+        <expect label="references the target function"
+                test="f:QName( $x:result ) = $qname" />
+
+        <expect label="partially applies one argument"
+                test="f:arity( $x:result ) = 3" />
+
+        <variable name="result-args" as="item()+"
+                  select="f:args( $x:result )" />
+        <expect label="argument is partially applied by reference"
+                test="$result-args[ 1 ] is $args/foo:arg1
+                      and $result-args[ 2 ] is $args/foo:arg2
+                      and $result-args[ 3 ] is $args/foo:arg3
+                      and $result-args[ 4 ] is $args/foo:arg4
+                      and $result-args[ 5 ] is $args/foo:arg5" />
+      </scenario>
+
+
+      <scenario label="six arguments">
+        <call function="foo:eight">
+          <param name="arg1" select="$args/foo:arg1" />
+          <param name="arg2" select="$args/foo:arg2" />
+          <param name="arg3" select="$args/foo:arg3" />
+          <param name="arg4" select="$args/foo:arg4" />
+          <param name="arg5" select="$args/foo:arg5" />
+          <param name="arg6" select="$args/foo:arg6" />
+        </call>
+
+        <expect label="returns partially applied function"
+                test="f:is-partial( $x:result )" />
+
+        <expect label="references the target function"
+                test="f:QName( $x:result ) = $qname" />
+
+        <expect label="partially applies one argument"
+                test="f:arity( $x:result ) = 2" />
+
+        <variable name="result-args" as="item()+"
+                  select="f:args( $x:result )" />
+        <expect label="argument is partially applied by reference"
+                test="$result-args[ 1 ] is $args/foo:arg1
+                      and $result-args[ 2 ] is $args/foo:arg2
+                      and $result-args[ 3 ] is $args/foo:arg3
+                      and $result-args[ 4 ] is $args/foo:arg4
+                      and $result-args[ 5 ] is $args/foo:arg5
+                      and $result-args[ 6 ] is $args/foo:arg6" />
+      </scenario>
+
+
+      <scenario label="seven arguments">
+        <call function="foo:eight">
+          <param name="arg1" select="$args/foo:arg1" />
+          <param name="arg2" select="$args/foo:arg2" />
+          <param name="arg3" select="$args/foo:arg3" />
+          <param name="arg4" select="$args/foo:arg4" />
+          <param name="arg5" select="$args/foo:arg5" />
+          <param name="arg6" select="$args/foo:arg6" />
+          <param name="arg7" select="$args/foo:arg7" />
+        </call>
+
+        <expect label="returns partially applied function"
+                test="f:is-partial( $x:result )" />
+
+        <expect label="references the target function"
+                test="f:QName( $x:result ) = $qname" />
+
+        <expect label="partially applies one argument"
+                test="f:arity( $x:result ) = 1" />
+
+        <variable name="result-args" as="item()+"
+                  select="f:args( $x:result )" />
+        <expect label="argument is partially applied by reference"
+                test="$result-args[ 1 ] is $args/foo:arg1
+                      and $result-args[ 2 ] is $args/foo:arg2
+                      and $result-args[ 3 ] is $args/foo:arg3
+                      and $result-args[ 4 ] is $args/foo:arg4
+                      and $result-args[ 5 ] is $args/foo:arg5
+                      and $result-args[ 6 ] is $args/foo:arg6
+                      and $result-args[ 7 ] is $args/foo:arg7" />
       </scenario>
     </scenario>
   </scenario>

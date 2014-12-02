@@ -41,4 +41,19 @@
 
     <sequence select="$x - $y" />
   </function>
+
+  <!-- large number of arguments to test partial application -->
+  <function name="foo:eight" as="item()+">
+    <param name="arg1" />
+    <param name="arg2" />
+    <param name="arg3" />
+    <param name="arg4" />
+    <param name="arg5" />
+    <param name="arg6" />
+    <param name="arg7" />
+    <param name="arg8" />
+
+    <sequence select="$arg1, $arg2, $arg3, $arg4,
+                      $arg5, $arg6, $arg7, $arg8" />
+  </function>
 </stylesheet>

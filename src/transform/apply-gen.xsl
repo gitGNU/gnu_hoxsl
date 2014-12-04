@@ -32,6 +32,7 @@
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:f="http://www.lovullo.com/hoxsl/apply"
+  xmlns:_f="http://www.lovullo.com/hoxsl/apply/_priv"
   xmlns:fgen="http://www.lovullo.com/hoxsl/apply/gen"
   xmlns:out="http://www.lovullo.com/hoxsl/apply/gen/_out"
   exclude-result-prefixes="#default fgen">
@@ -112,6 +113,37 @@
 
 
 <!--
+  Do not process functions that are overloaded on arity
+
+  There are a couple reasons for this:  Firstly, overloading is
+  fundamentally incompatible with partial application, because we are unable
+  to determine when a function is fully applied.  Secondly, we would have no
+  choice but to generate functions for every arity that does @emph{not}
+  exist.  Together, that would yield a very awkward implementation whereby
+  applying N arguments may apply the target function, but N-1 and N+1 may
+  result in a partial application.  That is not acceptable.
+
+  To aid in debugging, a comment is output stating that the function was
+  explicitly ignored.
+-->
+<template mode="fgen:create"
+          match="xsl:function[
+                   @name = root(.)/xsl:*/xsl:function[
+                     not( . is current() )
+                   ]/@name
+                 ]"
+          priority="5">
+  <comment>
+    <text>No definition generated for overloaded function `</text>
+    <value-of select="@name" />
+    <text>#</text>
+    <value-of select="count( xsl:param )" />
+    <text>'</text>
+  </comment>
+</template>
+
+
+<!--
   Process function definition
 -->
 <template mode="fgen:create"
@@ -147,10 +179,15 @@
 
 
 <!--
-  Generate nullary function for delayed application
+  Generate dynamic application functions for the application of @var{fnref}.
 
-  This will output a node that can be later applied to a template with
-  mode `f:apply' to invoke the associated application template.
+  The most important function is the nullary, which returns a dynamic
+  function reference that can be later used to apply the function.
+
+  Functions are also generated for partial applications: given a target
+  function @var{f} of arity @var{α}, functions of arity @math{1<x<α} are
+  generated that partially apply @var{f} with @var{x} arguments; this is
+  short-hand for invoking @code{f:apply} or @code{f:partial} directly.
 -->
 <function name="fgen:create-func">
   <param name="fnref"       as="element(xsl:function)" />
@@ -161,15 +198,42 @@
   <variable name="local-name"
             select="substring-after( $fnref/@name, ':' )" />
 
+  <variable name="arity"
+            select="count( $fnref/xsl:param )" />
+
+  <variable name="params"
+            select="$fnref/xsl:param" />
+
+  <!-- the nullary simply returns a dynamic function reference -->
   <out:function name="{$name-resolv}" as="element()">
     <namespace name="{$ns-prefix}"
                select="$ns" />
 
-    <variable name="arity"
-              select="count( $fnref/xsl:param )" />
-
     <sequence select="f:make-ref( $name-resolv, $arity )" />
   </out:function>
+
+  <!-- all others perform partial applications -->
+  <for-each select="1 to ( $arity - 1 )">
+    <variable name="partial-arity"
+              select="." />
+
+    <variable name="subparams"
+              select="subsequence( $params, 1, $partial-arity )" />
+
+    <out:function name="{$name-resolv}" as="item()+">
+      <namespace name="{$ns-prefix}"
+                 select="$ns" />
+
+      <variable name="argstr"
+                select="_f:argstr-gen( $subparams )" />
+
+      <sequence select="_f:param-gen( $subparams )" />
+
+      <out:sequence select="f:partial(
+                              {$name-resolv}(),
+                              ({$argstr}) )" />
+    </out:function>
+  </for-each>
 </function>
 
 
@@ -187,7 +251,7 @@
   <param name="ns-prefix"   as="xs:string" />
   <param name="ns"          as="xs:anyURI" />
 
-  <variable name="params"
+  <variable name="params" as="element()+"
             select="$defn/xsl:param" />
 
   <out:template mode="f:apply"
@@ -196,27 +260,58 @@
     <namespace name="{$ns-prefix}"
                select="$ns" />
 
-    <for-each select="$params">
-      <xsl:variable name="i"
-                    select="position()" />
+    <sequence select="_f:param-gen( $params )" />
 
-      <out:param name="arg{$i}">
-        <copy-of select="@as" />
-      </out:param>
-    </for-each>
-
-    <variable name="argstr">
-      <for-each select="$params">
-        <if test="position() gt 1">
-          <text>, </text>
-        </if>
-        <text>$arg</text>
-        <value-of select="position()" />
-      </for-each>
-    </variable>
+    <variable name="argstr"
+              select="_f:argstr-gen( $params )" />
 
     <out:sequence select="{$name-resolv}({$argstr})" />
   </out:template>
+</function>
+
+
+<!--
+  Given a sequence of XSLT function parameters @var{params}, generate
+  enumerated argument @code{<param>}s.
+
+  This is to be used in conjunction with @code{_f:argstr-gen}.
+-->
+<function name="_f:param-gen" as="element()+">
+  <param name="params" as="element()+" />
+
+  <for-each select="$params">
+    <xsl:variable name="i"
+                  select="position()" />
+
+    <out:param name="arg{$i}">
+      <copy-of select="@as" />
+    </out:param>
+  </for-each>
+</function>
+
+
+<!--
+  Given a sequence of XSLT function parameters @var{params}, generate
+  a string that, when used in an XPath, represents a list of arguments of a
+  function application.
+
+  This is to be used in conjunction with @code{_f:param-gen}.
+-->
+<function name="_f:argstr-gen" as="xs:string">
+  <param name="params" as="element()+" />
+
+  <xsl:variable name="argstr">
+    <for-each select="$params">
+      <if test="position() gt 1">
+        <text>, </text>
+      </if>
+      <text>$arg</text>
+      <value-of select="position()" />
+    </for-each>
+  </xsl:variable>
+
+  <!-- force to string -->
+  <value-of select="string( $argstr )" />
 </function>
 
 </stylesheet>

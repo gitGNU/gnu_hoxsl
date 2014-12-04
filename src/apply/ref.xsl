@@ -160,7 +160,12 @@
 <function name="f:args" as="item()*">
   <param name="fnref" as="item()+" />
 
-  <sequence select="remove( $fnref, 1 )" />
+  <variable name="desc" as="element( f:ref )"
+            select="$fnref[ 1 ]" />
+  <variable name="length" as="xs:double"
+            select="$desc/@length" />
+
+  <sequence select="subsequence( $fnref, 2, ( $length - 1 ) )" />
 </function>
 
 

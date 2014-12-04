@@ -423,6 +423,23 @@
       <expect label="returns no other items"
               test="count( $x:result ) = 2" />
     </scenario>
+
+
+    <scenario label="operating on a reference preceding adjacent data">
+      <call function="f:args">
+        <param name="fnref"
+               select="f:set-args( $test-fn, ($args/foo:a,
+                                              $args/foo:b) ),
+                       'adjacent data'" />
+      </call>
+
+      <expect label="returns sequence of arguments by reference"
+              test="$x:result[ 1 ] is $args/foo:a
+                      and $x:result[ 2 ] is $args/foo:b" />
+
+      <expect label="returns no adjacent data"
+              test="count( $x:result ) = 2" />
+    </scenario>
   </scenario>
 
 

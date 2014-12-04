@@ -375,6 +375,32 @@
                      sequence"
               test="f:length( $x:result ) = count( $x:result )" />
     </scenario>
+
+
+    <scenario label="operating adjacent to other data">
+      <call function="f:set-args">
+        <param name="fnref" select="$test-fn,
+                                    $args/foo:a,
+                                    $args/foo:b" />
+        <param name="args"  select="(1, 2)" />
+      </call>
+
+      <expect label="retains target QName"
+              test="f:QName( $x:result ) = f:QName( $test-fn )" />
+
+      <expect label="reduces arity by number of arguments"
+              test="f:arity( $x:result ) = f:arity( $test-fn ) - 2" />
+
+      <!-- notice that the length _does not_ reflect adjacent data -->
+      <expect label="produces length equal to length of constructed
+                     sequence, sans adjacent data"
+              test="f:length( $x:result ) = count( $x:result ) - 2" />
+
+      <variable name="rlength" select="count( $x:result )" />
+      <expect label="retains adjacent data by reference"
+              test="$x:result[ $rlength - 1 ] is $args/foo:a
+                    and $x:result[ $rlength ] is $args/foo:b" />
+    </scenario>
   </scenario>
 
 

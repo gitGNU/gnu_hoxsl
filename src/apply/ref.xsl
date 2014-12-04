@@ -211,7 +211,11 @@
     <sequence select="$desc/*" />
   </f:ref>
 
-  <sequence select="$args" />
+  <!-- be sure to retain the adjacent data (which is offset by the
+       _original_ reference length) -->
+  <sequence select="$args,
+                    subsequence( $fnref,
+                                 $desc/@length + 1 )" />
 </function>
 
 

@@ -31,15 +31,25 @@
   The descriptor @var{desc} has the following format:
 
   @example
-    <f:ref arity="N" [...]>
+    <f:ref arity="N" length="M" [...]>
       <target />
     </f:ref>
   @end example
 
   where the @var{target} node shares the same QName as the function to
-  be applied, and @var{@arity} is its arity.  The @var{f:ref} node may
-  be decorated with additional attributes depending on its context or
+  be applied, and @var{@arity} is its arity.  @var{@length} caches the
+  number of items (in a sequence) that make up the reference; it can
+  be retrieved with @code{f:length}.  The @var{f:ref} node may be
+  decorated with additional attributes depending on its context or
   constructor.
+
+  Each of these functions respects data adjacent to the given
+  reference (which is at the head of the sequence).  For example,
+  @code{f:set-args} will set the arguments of the dynamic function
+  reference represented by the head of the provided sequence, but will
+  leave all data following the reference untouched; this allows
+  references to be processed in a streaming manner without cutting the
+  sequence up before operating on the reference.
 -->
 
 <stylesheet version="2.0"
@@ -66,7 +76,7 @@
   <variable name="ns"
             select="namespace-uri-from-QName( $name )" />
 
-  <f:ref arity="{$arity}">
+  <f:ref arity="{$arity}" length="1">
     <element name="{$name}"
              namespace="{$ns}" />
   </f:ref>
@@ -160,7 +170,12 @@
 <function name="f:args" as="item()*">
   <param name="fnref" as="item()+" />
 
-  <sequence select="remove( $fnref, 1 )" />
+  <variable name="desc" as="element( f:ref )"
+            select="$fnref[ 1 ]" />
+  <variable name="length" as="xs:double"
+            select="$desc/@length" />
+
+  <sequence select="subsequence( $fnref, 2, ( $length - 1 ) )" />
 </function>
 
 
@@ -200,10 +215,17 @@
     <attribute name="arity"
                select="$target-arity - count( $args )" />
 
+    <attribute name="length"
+               select="count( $args ) + 1" />
+
     <sequence select="$desc/*" />
   </f:ref>
 
-  <sequence select="$args" />
+  <!-- be sure to retain the adjacent data (which is offset by the
+       _original_ reference length) -->
+  <sequence select="$args,
+                    subsequence( $fnref,
+                                 $desc/@length + 1 )" />
 </function>
 
 
@@ -232,6 +254,30 @@
 
   <sequence select="f:set-args($fnref,
                                ($args, f:args( $fnref )) )" />
+</function>
+
+
+<!--
+  Retrieve length of @var{fnref} as a number of sequence items
+
+  While the reference is intended to be opaque, it is no secret that
+  the data are stored as a sequence.  The length is therefore
+  important for stepping through that sequence of data, similar to how
+  data/struct length are required for pointer arithmetic when dealing
+  with memory in C.
+
+  So, this doesn't break encapsulation: it just tells us how big we
+  are, which is an external quality that can be easily discovered
+  without our help; we just cache it for both performance and
+  convenience.  Aren't we nice?
+-->
+<function name="f:length" as="xs:double">
+  <param name="fnref" as="item()+" />
+
+  <variable name="desc" as="element( f:ref )"
+            select="$fnref[ 1 ]" />
+
+  <sequence select="number( $desc/@length )" />
 </function>
 
 </stylesheet>

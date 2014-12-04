@@ -27,6 +27,11 @@
              xmlns:foo="http://www.lovullo.com/_junk"
              stylesheet="partial-test.xsl">
 
+  <!-- TODO: this is common between a number of files; move me -->
+  <variable name="foo-uri"
+            select="namespace-uri-for-prefix(
+                      'foo', root(.)/element() )" />
+
   <variable name="fnref"
             select="foo:ternary()" />
 
@@ -89,11 +94,10 @@
               test="$x:result[ 1 ]
                     and $x:result[ 1 ] = foo:ternary-applied" />
 
-      <variable name="rargs" select="f:args( $x:result )" />
       <expect label="applies target function with arguments, by reference"
-              test="$rargs[ 1 ] is $args/foo:a
-                    and $rargs[ 2 ] is $args/foo:b
-                    and $rargs[ 3 ] is $args/foo:c" />
+              test="$x:result[ 2 ] is $args/foo:a
+                    and $x:result[ 3 ] is $args/foo:b
+                    and $x:result[ 4 ] is $args/foo:c" />
     </scenario>
 
 
@@ -144,9 +148,9 @@
                      arguments to a target">
       <scenario label="unary">
         <call function="f:partial">
-          <param name="fnref">
-            <f:ref arity="1"><foo:fn1 /></f:ref>
-          </param>
+          <param name="fnref"
+                 select="f:make-ref( QName( $foo-uri, 'foo:fn1' ),
+                                     1 )" />
           <param name="args" select="$args/foo:a" />
         </call>
 
@@ -160,9 +164,9 @@
 
       <scenario label="binary">
         <call function="f:partial">
-          <param name="fnref">
-            <f:ref arity="2"><foo:fn2 /></f:ref>
-          </param>
+          <param name="fnref"
+                 select="f:make-ref( QName( $foo-uri, 'foo:fn2' ),
+                                     2 )" />
           <param name="args" select="$args/foo:a,
                                      $args/foo:b" />
         </call>
@@ -178,9 +182,9 @@
 
       <scenario label="ternary">
         <call function="f:partial">
-          <param name="fnref">
-            <f:ref arity="3"><foo:fn3 /></f:ref>
-          </param>
+          <param name="fnref"
+                 select="f:make-ref( QName( $foo-uri, 'foo:fn3' ),
+                                     3 )" />
           <param name="args" select="$args/foo:a,
                                      $args/foo:b,
                                      $args/foo:c" />
@@ -198,9 +202,9 @@
 
       <scenario label="4-ary">
         <call function="f:partial">
-          <param name="fnref">
-            <f:ref arity="4"><foo:fn4 /></f:ref>
-          </param>
+          <param name="fnref"
+                 select="f:make-ref( QName( $foo-uri, 'foo:fn4' ),
+                                     4 )" />
           <param name="args" select="$args/foo:a,
                                      $args/foo:b,
                                      $args/foo:c,
@@ -220,9 +224,9 @@
 
       <scenario label="5-ary">
         <call function="f:partial">
-          <param name="fnref">
-            <f:ref arity="5"><foo:fn5 /></f:ref>
-          </param>
+          <param name="fnref"
+                 select="f:make-ref( QName( $foo-uri, 'foo:fn5' ),
+                                     5 )" />
           <param name="args" select="$args/foo:a,
                                      $args/foo:b,
                                      $args/foo:c,
@@ -244,9 +248,9 @@
 
       <scenario label="6-ary">
         <call function="f:partial">
-          <param name="fnref">
-            <f:ref arity="6"><foo:fn6 /></f:ref>
-          </param>
+          <param name="fnref"
+                 select="f:make-ref( QName( $foo-uri, 'foo:fn6' ),
+                                     6 )" />
           <param name="args" select="$args/foo:a,
                                      $args/foo:b,
                                      $args/foo:c,
@@ -270,9 +274,9 @@
 
       <scenario label="7-ary">
         <call function="f:partial">
-          <param name="fnref">
-            <f:ref arity="7"><foo:fn7 /></f:ref>
-          </param>
+          <param name="fnref"
+                 select="f:make-ref( QName( $foo-uri, 'foo:fn7' ),
+                                     7 )" />
           <param name="args" select="$args/foo:a,
                                      $args/foo:b,
                                      $args/foo:c,
@@ -298,9 +302,9 @@
 
       <scenario label="8-ary">
         <call function="f:partial">
-          <param name="fnref">
-            <f:ref arity="8"><foo:fn8 /></f:ref>
-          </param>
+          <param name="fnref"
+                 select="f:make-ref( QName( $foo-uri, 'foo:fn8' ),
+                                     8 )" />
           <param name="args" select="$args/foo:a,
                                      $args/foo:b,
                                      $args/foo:c,

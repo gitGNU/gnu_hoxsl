@@ -42,6 +42,17 @@
     <sequence select="$x - $y" />
   </function>
 
+
+  <!-- overloaded function, for which we cannot generate anything -->
+  <function name="foo:overloaded">
+    <param name="a" />
+  </function>
+  <function name="foo:overloaded">
+    <param name="a" />
+    <param name="b" />
+  </function>
+
+
   <!-- large number of arguments to test partial application -->
   <function name="foo:eight" as="item()+">
     <param name="arg1" />

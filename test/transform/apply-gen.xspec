@@ -130,6 +130,27 @@
   </scenario>
 
 
+  <!-- see SUT for rationale -->
+  <scenario label="given an arity-overloaded function">
+    <context>
+      <xsl:stylesheet>
+        <xsl:function name="foo:overloaded">
+          <xsl:param name="a" />
+        </xsl:function>
+
+        <xsl:function name="foo:overloaded">
+          <xsl:param name="a" />
+          <xsl:param name="b" />
+        </xsl:function>
+      </xsl:stylesheet>
+    </context>
+
+    <expect label="yields no functions of that name"
+            test="not( xsl:stylesheet/xsl:function[
+                         @name='foo:overloaded' ] )" />
+  </scenario>
+
+
   <scenario label="given a stylesheet">
     <scenario label="with no function elements">
       <context>

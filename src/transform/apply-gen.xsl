@@ -113,6 +113,37 @@
 
 
 <!--
+  Do not process functions that are overloaded on arity
+
+  There are a couple reasons for this:  Firstly, overloading is
+  fundamentally incompatible with partial application, because we are unable
+  to determine when a function is fully applied.  Secondly, we would have no
+  choice but to generate functions for every arity that does @emph{not}
+  exist.  Together, that would yield a very awkward implementation whereby
+  applying N arguments may apply the target function, but N-1 and N+1 may
+  result in a partial application.  That is not acceptable.
+
+  To aid in debugging, a comment is output stating that the function was
+  explicitly ignored.
+-->
+<template mode="fgen:create"
+          match="xsl:function[
+                   @name = root(.)/xsl:*/xsl:function[
+                     not( . is current() )
+                   ]/@name
+                 ]"
+          priority="5">
+  <comment>
+    <text>No definition generated for overloaded function `</text>
+    <value-of select="@name" />
+    <text>#</text>
+    <value-of select="count( xsl:param )" />
+    <text>'</text>
+  </comment>
+</template>
+
+
+<!--
   Process function definition
 -->
 <template mode="fgen:create"

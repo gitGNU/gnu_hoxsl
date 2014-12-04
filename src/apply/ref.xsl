@@ -31,15 +31,25 @@
   The descriptor @var{desc} has the following format:
 
   @example
-    <f:ref arity="N" [...]>
+    <f:ref arity="N" length="M" [...]>
       <target />
     </f:ref>
   @end example
 
   where the @var{target} node shares the same QName as the function to
-  be applied, and @var{@arity} is its arity.  The @var{f:ref} node may
-  be decorated with additional attributes depending on its context or
+  be applied, and @var{@arity} is its arity.  @var{@length} caches the
+  number of items (in a sequence) that make up the reference; it can
+  be retrieved with @code{f:length}.  The @var{f:ref} node may be
+  decorated with additional attributes depending on its context or
   constructor.
+
+  Each of these functions respects data adjacent to the given
+  reference (which is at the head of the sequence).  For example,
+  @code{f:set-args} will set the arguments of the dynamic function
+  reference represented by the head of the provided sequence, but will
+  leave all data following the reference untouched; this allows
+  references to be processed in a streaming manner without cutting the
+  sequence up before operating on the reference.
 -->
 
 <stylesheet version="2.0"

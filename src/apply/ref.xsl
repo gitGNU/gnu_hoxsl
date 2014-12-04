@@ -66,7 +66,7 @@
   <variable name="ns"
             select="namespace-uri-from-QName( $name )" />
 
-  <f:ref arity="{$arity}">
+  <f:ref arity="{$arity}" length="1">
     <element name="{$name}"
              namespace="{$ns}" />
   </f:ref>
@@ -200,6 +200,9 @@
     <attribute name="arity"
                select="$target-arity - count( $args )" />
 
+    <attribute name="length"
+               select="count( $args ) + 1" />
+
     <sequence select="$desc/*" />
   </f:ref>
 
@@ -232,6 +235,30 @@
 
   <sequence select="f:set-args($fnref,
                                ($args, f:args( $fnref )) )" />
+</function>
+
+
+<!--
+  Retrieve length of @var{fnref} as a number of sequence items
+
+  While the reference is intended to be opaque, it is no secret that
+  the data are stored as a sequence.  The length is therefore
+  important for stepping through that sequence of data, similar to how
+  data/struct length are required for pointer arithmetic when dealing
+  with memory in C.
+
+  So, this doesn't break encapsulation: it just tells us how big we
+  are, which is an external quality that can be easily discovered
+  without our help; we just cache it for both performance and
+  convenience.  Aren't we nice?
+-->
+<function name="f:length" as="xs:double">
+  <param name="fnref" as="item()+" />
+
+  <variable name="desc" as="element( f:ref )"
+            select="$fnref[ 1 ]" />
+
+  <sequence select="number( $desc/@length )" />
 </function>
 
 </stylesheet>

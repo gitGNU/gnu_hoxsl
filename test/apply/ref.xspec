@@ -109,6 +109,19 @@
     </scenario>
 
 
+    <scenario label="given a valid dynamic function reference adjacent
+                     to other data">
+      <call function="f:is-ref">
+        <param name="fnref"
+               select="f:make-ref( QName( $foo-uri, 'foo' ), 0 ),
+                       'adjacent data'" />
+      </call>
+
+      <expect label="returns true()"
+              select="true()" />
+    </scenario>
+
+
     <scenario label="given an invalid dynamic function reference">
       <call function="f:is-ref">
         <param name="fnref">
@@ -230,18 +243,48 @@
       <expect label="returns empty sequence"
               select="()" />
     </scenario>
+
+
+    <scenario label="given a valid dynamic function reference with
+                     adjacent data">
+      <call function="f:QName">
+        <param name="fnref"
+               select="f:make-ref( $foo-qname, 0 ),
+                       'adjacent data'" />
+      </call>
+
+      <expect label="returns QName"
+              test="$x:result instance of xs:QName" />
+
+      <expect label="returns QName of target dynamic function"
+              select="$foo-qname" />
+    </scenario>
   </scenario>
 
 
   <scenario label="f:arity">
-    <scenario label="given a proper function reference">
-      <variable name="test-arity"
-                select="5" />
+    <variable name="test-arity"
+              select="5" />
 
+    <scenario label="given a proper function reference">
       <!-- test our format directly; do not rely on the
            apply-gen code -->
       <call function="f:arity">
         <param name="fnref" select="$test-fn" />
+      </call>
+
+      <expect label="provides function arity"
+              select="$test-arity" />
+    </scenario>
+
+
+    <scenario label="given a proper function reference with adjacent
+                     data">
+      <!-- test our format directly; do not rely on the
+           apply-gen code -->
+      <call function="f:arity">
+        <param name="fnref" select="$test-fn,
+                                    'adjacent data'" />
       </call>
 
       <expect label="provides function arity"
@@ -553,6 +596,39 @@
                      sequence"
               test="f:length( $x:result ) = count( $x:result )" />
     </scenario>
+
+
+    <scenario label="pushing arguments onto reference adjacent to
+                     other data">
+      <call function="f:push-args">
+        <param name="fnref"
+               select="$test-fn,
+                       $args/foo:a,
+                       $args/foo:b" />
+        <param name="args"
+               select="$args/foo:c" />
+      </call>
+
+      <expect label="retains target QName"
+              test="f:QName( $x:result ) = f:QName( $test-fn )" />
+
+      <expect label="reduces arity by number of arguments, relative to
+                     target function"
+              test="f:arity( $x:result ) = f:arity( $test-fn ) - 1" />
+
+      <expect label="sets arguments by reference"
+              test="f:args( $x:result )[ 1 ] is $args/foo:c" />
+
+      <variable name="rlength" select="count( $x:result )" />
+
+      <expect label="produces length equal to length of constructed
+                     sequence, sans adjacent data"
+              test="f:length( $x:result ) = $rlength - 2" />
+
+      <expect label="retains adjacent data by reference"
+              test="$x:result[ $rlength - 1 ] is $args/foo:a
+                    and $x:result[ $rlength ] is $args/foo:b" />
+    </scenario>
   </scenario>
 
 
@@ -639,6 +715,39 @@
       <expect label="produces length equal to length of constructed
                      sequence"
               test="f:length( $x:result ) = count( $x:result )" />
+    </scenario>
+
+
+    <scenario label="unshifting arguments onto reference adjacent to
+                     other data">
+      <call function="f:unshift-args">
+        <param name="fnref"
+               select="$test-fn,
+                       $args/foo:a,
+                       $args/foo:b" />
+        <param name="args"
+               select="$args/foo:c" />
+      </call>
+
+      <expect label="retains target QName"
+              test="f:QName( $x:result ) = f:QName( $test-fn )" />
+
+      <expect label="reduces arity by number of arguments, relative to
+                     target function"
+              test="f:arity( $x:result ) = f:arity( $test-fn ) - 1" />
+
+      <expect label="sets arguments by reference"
+              test="f:args( $x:result )[ 1 ] is $args/foo:c" />
+
+      <variable name="rlength" select="count( $x:result )" />
+
+      <expect label="produces length equal to length of constructed
+                     sequence, sans adjacent data"
+              test="f:length( $x:result ) = $rlength - 2" />
+
+      <expect label="retains adjacent data by reference"
+              test="$x:result[ $rlength - 1 ] is $args/foo:a
+                    and $x:result[ $rlength ] is $args/foo:b" />
     </scenario>
   </scenario>
 </description>

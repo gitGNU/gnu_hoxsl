@@ -20,6 +20,7 @@ path_src  := src
 path_test := test
 
 test_apply := $(path_test)/apply/partial-test.xsl.apply \
+              $(path_test)/apply/thrush-test.xsl.apply \
               $(path_test)/transform/apply-gen-test-in.xsl.apply
 
 .PHONY: check test

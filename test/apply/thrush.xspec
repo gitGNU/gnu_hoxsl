@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Tests thrushing
+
+  Copyright (C) 2014 LoVullo Associates, Inc.
+
+    This file is part of hoxsl.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<description xmlns="http://www.jenitennison.com/xslt/xspec"
+             xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+             xmlns:x="http://www.jenitennison.com/xslt/xspec"
+             xmlns:f="http://www.lovullo.com/hoxsl/apply"
+             xmlns:foo="http://www.lovullo.com/_junk"
+             stylesheet="thrush-test.xsl">
+
+  <variable name="doc">
+    <foo:parent name="foo">
+      <foo:child />
+    </foo:parent>
+  </variable>
+
+
+  <scenario label="f:thrushr function">
+    <scenario label="with a single item">
+      <call function="f:thrush">
+        <param name="list" select="$doc/foo:child" />
+      </call>
+
+      <!-- we should retain context if the value wasn't copied -->
+      <expect label="returns the value with context in tact"
+              test="$x:result/parent::foo:parent/@name = 'foo'" />
+    </scenario>
+
+
+    <!-- first, we need to test that we actually get the return value
+       of the second function -->
+    <scenario label="with a second, unary function">
+      <call function="f:thrush">
+        <param name="list" select="$doc, foo:give-foo()" />
+      </call>
+
+      <expect label="provides results of second function">
+        <foo:foo hop="forest" />
+      </expect>
+
+
+      <scenario label="value passed to second function">
+        <call function="f:thrush">
+          <param name="list" select="$doc/foo:child, foo:echo()" />
+        </call>
+
+        <expect label="should retain context"
+                test="$x:result/parent::foo:parent/@name = 'foo'" />
+      </scenario>
+    </scenario>
+
+
+    <!-- continue to test a simple case (unary) so that failures help to
+         track down a problem, not confound further -->
+    <scenario label="with multiple unary functions">
+      <call function="f:thrush">
+        <param name="list" select="1,
+                                   foo:add1(),
+                                   foo:add1(),
+                                   foo:echo(),
+                                   foo:double(),
+                                   foo:echo()" />
+      </call>
+
+      <expect label="returns last application having passed previous
+                     results to each"
+              test="$x:result = 6" />
+    </scenario>
+
+
+    <scenario label="with (n>1)-ary functions">
+      <call function="f:thrush">
+        <param name="list" select="1,
+                                   f:apply( foo:add3(), 2, 3 )" />
+      </call>
+
+      <expect label="both previous result and partial arguments are
+                     passed"
+              test="$x:result = 6" />
+    </scenario>
+
+
+    <scenario label="with a pipeline of (n>2) functions of varying
+                     arity">
+      <call function="f:thrush">
+        <param name="list"
+               select="5,
+                       foo:add1(),
+                       foo:add( 3 ),
+                       foo:double(),
+                       f:apply( foo:add3(), 2, 1 )" />
+      </call>
+
+      <expect label="arguments are passed, ordered, through the
+                     pipeline to yield a final result"
+              test="$x:result = 21" />
+    </scenario>
+  </scenario>
+</description>

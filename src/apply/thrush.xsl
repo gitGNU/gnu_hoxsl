@@ -70,6 +70,8 @@
   Indeed, the syntax @code{A.B(C)} is just syntactic sugar for
   applying @code{B} within the context of @code{A}—@code{B(A,C)}—which
   can be done using @code{f:thrushl}.
+
+  @emph{@code{thrushl} is not yet implemented.}
 -->
 
 <stylesheet version="2.0"

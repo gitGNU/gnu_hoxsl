@@ -1,6 +1,8 @@
-## hoxsl Makefile
+# hoxsl manual Makefile
 #
-#  Copyright (C) 2014  LoVullo Associates, Inc.
+# Responsible for building the project documentation.
+#
+#  Copyright (C) 2014 LoVullo Assoicates, Inc.
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -16,23 +18,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-path_src  := src
-path_test := test
+info_TEXINFOS  = hoxsl.texi
+hoxsl_TEXINFOS = license.texi
 
-test_apply := $(path_test)/apply/partial-test.xsl.apply \
-              $(path_test)/apply/thrush-test.xsl.apply \
-              $(path_test)/transform/apply-gen-test-in.xsl.apply
-
-.PHONY: check test
-
-test: check
-check:  $(test_apply)
-	$(path_test)/runner
-
-%.apply: %
-	java -jar "$(SAXON_CP)" \
-	    -xsl:"$(path_src)/transform/apply-gen.xsl" \
-	    "$<" > "$@"
-
-clean:
-	$(RM) "$(test_in_apply_gen)"
+MAKEINFOHTML=$(MAKEINFO) --html

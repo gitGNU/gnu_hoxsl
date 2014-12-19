@@ -39,9 +39,9 @@
   @end example
 
   where the @var{target} node shares the same QName as the function to
-  be applied, and @var{@arity} is its arity.  @var{@length} caches the
-  number of items (in a sequence) that make up the reference; it can
-  be retrieved with @code{f:length}.  The @var{f:ref} node may be
+  be applied, and @var{@@arity} is its arity.  @var{@@length} caches
+  the number of items (in a sequence) that make up the reference; it
+  can be retrieved with @code{f:length}.  The @var{f:ref} node may be
   decorated with additional attributes depending on its context or
   constructor.
 
@@ -97,9 +97,9 @@
 
   @enumerate
   @item Be an element of type @code{f:ref};
-  @item Have a numeric @code{@arity}; and
+  @item Have a numeric @code{@@arity}; and
   @item Have a child target function node.
-  @enumerate
+  @end enumerate
 -->
 <function name="f:is-ref" as="xs:boolean">
   <param name="fnref" as="item()*" />

@@ -40,18 +40,19 @@ Free Documentation License".
 @top Main
 @end ifnottex
 
-
-@chapter Higher-Order Functions
-@include ../src/apply.texi
-
-
 @menu
-* License:: Document License
+* Higher-Order Functions::  XSLT 2.0 compatible higher-order functions
+* License::                 Document License
 @end menu
 
 @ifnottex
 @insertcopying
 @end ifnottex
+
+
+@node Higher-Order Functions
+@chapter Higher-Order Functions
+@include ../src/apply.texi
 
 @include license.texi
 

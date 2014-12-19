@@ -166,14 +166,23 @@
 
 
 <!--
-  @section Partial Application
-  @include ../src/apply/partial.texi
+@menu
+* Partial Application::  Partial function application and currying
+* Thrush::               Organizing function calls into a pipeline
+* Ref API::              Low-level interface to hoxsl functions
+@end menu
 
-  @section Thrush
-  @include ../src/apply/thrush.texi
+@node Partial Application
+@section Partial Application
+@include ../src/apply/partial.texi
 
-  @section Ref API
-  @include ../src/apply/ref.texi
+@node Thrush
+@section Thrush
+@include ../src/apply/thrush.texi
+
+@node Ref API
+@section Ref API
+@include ../src/apply/ref.texi
 -->
 
 </stylesheet>

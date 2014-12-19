@@ -18,7 +18,22 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
+path_src   := ../src
+path_tools := ../tools
+
+stylesheets := $(shell find "$(path_src)" -name '*.xsl')
+stexi       := $(stylesheets:.xsl=.texi)
+
 info_TEXINFOS  = hoxsl.texi
-hoxsl_TEXINFOS = license.texi
+hoxsl_TEXINFOS = license.texi $(stexi)
 
 MAKEINFOHTML=$(MAKEINFO) --html
+
+xsltexis: $(stexi)
+%.texi: %.xsl
+	$(JAVA) -jar "$(SAXON_CP)" \
+	    -xsl:"$(path_tools)/xsltexi/src/xsltexi.xsl" \
+	    "$<" > "$@"
+
+clean-local:
+	-rm -f $(stexi)

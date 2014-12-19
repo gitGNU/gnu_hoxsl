@@ -1,5 +1,6 @@
 /test/index.html
 /test/**/xspec/
+/src/**/*.texi
 *.apply
 *.info
 

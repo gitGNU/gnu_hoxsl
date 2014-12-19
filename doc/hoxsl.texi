@@ -1,6 +1,7 @@
 \input texinfo
 @c %**start of header
 @setfilename hoxsl.info
+@documentencoding UTF-8
 @settitle hoxsl Manual v@value{VERSION}
 @c %**end of header
 

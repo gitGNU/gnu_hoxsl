@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
+<!--@comment
   Dynamic function reference
 
   Copyright (C) 2014 LoVullo Associates, Inc.
@@ -18,7 +18,9 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 
+<!--
   A dynamic function reference is a sequence describing a dynamic
   function to be applied.  It consists of two major parts—the dynamic
   function reference descriptor and the arguments to bind to its

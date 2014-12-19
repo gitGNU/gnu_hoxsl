@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
+<!--@comment
   Dynamic function application
 
   Copyright (C) 2014 LoVullo Associates, Inc.
@@ -18,7 +18,9 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 
+<!--
   This can be used to create higher-order functions.
 
   If you need more arguments than this, then you may want to consider

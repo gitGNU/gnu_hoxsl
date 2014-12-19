@@ -146,7 +146,7 @@
   This function is called automatically by @code{f:partial} when
   partial application would otherwise result in the returning of a
   nullary function.  @emph{It performs no validations} to ensure the
-  integrity of the data.}
+  integrity of the data.
 
   Just as @code{f:apply}, please note that @emph{up to eight arguments
   are supported}.  This should be enough.

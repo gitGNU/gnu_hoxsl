@@ -40,6 +40,11 @@ Free Documentation License".
 @top Main
 @end ifnottex
 
+
+@chapter Higher-Order Functions
+@include ../src/apply.texi
+
+
 @menu
 * License:: Document License
 @end menu

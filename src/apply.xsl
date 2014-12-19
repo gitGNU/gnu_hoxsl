@@ -164,4 +164,16 @@
   </message>
 </template>
 
+
+<!--
+  @section Partial Application
+  @include ../src/apply/partial.texi
+
+  @section Thrush
+  @include ../src/apply/thrush.texi
+
+  @section Ref API
+  @include ../src/apply/ref.texi
+-->
+
 </stylesheet>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
+<!--@comment
   Dynamic function reference
 
   Copyright (C) 2014 LoVullo Associates, Inc.
@@ -18,7 +18,9 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 
+<!--
   A dynamic function reference is a sequence describing a dynamic
   function to be applied.  It consists of two major parts—the dynamic
   function reference descriptor and the arguments to bind to its
@@ -37,9 +39,9 @@
   @end example
 
   where the @var{target} node shares the same QName as the function to
-  be applied, and @var{@arity} is its arity.  @var{@length} caches the
-  number of items (in a sequence) that make up the reference; it can
-  be retrieved with @code{f:length}.  The @var{f:ref} node may be
+  be applied, and @var{@@arity} is its arity.  @var{@@length} caches
+  the number of items (in a sequence) that make up the reference; it
+  can be retrieved with @code{f:length}.  The @var{f:ref} node may be
   decorated with additional attributes depending on its context or
   constructor.
 
@@ -95,9 +97,9 @@
 
   @enumerate
   @item Be an element of type @code{f:ref};
-  @item Have a numeric @code{@arity}; and
+  @item Have a numeric @code{@@arity}; and
   @item Have a child target function node.
-  @enumerate
+  @end enumerate
 -->
 <function name="f:is-ref" as="xs:boolean">
   <param name="fnref" as="item()*" />

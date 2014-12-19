@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
+<!--@comment
   Partial function application
 
   Copyright (C) 2014 LoVullo Associates, Inc.
@@ -18,7 +18,9 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 
+<!--
   Partial applications may only be used with dynamic functions
   (functions compatible with `f:apply').
 -->
@@ -146,7 +148,7 @@
   This function is called automatically by @code{f:partial} when
   partial application would otherwise result in the returning of a
   nullary function.  @emph{It performs no validations} to ensure the
-  integrity of the data.}
+  integrity of the data.
 
   Just as @code{f:apply}, please note that @emph{up to eight arguments
   are supported}.  This should be enough.

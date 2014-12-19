@@ -16,23 +16,22 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-path_src  := src
-path_test := test
+SUBDIRS = doc
+
+path_src   := src
+path_test  := test
 
 test_apply := $(path_test)/apply/partial-test.xsl.apply \
               $(path_test)/apply/thrush-test.xsl.apply \
               $(path_test)/transform/apply-gen-test-in.xsl.apply
 
-.PHONY: check test
+.PHONY: check test texis
 
 test: check
 check:  $(test_apply)
 	$(path_test)/runner
 
 %.apply: %
-	java -jar "$(SAXON_CP)" \
+	$(JAVA) -jar "$(SAXON_CP)" \
 	    -xsl:"$(path_src)/transform/apply-gen.xsl" \
 	    "$<" > "$@"
-
-clean:
-	$(RM) "$(test_in_apply_gen)"

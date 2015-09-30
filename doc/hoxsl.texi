@@ -41,6 +41,8 @@ Free Documentation License".
 @top Main
 @end ifnottex
 
+@include macros.texi
+
 @menu
 * Higher-Order Functions::  XSLT 2.0 compatible higher-order functions
 * License::                 Document License

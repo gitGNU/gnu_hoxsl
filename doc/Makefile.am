@@ -18,6 +18,8 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
+.DELETE_ON_ERROR:
+
 path_src   := ../src
 path_tools := ../tools
 

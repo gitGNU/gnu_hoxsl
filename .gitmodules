@@ -1,6 +1,3 @@
 [submodule "tools/xspec"]
 	path = tools/xspec
 	url = https://github.com/lovullo/xspec
-[submodule "tools/xsltexi"]
-	path = tools/xsltexi
-	url = https://github.com/lovullo/xsltexi

@@ -23,6 +23,14 @@ AM_INIT_AUTOMAKE([foreign])
 AC_ARG_VAR([JAVA], [The Java executable])
 AC_CHECK_PROGS(JAVA, [java])
 
+: ${LITERATE_XSL=tools/literate-xsl}
+AC_ARG_VAR([LITERATE_XSL], [Path to literate-xsl])
+
+AC_MSG_CHECKING([literate-xsl path LITERATE_XSL=$LITERATE_XSL])
+AS_IF(test ! -f "$LITERATE_XSL/src/texinfo.xsl",
+  AC_MSG_ERROR([literate-xsl was not found in path '$LITERATE_XSL'!]))
+AC_MSG_RESULT(done)
+
 AC_CONFIG_FILES([Makefile doc/Makefile])
 
 AC_OUTPUT

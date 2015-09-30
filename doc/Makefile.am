@@ -20,8 +20,7 @@
 
 .DELETE_ON_ERROR:
 
-path_src   := ../src
-path_tools := ../tools
+path_src := ../src
 
 stylesheets := $(shell find "$(path_src)" -name '*.xsl')
 stexi       := $(stylesheets:.xsl=.texi)
@@ -34,7 +33,7 @@ MAKEINFOHTML=$(MAKEINFO) --html
 xsltexis: $(stexi)
 %.texi: %.xsl
 	$(JAVA) -jar "$(SAXON_CP)" \
-	    -xsl:"$(path_tools)/xsltexi/src/xsltexi.xsl" \
+	    -xsl:"$(top_builddir)/@LITERATE_XSL@/src/texinfo.xsl" \
 	    "$<" > "$@"
 
 clean-local:

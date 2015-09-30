@@ -17,3 +17,7 @@ Makefile
 /tools/missing
 /tools/mdate-sh
 /tools/texinfo.tex
+
+# tools we use (default paths)
+/tools/literate-xsl
+

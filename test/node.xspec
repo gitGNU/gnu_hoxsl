@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Tests node constructors
+
+  Copyright (C) 2015 Mike Gerwitz
+
+    This file is part of hoxsl.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<description xmlns="http://www.jenitennison.com/xslt/xspec"
+             xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+             xmlns:x="http://www.jenitennison.com/xslt/xspec"
+             xmlns:n="http://www.lovullo.com/hoxsl/node"
+             xmlns:foo="http://www.lovullo.com/_junk"
+             xmlns:test-prefix-a="test-ns-a"
+             stylesheet="../src/node.xsl">
+
+  <variable name="test-qname-a"
+            select="QName( 'test-ns-a', 'test-prefix-a:a' )" />
+  <variable name="test-qname-b"
+            select="QName( 'test-ns-b', 'test-prefix-b:b' )" />
+  <variable name="test-qname-c"
+            select="QName( 'test-ns-c', 'test-prefix-c:c' )" />
+
+  <variable name="test-node-element" as="element()">
+    <foo:node-a foo="bar">
+      <node-child />
+    </foo:node-a>
+  </variable>
+
+  <variable name="test-node-comment" as="comment()">
+    <!-- comment -->
+  </variable>
+
+  <!-- whitespace intentional -->
+  <variable name="test-text-a"
+            select="'     This is some test text  '" />
+  <variable name="test-text-b"
+            select="'Some more test text'" />
+
+  <variable name="test-value"
+            select="5" />
+
+
+  <scenario label="A new element">
+    <scenario label="with only a QName">
+      <call function="n:element">
+        <param name="qname" select="$test-qname-a" />
+      </call>
+
+      <expect label="produces an element"
+              test="$x:result instance of element()" />
+
+      <expect label="produces an element with the given QName"
+              test="node-name( $x:result ) = $test-qname-a" />
+
+      <expect label="produces an element with no attributes"
+              test="empty( $x:result/@* )" />
+
+      <expect label="produces an element with no children"
+              test="empty( $x:result/node() )" />
+    </scenario>
+
+
+    <scenario label="with a sequence of N attributes">
+      <call function="n:element">
+        <param name="qname" select="$test-qname-b" />
+
+        <param name="attr-pairs"
+               select="( $test-qname-a, 'a',
+                         $test-qname-c, 'c' )" />
+      </call>
+
+      <expect label="produces an element"
+              test="$x:result instance of element()" />
+
+      <expect label="produces an element with the given QName"
+              test="node-name( $x:result ) = $test-qname-b" />
+
+      <expect label="produces an element with no children"
+              test="empty( $x:result/node() )" />
+
+      <expect label="produces an element with N attributes"
+              test="count( $x:result/@* ) = 2" />
+
+      <expect label="produces an element with proper attribute QName/value"
+              test="( some $x in $x:result/@* satisfies
+                      ( node-name( $x ) = $test-qname-a
+                        and $x = 'a' ) )
+                    and ( some $x in $x:result/@* satisfies
+                          ( node-name( $x ) = $test-qname-c
+                            and $x = 'c' ) )" />
+    </scenario>
+
+
+    <scenario label="with an attribute missing a value">
+      <call function="n:element">
+        <param name="qname" select="$test-qname-b" />
+
+        <param name="attr-pairs"
+               select="( $test-qname-a )" />
+      </call>
+
+      <expect label="produces an attribute with an empty string value"
+              test="$x:result/@test-prefix-a:a = ''" />
+    </scenario>
+
+
+    <scenario label="with child nodes">
+      <call function="n:element">
+        <param name="qname"      select="$test-qname-b" />
+        <param name="attr-pairs" select="()" />
+
+        <param name="child-nodes"
+               select="$test-node-element,
+                       $test-node-comment" />
+      </call>
+
+      <expect label="produces an element"
+              test="$x:result instance of element()" />
+
+      <expect label="produces an element with the given QName"
+              test="node-name( $x:result ) = $test-qname-b" />
+
+      <expect label="produces an element with N children"
+              test="count( $x:result/node() ) = 2" />
+
+      <expect label="includes exact child nodes"
+              test="( some $x in $x:result/node() satisfies
+                      deep-equal( $x, $test-node-element ) )
+                    and ( some $x in $x:result/node() satisfies
+                      deep-equal( $x, $test-node-comment ) )" />
+    </scenario>
+  </scenario>
+
+
+  <scenario label="A new comment">
+    <scenario label="standalone">
+      <call function="n:comment">
+        <param name="text" select="$test-text-a" />
+      </call>
+
+      <expect label="produces a comment node"
+              test="$x:result instance of comment()" />
+
+      <expect label="contains given text verbatim"
+              test="$x:result = $test-text-a" />
+    </scenario>
+
+
+    <scenario label="within an element">
+      <call function="n:element">
+        <param name="name"       select="QName( '', 'foo' )" />
+        <param name="attr-pairs" select="()" />
+
+        <param name="child-nodes"
+               select="n:comment( $test-text-a ),
+                       n:comment( $test-text-b )" />
+      </call>
+
+      <expect label="can be produced N times"
+              test="count( $x:result/comment() ) = 2" />
+
+      <expect label="results in no other child nodes"
+              test="count( $x:result/node() ) = 2" />
+
+      <expect label="contains given text verbatim, ordered"
+              test="$x:result/comment()[1] = $test-text-a
+                    and $x:result/comment()[2] = $test-text-b" />
+    </scenario>
+  </scenario>
+
+
+  <scenario label="A new text node">
+    <scenario label="standalone">
+      <call function="n:text">
+        <param name="text" select="$test-text-a" />
+      </call>
+
+      <expect label="produces a text node"
+              test="$x:result instance of text()" />
+
+      <expect label="contains given text verbatim"
+              test="$x:result = $test-text-a" />
+    </scenario>
+
+
+    <scenario label="adjacent to text within an element">
+      <call function="n:element">
+        <param name="name"       select="QName( '', 'foo' )" />
+        <param name="attr-pairs" select="()" />
+
+        <param name="child-nodes"
+               select="n:text( $test-text-a ),
+                       n:text( $test-text-b )" />
+      </call>
+
+      <expect label="contains given text verbatim, ordered"
+              test="$x:result/text()[1] =
+                      concat( $test-text-a, $test-text-b )" />
+
+      <!-- they're adjacent, and so combined into a single node -->
+      <expect label="results in no other child nodes"
+              test="count( $x:result/node() ) = 1" />
+    </scenario>
+
+
+    <scenario label="separated by other nodes within an element">
+      <call function="n:element">
+        <param name="name"       select="QName( '', 'foo' )" />
+        <param name="attr-pairs" select="()" />
+
+        <param name="child-nodes"
+               select="n:text( $test-text-a ),
+                       $test-node-element,
+                       n:text( $test-text-b )" />
+      </call>
+
+      <expect label="can produce N separate text nodes"
+              test="count( $x:result/text() ) = 2" />
+
+      <expect label="contains given text verbatim, ordered"
+              test="$x:result/text()[1] = $test-text-a
+                    and $x:result/text()[2] = $test-text-b" />
+
+      <expect label="results in no other child nodes"
+              test="count( $x:result/node() ) = 3" />
+    </scenario>
+  </scenario>
+</description>

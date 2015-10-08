@@ -10,7 +10,8 @@
 @copying
 This manual is for hoxsl, version @value{VERSION}.
 
-Copyright @copyright{} 2014 LoVullo Associates, Inc.
+Copyright @copyright{} 2014, 2015 LoVullo Associates, Inc.
+Copyright @copyright{} 2015 Mike Gerwitz
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
@@ -45,6 +46,7 @@ Free Documentation License".
 
 @menu
 * Higher-Order Functions::  XSLT 2.0 compatible higher-order functions
+* Node Constructors::       Constructing nodes functionally
 * License::                 Document License
 @end menu
 
@@ -56,6 +58,10 @@ Free Documentation License".
 @node Higher-Order Functions
 @chapter Higher-Order Functions
 @include ../src/apply.texi
+
+@node Node Constructors
+@chapter Node Constructors
+@include ../src/node.texi
 
 @include license.texi
 

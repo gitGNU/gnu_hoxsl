@@ -1,5 +1,6 @@
 <!---
   Copyright (C) 2014  LoVullo Associates, Inc.
+  Copyright (C) 2015  Mike Gerwitz
 
   Permission is granted to copy, distribute and/or modify this
   document under the terms of the GNU Free Documentation License,
@@ -8,7 +9,7 @@
   Back-Cover Texts.  A copy of the license is included the file
   COPYING.FDL.
 -->
-# Higher-Order XSL
+# Higher-Order XSLT
 hoxsl is a library for XSLT 2.0, written in pure XSLT, introducing
 various types of higher-order logic;  this includes higher-order
 functions and XSLT templates that take XSLT as input and produce XSLT

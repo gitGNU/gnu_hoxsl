@@ -23,3 +23,11 @@
 @macro xmlcomment{comment}
 <!-- \comment\ -->
 @end macro
+
+@macro mdash{}
+---
+@end macro
+
+@macro todo{text}
+@strong{TODO:} \text\
+@end macro

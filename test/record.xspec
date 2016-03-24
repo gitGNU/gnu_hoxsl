@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Tests records
+
+  Copyright (C) 2015 Mike Gerwitz
+
+    This file is part of hoxsl.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<description xmlns="http://www.jenitennison.com/xslt/xspec"
+             xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+             xmlns:x="http://www.jenitennison.com/xslt/xspec"
+             xmlns:R="http://www.lovullo.com/hoxsl/record"
+             xmlns:foo="http://www.lovullo.com/_junk"
+             stylesheet="../src/record.xsl">
+
+  <variable name="test-qname"
+            select="QName( 'http://www.lovullo.com/_junk',
+                           'foo:test-qname' )" />
+  <variable name="test-qname-2"
+            select="QName( 'http://www.lovullo.com/_junk',
+                           'foo:test-qname-2' )" />
+  <variable name="test-qname-3"
+            select="QName( 'http://www.lovullo.com/_junk',
+                           'foo:test-qname-3' )" />
+
+  <scenario label="R:make-record-header">
+    <scenario label="with no supertype">
+      <call function="R:make-record-header">
+        <param name="qname" select="$test-qname" />
+        <param name="slots" select="3" />
+      </call>
+
+      <expect label="produces an R:Record element"
+              test="$x:result instance of element( R:Record )" />
+
+      <expect label="R:Record type matches the generic R:Record"
+              test="R:is-a( $R:qname, $x:result )" />
+
+      <expect label="R:Record type matches given QName"
+              test="R:is-a( $test-qname, $x:result )" />
+
+      <expect label="R:Record type does not match other QName"
+              test="not( R:is-a( $test-qname-2, $x:result ) )" />
+
+      <expect label="R:Record element contains number of slots"
+              test="R:slot-count( $x:result ) = 3" />
+    </scenario>
+
+
+    <scenario label="with a supertype">
+      <scenario label="produces">
+        <call function="R:make-record-header">
+          <param name="qname" select="$test-qname" />
+          <param name="slots" select="3" />
+          <param name="supertype"
+                 select="R:make-record-header( $test-qname-2, 2 )" />
+        </call>
+
+        <expect label="produces an R:Record element"
+                test="$x:result instance of element( R:Record )" />
+
+        <expect label="R:Record type matches given QName"
+                test="R:is-a( $test-qname, $x:result )" />
+
+        <expect label="R:Record type matches supertype QName"
+                test="R:is-a( $test-qname-2, $x:result )" />
+
+        <expect label="R:Record type matches the generic R:Record"
+                test="R:is-a( $R:qname, $x:result )" />
+
+        <expect label="R:Record type does not match other QName"
+                test="not( R:is-a( QName( '', 'foo' ), $x:result ) )" />
+      </scenario>
+
+
+      <scenario label="with slot count greater than that of supertype">
+        <call function="R:make-record-header">
+          <param name="qname" select="$test-qname" />
+          <param name="slots" select="3" />
+          <param name="supertype"
+                 select="R:make-record-header( $test-qname-2, 2 )" />
+        </call>
+
+        <expect label="R:Record element contains given number of slots"
+                test="R:slot-count( $x:result ) = 3" />
+      </scenario>
+
+
+      <scenario label="with slot count equal to that of supertype">
+        <call function="R:make-record-header">
+          <param name="qname" select="$test-qname" />
+          <param name="slots" select="2" />
+          <param name="supertype"
+                 select="R:make-record-header( $test-qname-2, 2 )" />
+        </call>
+
+        <expect label="R:Record element contains given number of slots"
+                test="R:slot-count( $x:result ) = 2" />
+      </scenario>
+
+
+      <scenario label="with slot count less than that of supertype">
+        <call function="R:make-record-header">
+          <param name="qname" select="$test-qname" />
+          <param name="slots" select="1" />
+          <param name="supertype"
+                 select="R:make-record-header( $test-qname-2, 2 )" />
+        </call>
+
+        <expect label="R:Record element contains supertype slot count"
+                test="R:slot-count( $x:result ) = 2" />
+      </scenario>
+    </scenario>
+
+
+    <!-- arbitrary nesting of supertypes -->
+    <scenario label="with a super-supertype">
+      <scenario label="produces">
+        <call function="R:make-record-header">
+          <param name="qname" select="$test-qname" />
+          <param name="slots" select="3" />
+          <param name="supertype"
+                 select="R:make-record-header(
+                           $test-qname-2,
+                           2,
+                           R:make-record-header( $test-qname-3, 2 ))" />
+        </call>
+
+        <expect label="produces an R:Record element"
+                test="$x:result instance of element( R:Record )" />
+
+        <expect label="R:Record type matches given QName"
+                test="R:is-a( $test-qname, $x:result )" />
+
+        <expect label="R:Record type matches supertype QName"
+                test="R:is-a( $test-qname-2, $x:result )" />
+
+        <expect label="R:Record type matches super-supertype QName"
+                test="R:is-a( $test-qname-3, $x:result )" />
+
+        <expect label="R:Record type matches the generic R:Record"
+                test="R:is-a( $R:qname, $x:result )" />
+
+        <expect label="R:Record type does not match other QName"
+                test="not( R:is-a( QName( '', 'foo' ), $x:result ) )" />
+      </scenario>
+    </scenario>
+  </scenario>
+
+
+  <scenario label="R:is-compatible">
+    <scenario label="with super- and sub-types of same slot count">
+      <call function="R:is-compatible">
+        <param name="A" select="R:make-record-header( $test-qname, 2 )" />
+        <param name="B" select="R:make-record-header( $test-qname-2, 2 )" />
+      </call>
+
+      <expect label="yields true()"
+              test="$x:result = true()" />
+    </scenario>
+
+
+    <scenario label="with subtype slot count greater than supertype">
+      <call function="R:is-compatible">
+        <param name="sub"
+               select="R:make-record-header( $test-qname, 2 )" />
+        <param name="super"
+               select="R:make-record-header( $test-qname-2, 1 )" />
+      </call>
+
+      <expect label="yields true()"
+              test="$x:result = true()" />
+    </scenario>
+
+
+    <scenario label="with subtype slot count less than supertype">
+      <call function="R:is-compatible">
+        <param name="sub"
+               select="R:make-record-header( $test-qname, 1 )" />
+        <param name="super"
+               select="R:make-record-header( $test-qname-2, 2 )" />
+      </call>
+
+      <expect label="yields false()"
+              test="$x:result = false()" />
+    </scenario>
+  </scenario>
+</description>

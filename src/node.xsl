@@ -2,7 +2,7 @@
 <!--@comment
   Node constructors
 
-  Copyright (C) 2015 Mike Gerwitz
+  Copyright (C) 2015, 2016 Mike Gerwitz
 
     This file is part of hoxsl.
 
@@ -47,8 +47,7 @@
   functional system.
 
   @menu
-  * Primitive Constructors::  Functional equivalents of XSLT node primitives
-  * Private Functions:Node Private Functions.  Internal details
+  * Primitive Constructors:: Functional equivalents of XSLT node primitives
   @end menu
 
 
@@ -62,8 +61,8 @@
   @float Figure, fig:node-primitive
   @verbatim
     <sequence select="n:element( QName( 'ns', 'foo' ),
-                                 ( QName( 'ns', 'attr1' ), 'value1',
-                                   QName( 'ns', 'attr2' ), 'value2' ),
+                                 ( n:attr( QName( 'ns', 'attr1' ), 'value1' ),
+                                   n:attr( QName( 'ns', 'attr2' ), 'value2' ) ),
                                  ( n:text( 'Nest to create trees' ),
                                    n:comment( 'functional nodes' ),
                                    n:element( QName( 'ns', 'bar' ) ) ) )" />
@@ -85,26 +84,20 @@
 -->
 
 <!--
-  Construct an element named @var{qname} with attributes defined by
-  the QName-value pairs @var{attr-pairs} and child nodes @var{children}.  An
-  empty sequence may be provided if no attributes or children are desired
-  (see also the @ref{n:element#1,,unary} and @ref{n:element#2,,binary}
-  overloads).
-
-  For QName-value pair @var{attr-pairs}, @math{2n} will always be considered
-  to be a QName and @math{2n+1} its associated value.  If the final value in
-  the attribute pair sequence is missing, then it will result in an
-  attribute with an empty string as its value.
+  Construct an element named @var{qname} with attributes @var{attrs} and
+  child nodes @var{children}.  An empty sequence may be provided if no
+  attributes or children are desired (see also the @ref{n:element#1,,unary}
+  and @ref{n:element#2,,binary} overloads).
 -->
 <function name="n:element" as="element()">
   <param name="qname"       as="xs:QName" />
-  <param name="attr-pairs"  as="item()*" />
+  <param name="attrs"       as="attribute()*" />
   <param name="child-nodes" as="node()*" />
 
   <variable name="element" as="element()">
     <element name="{$qname}"
              namespace="{namespace-uri-from-QName( $qname ) }">
-      <sequence select="_n:attr-from-pair( $attr-pairs ),
+      <sequence select="$attrs,
                         $child-nodes" />
     </element>
   </variable>
@@ -114,19 +107,18 @@
 
 
 <!--
-  Construct an element named @var{qname} with attributes defined by
-  the QName-value pairs @var{attr-pairs} and no child nodes.  An empty
-  sequence may be provided if no attributes are desired (see also the
-  @ref{n:element#1,,unary} overload).
+  Construct an element named @var{qname} with attributes @var{attrs} and no
+  child nodes.  An empty sequence may be provided if no attributes are
+  desired (see also the @ref{n:element#1,,unary} overload).
 
-  This is equivalent to @code{n:element( $qname, $attr-pairs, () )}; see
+  This is equivalent to @code{n:element( $qname, $attrs, () )}; see
   @ref{n:element#3}.
 -->
 <function name="n:element" as="element()">
-  <param name="qname"      as="xs:QName" />
-  <param name="attr-pairs" as="item()*" />
+  <param name="qname" as="xs:QName" />
+  <param name="attrs" as="attribute()*" />
 
-  <sequence select="n:element( $qname, $attr-pairs, () )" />
+  <sequence select="n:element( $qname, $attrs, () )" />
 </function>
 
 
@@ -141,6 +133,28 @@
 
   <sequence select="n:element( $qname, () )" />
 </function>
+
+
+<!--
+  Construct an attribute named @var{qname} with the value @var{value}.
+-->
+<function name="n:attr" as="attribute()">
+  <param name="qname" as="xs:QName" />
+  <param name="value" as="xs:anyAtomicType" />
+
+  <!-- some trickery (if there's a better way, lmk) -->
+  <variable name="tmp-container" as="element()">
+    <element name="tmp">
+      <attribute name="{$qname}"
+                 namespace="{namespace-uri-from-QName( $qname ) }"
+                 select="$value" />
+    </element>
+  </variable>
+
+  <!-- there will only be one -->
+  <sequence select="$tmp-container/@*" />
+</function>
+
 
 <!--
   Create a text node with the given @var{text}.  The @var{text} will be
@@ -169,41 +183,6 @@
   </variable>
 
   <sequence select="$comment" />
-</function>
-
-
-<!--
-  @node Node Private Functions
-  @section Private Functions
-  These functions support the various node functions, but should not be used
-  outside of Hoxsl itself.
--->
-
-<!--
-  Construct attributes from a list of QName-value pairs.
-
-  For more information on the pair format, see @ref{n:element#3}.
--->
-<function name="_n:attr-from-pair" as="attribute()*">
-  <param name="attr-pairs" as="item()*" />
-
-  <variable name="attribute" as="attribute()">
-    <variable name="qname" as="xs:QName"
-              select="$attr-pairs[ 1 ]" />
-    <variable name="value" as="xs:anyAtomicType?"
-              select="$attr-pairs[ 2 ]" />
-
-    <attribute name="{$qname}"
-               namespace="{namespace-uri-from-QName( $qname ) }"
-               select="$value" />
-  </variable>
-
-  <sequence select="if ( exists( $attr-pairs ) ) then
-                      ( $attribute,
-                        _n:attr-from-pair(
-                          subsequence( $attr-pairs, 3 ) ) )
-                    else
-                      ()" />
 </function>
 
 </stylesheet>

@@ -2,7 +2,7 @@
 <!--
   Tests node constructors
 
-  Copyright (C) 2015 Mike Gerwitz
+  Copyright (C) 2015, 2016 Mike Gerwitz
 
     This file is part of hoxsl.
 
@@ -79,9 +79,9 @@
       <call function="n:element">
         <param name="qname" select="$test-qname-b" />
 
-        <param name="attr-pairs"
-               select="( $test-qname-a, 'a',
-                         $test-qname-c, 'c' )" />
+        <param name="attrs"
+               select="( n:attr( $test-qname-a, 'a' ),
+                         n:attr( $test-qname-c, 'c' ) )" />
       </call>
 
       <expect label="produces an element"
@@ -106,23 +106,10 @@
     </scenario>
 
 
-    <scenario label="with an attribute missing a value">
-      <call function="n:element">
-        <param name="qname" select="$test-qname-b" />
-
-        <param name="attr-pairs"
-               select="( $test-qname-a )" />
-      </call>
-
-      <expect label="produces an attribute with an empty string value"
-              test="$x:result/@test-prefix-a:a = ''" />
-    </scenario>
-
-
     <scenario label="with child nodes">
       <call function="n:element">
-        <param name="qname"      select="$test-qname-b" />
-        <param name="attr-pairs" select="()" />
+        <param name="qname" select="$test-qname-b" />
+        <param name="attrs" select="()" />
 
         <param name="child-nodes"
                select="$test-node-element,
@@ -163,8 +150,8 @@
 
     <scenario label="within an element">
       <call function="n:element">
-        <param name="name"       select="QName( '', 'foo' )" />
-        <param name="attr-pairs" select="()" />
+        <param name="name"  select="QName( '', 'foo' )" />
+        <param name="attrs" select="()" />
 
         <param name="child-nodes"
                select="n:comment( $test-text-a ),
@@ -184,6 +171,23 @@
   </scenario>
 
 
+  <scenario label="A new attribute">
+    <!-- to test this, the attribute needs an element parent -->
+    <call function="n:element">
+      <param name="qname" select="$test-qname-a" />
+      <param name="attrs"
+             select="n:attr( $test-qname-b, 'foo' )" />
+      <param name="child-nodes" select="()" />
+    </call>
+
+    <expect label="has given QName"
+            test="node-name( $x:result/@* ) = $test-qname-b" />
+
+    <expect label="has given value"
+            test="$x:result/@* = 'foo'" />
+  </scenario>
+
+
   <scenario label="A new text node">
     <scenario label="standalone">
       <call function="n:text">
@@ -200,8 +204,8 @@
 
     <scenario label="adjacent to text within an element">
       <call function="n:element">
-        <param name="name"       select="QName( '', 'foo' )" />
-        <param name="attr-pairs" select="()" />
+        <param name="name"  select="QName( '', 'foo' )" />
+        <param name="attrs" select="()" />
 
         <param name="child-nodes"
                select="n:text( $test-text-a ),
@@ -220,8 +224,8 @@
 
     <scenario label="separated by other nodes within an element">
       <call function="n:element">
-        <param name="name"       select="QName( '', 'foo' )" />
-        <param name="attr-pairs" select="()" />
+        <param name="name"  select="QName( '', 'foo' )" />
+        <param name="attrs" select="()" />
 
         <param name="child-nodes"
                select="n:text( $test-text-a ),

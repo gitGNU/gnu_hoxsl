@@ -281,7 +281,8 @@
             select="max( ( $slots, $super-slots ) )" />
 
   <sequence select="n:element( $R:qname,
-                               ( QName( $_R:ns, 'slots' ), $slot-count ),
+                               ( n:attr( QName( $_R:ns, 'slots' ),
+                                         $slot-count ) ),
                                ( $Supertype/node(),
                                  n:element( $qname ) ) )" />
 </function>

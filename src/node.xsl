@@ -47,7 +47,9 @@
   functional system.
 
   @menu
-  * Primitive Constructors:: Functional equivalents of XSLT node primitives
+  * Primitive Constructors::      Functional equivalents of XSLT node
+                                    primitives
+  * Mutators: Node Mutators.      Functional node manipulation
   @end menu
 
 
@@ -193,6 +195,36 @@
   </variable>
 
   <sequence select="$comment" />
+</function>
+
+
+<!--
+  @node Node Mutators
+  @section Node Mutators
+
+  A @dfn{node mutator} produces an altered copy of an existing node.
+-->
+
+<!--
+  Create a copy of @var{element} with additional attributes defined by
+    @var{attrs},
+    replacing attributes that already exist with the same QName.
+
+  Attributes that already exist on @var{element} but are not specified in
+    @var{attrs} will be left untouched.
+  All child nodes of @var{element} are retained by reference.
+-->
+<function name="n:add-attributes" as="element()">
+  <param name="element" as="element()" />
+  <param name="attrs"   as="attribute()*" />
+
+  <sequence select="if ( empty( $attrs ) ) then
+                        $element
+                      else
+                        n:element( node-name( $element ),
+                                   ( $element/@*,
+                                     $attrs ),
+                                   $element/node() )" />
 </function>
 
 </stylesheet>

@@ -34,6 +34,13 @@
             select="QName( 'test-ns-b', 'test-prefix-b:b' )" />
   <variable name="test-qname-c"
             select="QName( 'test-ns-c', 'test-prefix-c:c' )" />
+  <variable name="test-qname-d"
+            select="QName( 'test-ns-d', 'test-prefix-d:d' )" />
+  <variable name="test-qname-e"
+            select="QName( 'test-ns-e', 'test-prefix-e:e' )" />
+
+  <variable name="test-qname-noprefix"
+            select="QName( 'test-ns-a', 'a' )" />
 
   <variable name="test-node-element" as="element()">
     <foo:node-a foo="bar">
@@ -54,6 +61,10 @@
   <variable name="test-value"
             select="5" />
 
+
+  <!--
+    Primitives
+  -->
 
   <scenario label="A new element">
     <scenario label="with only a QName">
@@ -259,6 +270,115 @@
 
       <expect label="results in no other child nodes"
               test="count( $x:result/node() ) = 3" />
+    </scenario>
+  </scenario>
+
+
+  <!--
+    Node Mutators
+  -->
+
+  <scenario label="Mutator">
+    <scenario label="n:add-attributes">
+      <variable name="element-attr-ns" as="element()"
+                select="n:element( $test-qname-a,
+                                   ( n:attr( $test-qname-b, 'b' ),
+                                     n:attr( $test-qname-c, 'c' ) ),
+                                   ( n:element( $test-qname-b ),
+                                     n:element( $test-qname-c ) ) )" />
+
+      <scenario label="with no new attributes">
+        <call function="n:add-attributes">
+          <param name="element" select="$element-attr-ns" />
+          <param name="attrs"   select="()" />
+        </call>
+
+        <expect label="produces node with same QName"
+                test="node-name( $x:result ) = $test-qname-a" />
+
+        <expect label="retains all existing attributes"
+                test="deep-equal( $x:result/@*,
+                                  $element-attr-ns/@* )" />
+
+        <expect label="retains all existing children"
+                test="deep-equal( $x:result/node(),
+                                  $element-attr-ns/node() )" />
+      </scenario>
+
+
+      <scenario label="with all new attributes">
+        <call function="n:add-attributes">
+          <param name="element"    select="$element-attr-ns" />
+          <param name="attrs"
+                 select="( n:attr( $test-qname-d, 'd' ),
+                           n:attr( $test-qname-e, 'e' ) )" />
+        </call>
+
+        <expect label="produces node with same QName"
+                test="node-name( $x:result ) = $test-qname-a" />
+
+        <expect label="adds new attributes"
+                test="( some $x in $x:result/@* satisfies
+                        ( node-name( $x ) = $test-qname-d
+                          and $x = 'd' ) )
+                      and ( some $x in $x:result/@* satisfies
+                            ( node-name( $x ) = $test-qname-e
+                              and $x = 'e' ) )" />
+
+        <expect label="retains all existing attributes"
+                test="( some $x in $x:result/@* satisfies
+                        ( node-name( $x ) = $test-qname-b
+                          and $x = 'b' ) )
+                      and ( some $x in $x:result/@* satisfies
+                            ( node-name( $x ) = $test-qname-c
+                              and $x = 'c' ) )" />
+
+        <!-- less than check will allow this to succeed even if an above
+             test fails so that we can accurately determine the problem-->
+        <expect label="does not add any other attributes"
+                test="count( $x:result/@* ) &lt;= 4" />
+
+        <expect label="retains all existing children"
+                test="deep-equal( $x:result/node(),
+                                  $element-attr-ns/node() )" />
+      </scenario>
+
+
+      <scenario label="with some duplicate attributes">
+        <call function="n:add-attributes">
+          <param name="element"    select="$element-attr-ns" />
+          <param name="attrs"
+                 select="( n:attr( $test-qname-c, 'c2' ),
+                           n:attr( $test-qname-d, 'd2' ) )" />
+        </call>
+
+        <expect label="produces node with same QName"
+                test="node-name( $x:result ) = $test-qname-a" />
+
+        <expect label="adds new attributes"
+                test="( some $x in $x:result/@* satisfies
+                        ( node-name( $x ) = $test-qname-d
+                          and $x = 'd2' ) )" />
+
+        <expect label="replaces existing attributes"
+                test="( some $x in $x:result/@* satisfies
+                        ( node-name( $x ) = $test-qname-c
+                          and $x = 'c2' ) )" />
+
+        <expect label="retains all existing attributes"
+                test="( some $x in $x:result/@* satisfies
+                        ( node-name( $x ) = $test-qname-b
+                          and $x = 'b' ) )" />
+
+        <!-- less than check will allow this to succeed even if an above
+             test fails so that we can accurately determine the problem-->
+        <expect label="does not add any other attributes"
+                test="count( $x:result/@* ) &lt;= 3" />
+
+        <expect label="retains all existing children"
+                test="deep-equal( $x:result/node(),
+                                  $element-attr-ns/node() )" />
+      </scenario>
     </scenario>
   </scenario>
 </description>

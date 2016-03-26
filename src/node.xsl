@@ -23,8 +23,8 @@
 <stylesheet version="2.0"
             xmlns="http://www.w3.org/1999/XSL/Transform"
             xmlns:xs="http://www.w3.org/2001/XMLSchema"
-            xmlns:n="http://www.lovullo.com/hoxsl/node"
-            xmlns:_n="http://www.lovullo.com/hoxsl/node/_priv">
+            xmlns:n="http://mikegerwitz.com/hoxsl/node"
+            xmlns:_n="http://mikegerwitz.com/hoxsl/node/_priv">
 
 <!--
   Function composition becomes a frustrating endeavor if nodes cannot be

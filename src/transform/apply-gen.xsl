@@ -33,10 +33,10 @@
   xmlns="http://www.w3.org/1999/XSL/Transform"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns:f="http://www.lovullo.com/hoxsl/apply"
-  xmlns:_f="http://www.lovullo.com/hoxsl/apply/_priv"
-  xmlns:fgen="http://www.lovullo.com/hoxsl/apply/gen"
-  xmlns:out="http://www.lovullo.com/hoxsl/apply/gen/_out"
+  xmlns:f="http://mikegerwitz.com/hoxsl/apply"
+  xmlns:_f="http://mikegerwitz.com/hoxsl/apply/_priv"
+  xmlns:fgen="http://mikegerwitz.com/hoxsl/apply/gen"
+  xmlns:out="http://mikegerwitz.com/hoxsl/apply/gen/_out"
   exclude-result-prefixes="#default fgen">
 
 <import href="../apply/ref.xsl" />

@@ -23,8 +23,8 @@
 <description xmlns="http://www.jenitennison.com/xslt/xspec"
              xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
              xmlns:x="http://www.jenitennison.com/xslt/xspec"
-             xmlns:n="http://www.lovullo.com/hoxsl/node"
-             xmlns:foo="http://www.lovullo.com/_junk"
+             xmlns:n="http://mikegerwitz.com/hoxsl/node"
+             xmlns:foo="http://mikegerwitz.com/_junk"
              xmlns:test-prefix-a="test-ns-a"
              stylesheet="../src/node.xsl">
 

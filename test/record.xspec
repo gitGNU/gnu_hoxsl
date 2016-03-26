@@ -23,18 +23,18 @@
 <description xmlns="http://www.jenitennison.com/xslt/xspec"
              xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
              xmlns:x="http://www.jenitennison.com/xslt/xspec"
-             xmlns:R="http://www.lovullo.com/hoxsl/record"
-             xmlns:foo="http://www.lovullo.com/_junk"
+             xmlns:R="http://mikegerwitz.com/hoxsl/record"
+             xmlns:foo="http://mikegerwitz.com/_junk"
              stylesheet="../src/record.xsl">
 
   <variable name="test-qname"
-            select="QName( 'http://www.lovullo.com/_junk',
+            select="QName( 'http://mikegerwitz.com/_junk',
                            'foo:test-qname' )" />
   <variable name="test-qname-2"
-            select="QName( 'http://www.lovullo.com/_junk',
+            select="QName( 'http://mikegerwitz.com/_junk',
                            'foo:test-qname-2' )" />
   <variable name="test-qname-3"
-            select="QName( 'http://www.lovullo.com/_junk',
+            select="QName( 'http://mikegerwitz.com/_junk',
                            'foo:test-qname-3' )" />
 
   <scenario label="R:make-record-header">

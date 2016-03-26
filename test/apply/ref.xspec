@@ -23,8 +23,8 @@
 <description xmlns="http://www.jenitennison.com/xslt/xspec"
              xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
              xmlns:x="http://www.jenitennison.com/xslt/xspec"
-             xmlns:f="http://www.lovullo.com/hoxsl/apply"
-             xmlns:foo="http://www.lovullo.com/_junk"
+             xmlns:f="http://mikegerwitz.com/hoxsl/apply"
+             xmlns:foo="http://mikegerwitz.com/_junk"
              stylesheet="ref-test.xsl">
 
   <variable name="foo-uri"

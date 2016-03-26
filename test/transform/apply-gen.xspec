@@ -22,8 +22,8 @@
 
 <description xmlns="http://www.jenitennison.com/xslt/xspec"
              xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-             xmlns:f="http://www.lovullo.com/hoxsl/apply"
-             xmlns:foo="http://www.lovullo.com/_junk"
+             xmlns:f="http://mikegerwitz.com/hoxsl/apply"
+             xmlns:foo="http://mikegerwitz.com/_junk"
              stylesheet="apply-gen-test.xsl">
 
   <variable name="args">
@@ -239,7 +239,7 @@
         </call>
 
         <expect label="is the QName of the target function"
-                select="QName( 'http://www.lovullo.com/_junk',
+                select="QName( 'http://mikegerwitz.com/_junk',
                                'sub-two' )" />
       </scenario>
 
@@ -260,7 +260,7 @@
          tested and 8 results in a full application) -->
     <scenario label="with partial functions of 8-ary target, given">
       <variable name="qname"
-                select="QName( 'http://www.lovullo.com/_junk',
+                select="QName( 'http://mikegerwitz.com/_junk',
                                'foo:eight' )" />
 
       <scenario label="one argument">

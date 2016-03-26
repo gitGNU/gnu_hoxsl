@@ -23,9 +23,9 @@
 <stylesheet version="2.0"
             xmlns="http://www.w3.org/1999/XSL/Transform"
             xmlns:xs="http://www.w3.org/2001/XMLSchema"
-            xmlns:n="http://www.lovullo.com/hoxsl/node"
-            xmlns:R="http://www.lovullo.com/hoxsl/record"
-            xmlns:_R="http://www.lovullo.com/hoxsl/record/_priv">
+            xmlns:n="http://mikegerwitz.com/hoxsl/node"
+            xmlns:R="http://mikegerwitz.com/hoxsl/record"
+            xmlns:_R="http://mikegerwitz.com/hoxsl/record/_priv">
 
 <import href="node.xsl" />
 
@@ -220,14 +220,14 @@
   The namespace to which all records elements are assigned.
 -->
 <variable name="R:ns" as="xs:anyURI"
-          select="resolve-uri( 'http://www.lovullo.com/hoxsl/record' )" />
+          select="resolve-uri( 'http://mikegerwitz.com/hoxsl/record' )" />
 
 <!--
   The namespace for all encapsulated record data.
 -->
 <variable name="_R:ns" as="xs:anyURI"
           select="resolve-uri(
-                    'http://www.lovullo.com/hoxsl/record/_priv' )" />
+                    'http://mikegerwitz.com/hoxsl/record/_priv' )" />
 
 <!--
   QName of the record header element.

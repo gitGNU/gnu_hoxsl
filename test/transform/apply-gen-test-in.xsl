@@ -23,7 +23,7 @@
 <stylesheet version="2.0"
   xmlns="http://www.w3.org/1999/XSL/Transform"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:foo="http://www.lovullo.com/_junk">
+  xmlns:foo="http://mikegerwitz.com/_junk">
 
 
   <function name="foo:add-two" as="xs:decimal">

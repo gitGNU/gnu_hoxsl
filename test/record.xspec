@@ -2,7 +2,7 @@
 <!--
   Tests records
 
-  Copyright (C) 2015 Mike Gerwitz
+  Copyright (C) 2015, 2016 Mike Gerwitz
 
     This file is part of hoxsl.
 
@@ -23,6 +23,7 @@
 <description xmlns="http://www.jenitennison.com/xslt/xspec"
              xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
              xmlns:x="http://www.jenitennison.com/xslt/xspec"
+             xmlns:n="http://mikegerwitz.com/hoxsl/node"
              xmlns:R="http://mikegerwitz.com/hoxsl/record"
              xmlns:foo="http://mikegerwitz.com/_junk"
              stylesheet="../src/record.xsl">
@@ -36,6 +37,18 @@
   <variable name="test-qname-3"
             select="QName( 'http://mikegerwitz.com/_junk',
                            'foo:test-qname-3' )" />
+
+  <variable name="slot-ns" as="xs:anyURI"
+            select="resolve-uri( 'http://mikegerwitz.com/_junk/slot' )" />
+
+  <variable name="sa" as="xs:QName"
+            select="QName( $slot-ns, 'a' )" />
+  <variable name="sb" as="xs:QName"
+            select="QName( $slot-ns, 'b' )" />
+  <variable name="sc" as="xs:QName"
+            select="QName( $slot-ns, 'c' )" />
+  <variable name="sd" as="xs:QName"
+            select="QName( $slot-ns, 'd' )" />
 
   <scenario label="R:make-record-header">
     <scenario label="with no supertype">
@@ -158,6 +171,93 @@
         <expect label="R:Record type does not match other QName"
                 test="not( R:is-a( QName( '', 'foo' ), $x:result ) )" />
       </scenario>
+    </scenario>
+  </scenario>
+
+
+  <scenario label="R:name-slots">
+    <scenario label="not having been invoked on a record">
+      <call function="R:make-record-header">
+        <param name="qname" select="$test-qname" />
+        <param name="slots" select="3" />
+      </call>
+
+      <expect label="produces no named slots"
+              test="empty( R:slot-names( $x:result, $slot-ns ) )" />
+    </scenario>
+
+
+    <scenario label="with no names">
+      <call function="R:name-slots">
+        <param name="Record"
+               select="R:make-record-header( $test-qname, 3 )" />
+        <param name="names" select="()" />
+      </call>
+
+      <expect label="retains slot count"
+              test="R:slot-count( $x:result ) = 3" />
+
+      <expect label="produces no named slots"
+              test="empty( R:slot-names( $x:result, $slot-ns ) )" />
+    </scenario>
+
+
+    <scenario label="with names less than slot count">
+      <call function="R:name-slots">
+        <param name="Record"
+               select="R:make-record-header( $test-qname, 3 )" />
+        <param name="names" select="( $sa, $sb )" />
+      </call>
+
+      <expect label="retains slot count"
+              test="R:slot-count( $x:result ) = 3" />
+
+      <expect label="produces given named slots"
+              test="deep-equal( R:slot-names( $x:result, $slot-ns ),
+                                ( n:attr( $sa, 1 ),
+                                  n:attr( $sb, 2 ) ) )" />
+    </scenario>
+
+
+    <scenario label="with names greater than slot count N">
+      <call function="R:name-slots">
+        <param name="Record"
+               select="R:make-record-header( $test-qname, 3 )" />
+        <param name="names" select="( $sa, $sb, $sc, $sd )" />
+      </call>
+
+      <expect label="retains slot count"
+              test="R:slot-count( $x:result ) = 3" />
+
+      <expect label="produces only first N slot names"
+              test="deep-equal( R:slot-names( $x:result, $slot-ns ),
+                                ( n:attr( $sa, 1 ),
+                                  n:attr( $sb, 2 ),
+                                  n:attr( $sc, 3 ) ) )" />
+    </scenario>
+
+
+    <scenario label="invoked multiple times">
+      <!-- need to use a node to assert on attributes -->
+      <call function="n:element">
+        <param name="qname" select="$test-qname" />
+        <param name="attrs"
+               select="R:slot-names(
+                         R:name-slots(
+                           R:name-slots(
+                             R:make-record-header( $test-qname, 3 ),
+                             ( $sa, $sb ) ),
+                           ( $sd, $sc, $sb ) ),
+                         $slot-ns)" />
+      </call>
+
+      <expect label="overwrites slots names already specified"
+              test="count( $x:result/@* ) = 4
+                      and ( every $x in $x:result/@* satisfies
+                              deep-equal( $x, n:attr( $sd, 1 ) )
+                                or deep-equal( $x, n:attr( $sa, 1 ) )
+                                or deep-equal( $x, n:attr( $sc, 2 ) )
+                                or deep-equal( $x, n:attr( $sb, 3 ) ) )" />
     </scenario>
   </scenario>
 

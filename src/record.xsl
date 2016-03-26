@@ -25,7 +25,8 @@
             xmlns:xs="http://www.w3.org/2001/XMLSchema"
             xmlns:n="http://mikegerwitz.com/hoxsl/node"
             xmlns:R="http://mikegerwitz.com/hoxsl/record"
-            xmlns:_R="http://mikegerwitz.com/hoxsl/record/_priv">
+            xmlns:_R="http://mikegerwitz.com/hoxsl/record/_priv"
+            xmlns:_Rs="http://mikegerwitz.com/hoxsl/record/_priv/slots">
 
 <import href="node.xsl" />
 
@@ -79,6 +80,7 @@
   @menu
   * Design Considerations: Record Design Considerations.
   * Header: Record Header.
+  * Slot Naming: Record Slot Naming.
   * Polymorphism: Record Polymorphism.
   @end menu
 
@@ -162,6 +164,10 @@
   The implementation will involve adding additional items into the sequence
     in order to provide the needed context.
 
+  Note: records are implemented without the use of Hoxsl's higher-order
+  functions; those functions are backed by records, so we'd have a bit of a
+  chicken-and-egg problem.
+
 
   @node Record Header
   @section Record Header
@@ -230,6 +236,13 @@
                     'http://mikegerwitz.com/hoxsl/record/_priv' )" />
 
 <!--
+  The namespace for all slot name-index mappings.
+-->
+<variable name="_Rs:ns" as="xs:anyURI"
+          select="resolve-uri(
+                    'http://www.lovullo.com/hoxsl/record/_priv/slots' )" />
+
+<!--
   QName of the record header element.
 -->
 <variable name="R:qname" as="xs:QName"
@@ -283,8 +296,11 @@
   <sequence select="n:element( $R:qname,
                                ( n:attr( QName( $_R:ns, 'slots' ),
                                          $slot-count ) ),
-                               ( $Supertype/node(),
-                                 n:element( $qname ) ) )" />
+                               ( n:element( QName( $_R:ns, '_R:slot-names' ) ),
+                                 n:element( QName( $_R:ns, '_R:types' ),
+                                            (),
+                                            ( $Supertype/_R:types/node(),
+                                              n:element( $qname ) ) ) ) )" />
 </function>
 
 <!--
@@ -320,6 +336,98 @@
   <param name="Record" as="element( R:Record )" />
 
   <sequence select="$Record/@_R:slots" />
+</function>
+
+
+<!--
+  @node Record Slot Naming
+  @section Slot Naming
+
+  As discussed in @ref{Record Header},
+    slots are identified by their indexes.
+  Naming is an optional (and recommended) convenience to provide
+    human-readable, intuitive names for slots, irrespective of their
+    index/ordering.
+
+  A @dfn{slot name} is a QName that maps to a slot.
+
+  A word of caution:
+    the asymptotic complexity of a slot name index lookup is dependent on
+    how your XSLT engine handles dynamic attribute querying.
+    Unless you're creating records with many dozens of named slots,
+    you probably don't have to worry about access times.
+-->
+
+<!--
+  Create a new record header assigning QNames @var{qnames} for each slot,
+    in order.
+
+  This function is guaranteed to succeed,
+    so callers are responsible for implementing integrity checks:
+  If the length@tie{}@math{N} of @var{names} is greater than the
+    number@tie{}@math{M} of slots in @var{Record}, then only the first
+    @math{N} slot names will be used.
+  If @math{N<M},
+    then slots with an index greater than@tie{}@math{N} will be left
+    unnamed.
+
+  This will not remove any existing slot names!
+  If a name conflicts with an existing slot name,
+    it will be overwritten.
+  If a slot is already assigned a name,
+    then both names will be valid slot identifiers.
+-->
+<function name="R:name-slots" as="element( R:Record )">
+  <param name="Record" as="element( R:Record )" />
+  <param name="qnames" as="xs:QName*" />
+
+  <variable name="usable-count" as="xs:integer"
+            select="min( ( count( $qnames ),
+                           R:slot-count( $Record) ) )" />
+
+  <variable name="attrs" as="attribute()*"
+            select="for $i in 1 to $usable-count
+                      return n:attr( $qnames[ $i ], $i )" />
+
+  <variable name="rchildren" as="node()"
+            select="$Record/node() except $Record/_R:slot-names" />
+
+  <sequence select="n:element( node-name( $Record ),
+                               $Record/@*,
+                               ( n:add-attributes( $Record/_R:slot-names,
+                                                   $attrs ),
+                                 $rchildren ) )" />
+</function>
+
+
+<!--
+  Since slot names are QNames,
+    private slots (like private fields in classical object-oriented
+    programming) can be created by using a namespace that is not likely to
+    be used by anything else.
+  Of course, nothing will prevent the inspection of the record to determine
+    what those namespaces are.
+
+  Slot names can be discovered (a form of @dfn{reflection}) using
+    @ref{R:slot-names#2}.
+  To enforce namespace restrictions,
+    only slot names under the provided namespace will be returned.
+-->
+
+<!--
+  Retrieve all slot names of @var{Record} and their associated slots under
+    the namespace @var{ns}.
+
+  Slots will be returned as attributes,
+    providing a qname-slot pair.
+  It is possible for multiple slot names to map to the same slot.
+-->
+<function name="R:slot-names" as="attribute()*">
+  <param name="Record" as="element( R:Record )" />
+  <param name="ns"     as="xs:anyURI" />
+
+  <sequence select="$Record/_R:slot-names/@*[
+                      namespace-uri() = $ns ]" />
 </function>
 
 
@@ -408,7 +516,7 @@
 
   <sequence select="$type = $R:qname
                     or exists(
-                         $Record/element()[
+                         $Record/_R:types/element()[
                            node-name( . ) = $type ] )" />
 </function>
 

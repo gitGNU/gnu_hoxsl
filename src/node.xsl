@@ -157,6 +157,16 @@
 
 
 <!--
+  Construct an attribute named @var{qname} with an empty value.
+-->
+<function name="n:attr" as="attribute()">
+  <param name="qname" as="xs:QName" />
+
+  <sequence select="n:attr( $qname, '' )" />
+</function>
+
+
+<!--
   Create a text node with the given @var{text}.  The @var{text} will be
   output verbatim without any whitespace processing.
 -->

@@ -172,19 +172,36 @@
 
 
   <scenario label="A new attribute">
-    <!-- to test this, the attribute needs an element parent -->
-    <call function="n:element">
-      <param name="qname" select="$test-qname-a" />
-      <param name="attrs"
-             select="n:attr( $test-qname-b, 'foo' )" />
-      <param name="child-nodes" select="()" />
-    </call>
+    <scenario label="with a value">
+      <!-- to test this, the attribute needs an element parent -->
+      <call function="n:element">
+        <param name="qname" select="$test-qname-a" />
+        <param name="attrs"
+               select="n:attr( $test-qname-b, 'foo' )" />
+      </call>
 
-    <expect label="has given QName"
-            test="node-name( $x:result/@* ) = $test-qname-b" />
+      <expect label="has given QName"
+              test="node-name( $x:result/@* ) = $test-qname-b" />
 
-    <expect label="has given value"
-            test="$x:result/@* = 'foo'" />
+      <expect label="has given value"
+              test="$x:result/@* = 'foo'" />
+    </scenario>
+
+
+    <scenario label="with no value">
+      <!-- to test this, the attribute needs an element parent -->
+      <call function="n:element">
+        <param name="qname" select="$test-qname-a" />
+        <param name="attrs"
+               select="n:attr( $test-qname-c )" />
+      </call>
+
+      <expect label="has given QName"
+              test="node-name( $x:result/@* ) = $test-qname-c" />
+
+      <expect label="has empty value"
+              test="$x:result/@* = ''" />
+    </scenario>
   </scenario>
 
 

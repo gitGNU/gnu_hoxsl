@@ -250,6 +250,19 @@
 
 
 <!--
+  Make a new anonymous record header containing @var{slots} slots.
+
+  Usually, you want a record to be named,
+    but anonymous records might be useful for temporary or grouped data.
+-->
+<function name="R:make-record-header" as="element( R:Record )">
+  <param name="slots" as="xs:integer" />
+
+  <sequence select="R:make-record-header( $R:qname, $slots, () )" />
+</function>
+
+
+<!--
   Make a new record header for a record identified by @var{qname} containing
   @var{slots} slots.
 

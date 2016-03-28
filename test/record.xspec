@@ -281,6 +281,41 @@
   </scenario>
 
 
+  <scenario label="R:is-record">
+    <scenario label="given a record">
+      <call function="R:is-record">
+        <param name="Record"
+               select="R:make-record-header( 0 )" />
+      </call>
+
+      <expect label="returns true()"
+              test="$x:result = true()" />
+    </scenario>
+
+
+    <scenario label="given a non-record element">
+      <call function="R:is-record">
+        <param name="Record"
+               select="n:element( QName( '', 'foo' ) )" />
+      </call>
+
+      <expect label="returns false()"
+              test="$x:result = false()" />
+    </scenario>
+
+
+    <scenario label="given a non-record atomic">
+      <call function="R:is-record">
+        <param name="Record"
+               select="5" />
+      </call>
+
+      <expect label="returns false()"
+              test="$x:result = false()" />
+    </scenario>
+  </scenario>
+
+
   <scenario label="R:is-compatible">
     <scenario label="with super- and sub-types of same slot count">
       <call function="R:is-compatible">

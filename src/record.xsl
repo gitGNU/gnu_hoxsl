@@ -517,6 +517,18 @@
   @subsection Type Predicates
 -->
 
+
+<!--
+  Determine whether the given @var{item} is a record.
+-->
+<function name="R:is-record" as="xs:boolean">
+  <param name="item" as="item()" />
+
+  <sequence select="$item instance of element()
+                      and exists( $item/_R:types )" />
+</function>
+
+
 <!--
   Predicate to determine whether @var{record} or any of its supertypes is of
     type @var{type}.

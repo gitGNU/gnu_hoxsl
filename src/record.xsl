@@ -81,6 +81,7 @@
   * Design Considerations: Record Design Considerations.
   * Header: Record Header.
   * Slot Naming: Record Slot Naming.
+  * Slot Data: Record Slot Data.
   * Polymorphism: Record Polymorphism.
   @end menu
 
@@ -441,6 +442,182 @@
 
   <sequence select="$Record/_R:slot-names/@*[
                       namespace-uri() = $ns ]" />
+</function>
+
+
+<!--
+  @node Record Slot Data
+  @section Record Slot Data
+
+  Slot data directly follows the @ref{Record Header} in a@tie{}sequence.
+  By default,
+    all records are initialized to a@tie{}special value @ref{R:empty-slot}
+    which indicates that the@tie{}slot contains no@tie{}value.@c
+    @footnote{It is otherwise not possible to indicate the@tie{}absence of
+      a@tie{}value,
+      since the@tie{}empty sequence within a@tie{}sequence is
+      eliminated@mdash{}that is, @t{(1, (), 2) eq (1, 2)}.}
+-->
+
+<!--
+  Special element indicating an empty slot.
+
+  This value will be automatically converted into the@tie{}empty sequence by
+    accessor functions.
+-->
+<variable name="R:empty-slot" as="element( R:empty-slot )">
+  <R:empty-slot />
+</variable>
+
+<!--
+  Slots cannot correspond 1-to-1 with sequence items,
+    because they might themselves contain records.
+  Let the @dfn{slot span}@tie{}@math{ϱ} of some slot@tie{}@math{s} be the
+    number of sequence items that constitute its value,
+    and let @math{#S} be the number of items in some set@tie{}@math{S};
+    then,
+
+  @itemize
+  @item @math{ϱ(s) = #T + ∑ᵢϱ(tᵢ) + 2, t∈T}, where @math{T} is the@tie{}set
+        of slots in@tie{}@math{s}, if @math{s}@tie{}is a record; and
+  @item @math{ϱ(s) = 1} otherwise.
+  @end itemize
+
+  @anchor{record span}
+  The first equation is the@tie{}@dfn{record span}.
+  It accounts for (@pxref{Record Slot Offsets}):
+
+  @enumerate
+  @item A @ref{Record Header} (one item);
+  @item The record span (one item);
+  @item @math{#T} items to hold the offset for each slot
+        (@pxref{Record Slot Offsets}); and
+  @item @math{∑ᵢϱ(tᵢ)} items to hold all slot contents.
+  @end enumerate
+
+  So, if a record in@tie{}@math{s} contains no nested records,
+    its span will always be @math{2#T + 2}.
+
+  All of this allows for dynamically-typed, dynamically-sized records.
+
+  @menu
+  * Slot Offsets: Record Slot Offsets.
+  @end menu
+-->
+
+<!--
+  @node Record Slot Offsets
+  @subsection Record Slot Offsets
+
+  Recursively calculating the slot span of a record would be an incredibly
+    costly operation for deeply nested records,
+    so we reduce this lookup to @math{O(1)} constant time by recomputing it
+    each time a record slot is set.
+  To eliminate an @math{O(n)} linear scan of the slots for record span
+    recomputation,
+    each slot has its offset cached; this also allows us to look up a slot
+    in constant time.
+
+  These offsets are stored directly after the @ref{Record Header},
+    before the slot values;
+    this allows quick lookup and modification@c
+    @mdash{}modifying the record header involves reconstructing an element,
+      which involves many more operations than swapping out items in a
+      sequence.
+
+  For records,
+    it is also important that we know the entire @ref{record span} so that
+    the end of the entire record in a sequence can be immediately known
+    without consulting the final slot span,
+    which involves looking up the last slot offset and then determining its
+    span.
+  This offset precedes the individual slot offsets.
+
+  @anchor{record sequence}
+  The resulting construction is called a @dfn{record sequence}:
+
+  @float Figure, fig:record-construction
+  @verbatim
+  (<header>       as R:Record,
+   <record span>  as xs:integer,
+   <slot span>... as xs:integer*,
+   <slot>...      as item()*)
+  @end verbatim
+  @caption{Items of a record sequence}
+  @end float
+-->
+
+<!--
+  Produce a record sequence of @var{Record} initialized with
+    @math{N}@tie{}empty slots,
+  where @math{N}@tie{}is the@tie{}slot count of@tie{}@var{Record}.
+
+  Slots are initialized to @ref{R:empty-slot}.
+  The resulting sequence contains @math{2N + 2}@tie{}items,
+    with the first item being @var{Record}.
+-->
+<function name="R:init-slots" as="item()+">
+  <param name="Record" as="element( R:Record )" />
+
+  <variable name="n" as="xs:integer"
+            select="R:slot-count( $Record )" />
+
+  <variable name="offsets" as="xs:integer*"
+            select="for $i in 1 to $n
+                      return $i" />
+  <variable name="slots" as="element( R:empty-slot )*"
+            select="for $i in 1 to $n
+                      return $R:empty-slot" />
+
+  <sequence select="$Record, (2*$n + 2), $offsets, $slots" />
+</function>
+
+
+<!--
+  Determine whether the given sequence @var{seq} is a
+    valid@tie{}@ref{record sequence}.
+
+  This ensures that the a proper @ref{Record Header} is present and that
+    there are enough items in the sequence to satisfy all data requirements
+    for that record (@pxref{record span}).
+  It does not, however, guarantee that the items in the sequence do actually
+    belong to that record.
+-->
+<function name="R:is-record-seq" as="xs:boolean">
+  <param name="seq" as="item()*" />
+
+  <variable name="header" as="item()?"
+            select="$seq[ 1 ]" />
+  <variable name="slen" as="xs:integer"
+            select="max( ( 2, R:record-span( $seq ) ) )" />
+
+  <sequence select="$header
+                      and R:is-record( $header )
+                      and count( $seq ) ge $slen" />
+</function>
+
+
+<!--
+  Determine the @ref{record span} of the record sequence @var{Rseq}.
+
+  This function checks to ensure that the first item in the sequence is a
+    @ref{Record Header},
+    but it @emph{does not} ensure that the provided sequence is a valid
+    @ref{record sequence};
+    to do so, use @ref{R:is-record-seq#1}.
+-->
+<function name="R:record-span" as="xs:integer?">
+  <param name="Rseq" as="item()+" />
+
+  <variable name="header" as="item()?"
+            select="$Rseq[ 1 ]" />
+  <variable name="span" as="item()?"
+            select="$Rseq[ 2 ]" />
+
+  <sequence select="if ( R:is-record( $header )
+                           and $span instance of xs:integer ) then
+                        $span
+                      else ()" />
 </function>
 
 

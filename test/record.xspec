@@ -281,6 +281,128 @@
   </scenario>
 
 
+  <scenario label="Record data function">
+    <!-- yes, this tests implementation details rather than relying on
+         abstractions provided by the API; this is intentional to ensure
+         that records are operating according to their specification -->
+    <scenario label="R:init-slots">
+      <variable name="anon-record"
+                select="R:make-record-header( 3 )" />
+
+      <call function="R:init-slots">
+        <param name="Record" select="$anon-record" />
+      </call>
+
+      <expect label="produces a sequence of length 2N+2"
+              test="count( $x:result ) eq 8" />
+
+      <expect label="first item is record header"
+              test="$x:result[ 1 ] = $anon-record" />
+
+      <expect label="second item is record span"
+              test="$x:result[ 2 ] = 8" />
+
+      <expect label="R:record-span agrees with span item"
+              test="R:record-span( $x:result ) = $x:result[ 2 ]" />
+
+      <expect label="slot offsets are initialized to slot positions"
+              test="$x:result[ 3 ] eq 1
+                    and $x:result[ 4 ] eq 2
+                    and $x:result[ 5 ] eq 3" />
+
+      <expect label="slots are initialized with empty values"
+              test="every $slot in subsequence( $x:result, 6 ) satisfies
+                      $slot eq $R:empty-slot" />
+    </scenario>
+
+
+    <scenario label="R:is-record-seq">
+      <scenario label="given an empty sequence">
+        <call function="R:is-record-seq">
+          <param name="seq"
+                 select="()" />
+        </call>
+
+        <expect label="yields false()"
+                test="$x:result eq false()" />
+      </scenario>
+
+
+      <scenario label="given a non-record header">
+        <call function="R:is-record-seq">
+          <param name="seq"
+                 select="n:element( $test-qname )" />
+        </call>
+
+        <expect label="yields false()"
+                test="$x:result eq false()" />
+      </scenario>
+
+
+      <scenario label="given a record header only">
+        <call function="R:is-record-seq">
+          <param name="seq"
+                 select="R:make-record-header( 0 )" />
+        </call>
+
+        <expect label="yields false()"
+                test="$x:result eq false()" />
+      </scenario>
+
+
+      <scenario label="given a record with sequence lt span">
+        <call function="R:is-record-seq">
+          <param name="seq"
+                 select="subsequence(
+                           R:init-slots(
+                             R:make-record-header( 2 ) ),
+                           1, 4 )" />
+        </call>
+
+        <expect label="yields false()"
+                test="$x:result eq false()" />
+      </scenario>
+
+
+      <scenario label="given a full record sequence">
+        <call function="R:is-record-seq">
+          <param name="seq"
+                 select="R:init-slots(
+                           R:make-record-header( 2 ) )" />
+        </call>
+
+        <expect label="yields true()"
+                test="$x:result eq true()" />
+      </scenario>
+    </scenario>
+
+
+    <!-- see above scenario for record test -->
+    <scenario label="R:record-span">
+      <scenario label="given a non-record">
+        <call function="R:record-span">
+          <param name="Rseq"
+                 select="n:element( $test-qname )" />
+        </call>
+
+        <expect label="returns the empty sequence"
+                test="empty( $x:result )" />
+      </scenario>
+
+
+      <scenario label="given a record with an invalid span">
+        <call function="R:record-span">
+          <param name="Rseq"
+                 select="R:make-record-header( 0 ), 'invalid'" />
+        </call>
+
+        <expect label="returns the empty sequence"
+                test="empty( $x:result )" />
+      </scenario>
+    </scenario>
+  </scenario>
+
+
   <scenario label="R:is-record">
     <scenario label="given a record">
       <call function="R:is-record">

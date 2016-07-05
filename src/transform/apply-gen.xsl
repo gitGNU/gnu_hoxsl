@@ -63,6 +63,10 @@
     </comment>
 
     <out:stylesheet version="2.0">
+      <!-- namespaces might be referenced in strings (e.g. @as), and so may
+           not be copied by default -->
+      <sequence select="namespace::*[ name() ]" />
+
       <xsl:apply-templates mode="fgen:create" />
     </out:stylesheet>
   </document>

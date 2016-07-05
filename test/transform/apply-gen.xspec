@@ -40,6 +40,21 @@
   </variable>
 
 
+  <!-- source namespaces must be copied -->
+  <scenario label="source namespaces">
+    <context>
+      <xsl:stylesheet xmlns:foobar="baz">
+        <xsl:function name="foobar:baz">
+          <xsl:param name="foo" />
+        </xsl:function>
+      </xsl:stylesheet>
+    </context>
+
+    <expect label="are copied to destination"
+            test="exists( xsl:stylesheet/namespace::foobar )" />
+  </scenario>
+
+
   <!-- basic case -->
   <scenario label="given a unary function">
     <context>

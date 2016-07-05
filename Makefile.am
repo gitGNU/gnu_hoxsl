@@ -35,3 +35,6 @@ check:  $(test_apply)
 	$(JAVA) -jar "$(SAXON_CP)" \
 	    -xsl:"$(path_src)/transform/apply-gen.xsl" \
 	    "$<" > "$@"
+
+clean-local:
+	$(RM) $(test_apply)

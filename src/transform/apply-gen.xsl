@@ -62,7 +62,7 @@
       <text>hoxsl; please do not modify</text>
     </comment>
 
-    <out:stylesheet version="2.0">
+    <out:stylesheet version="{( @version, '2.0' )[ 1 ]}">
       <!-- namespaces might be referenced in strings (e.g. @as), and so may
            not be copied by default -->
       <sequence select="namespace::*[ name() ]" />

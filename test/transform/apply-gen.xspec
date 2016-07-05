@@ -40,6 +40,31 @@
   </variable>
 
 
+  <!-- while functions are only supported in version >=2, this could be run
+       on future versions, and we want to make sure that we don't break
+       anything -->
+  <scenario label="stylesheet version">
+    <scenario label="when provided">
+      <context>
+        <xsl:stylesheet version="7.05" />
+      </context>
+
+      <expect label="is copied to output"
+              test="xsl:stylesheet/@version = '7.05'" />
+    </scenario>
+
+
+    <scenario label="when empty">
+      <context>
+        <xsl:stylesheet />
+      </context>
+
+      <expect label="defaults to 2.0"
+              test="xsl:stylesheet/@version = '2.0'" />
+    </scenario>
+  </scenario>
+
+
   <!-- source namespaces must be copied -->
   <scenario label="source namespaces">
     <context>

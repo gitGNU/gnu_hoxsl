@@ -1,0 +1,40 @@
+hoxsl may be used directly from the distribution archive.
+
+To build from source (including a repository checkout), see `Configuring'
+below.
+
+
+Configuring
+===========
+If your distribution contains a `configure` file in the project root, you
+may immediately run `./configure`.
+
+Otherwise, you likely have the sources as they exist in the project
+repository, which does not contain the generated `configure` script; you
+may generate it by issuing the following command:
+
+  $ autoreconf -fvi
+
+hoxsl has two dependencies, which may be cloned as such:
+
+  $ git clone https://github.com/lovullo/literate-xsl tools/literate-xsl
+  $ git clone https://github.com/lovullo/xspec tools/xspec
+
+The latter is required only if running test cases (using `make check').
+Once dependencies are in place, simply run:
+
+  $ ./configure
+
+
+Building
+========
+After running `configure' above, all necessary runtime files and literate
+documentation may be built by running:
+
+  $ make
+
+To build the distribution files, run `make distdir`.  To create the
+distribution tarball, run `make dist`.
+
+To run all tests, run `make check`.
+

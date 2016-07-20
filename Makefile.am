@@ -18,7 +18,7 @@
 ##
 
 SUBDIRS = doc
-EXTRA_DIST = COPYING.FDL README.md src test doc/macros.texi
+EXTRA_DIST = INSTALL COPYING.FDL README.md src test doc/macros.texi
 
 path_src   := src
 path_test  := test

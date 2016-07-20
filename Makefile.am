@@ -1,6 +1,7 @@
 ## hoxsl Makefile
 #
-#  Copyright (C) 2014  LoVullo Associates, Inc.
+#  Copyright (C) 2016 Mike Gerwitz
+#  Copyright (C) 2014 LoVullo Associates, Inc.
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,6 +18,7 @@
 ##
 
 SUBDIRS = doc
+EXTRA_DIST = COPYING.FDL README.md src test doc/macros.texi
 
 path_src   := src
 path_test  := test

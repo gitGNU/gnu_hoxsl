@@ -16,8 +16,8 @@ functions and XSLT templates that take XSLT as input and produce XSLT
 as output.
 
 The system is fully tested---see the test cases for additional
-documentation as this project gets under way.  This README will serve
-as an informal manual until official documentation is produced.
+documentation as this project gets under way.  The manual is "woven" from
+literate sources; [a compiled version is available online][manual].
 
 
 ## Higher-Order Functions
@@ -114,3 +114,5 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
 [nova-ho]: http://conferences.idealliance.org/extreme/html/2006/Novatchev01/EML2006Novatchev01.html
 [xslt-30-ho]: http://www.w3.org/TR/xslt-30/#dt-higher-order-operand
+[manual]: https://mikegerwitz.com/hoxsl/manual/
+
